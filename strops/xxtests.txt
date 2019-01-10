@@ -1,0 +1,40 @@
+=== RUN   TestStrOps_FindRegExIndex_01
+--- PASS: TestStrOps_FindRegExIndex_01 (0.00s)
+=== RUN   TestStrOps_StrCenterInStr_001
+--- PASS: TestStrOps_StrCenterInStr_001 (0.00s)
+=== RUN   TestStrOps_StrLeftJustify_001
+--- PASS: TestStrOps_StrLeftJustify_001 (0.00s)
+=== RUN   TestStrOps_StrRightJustify_001
+--- PASS: TestStrOps_StrRightJustify_001 (0.00s)
+=== RUN   TestStrOps_StrCenterInStrLeft_001
+--- PASS: TestStrOps_StrCenterInStrLeft_001 (0.00s)
+=== RUN   TestStrOps_StrGetRuneCnt
+--- PASS: TestStrOps_StrGetRuneCnt (0.00s)
+=== RUN   TestStrOps_StrGetCharCnt01
+--- PASS: TestStrOps_StrGetCharCnt01 (0.00s)
+=== RUN   TestStrOps_StrPadLeftToCenter
+--- PASS: TestStrOps_StrPadLeftToCenter (0.00s)
+=== RUN   TestStrOps_TrimEndMultiple_001
+--- PASS: TestStrOps_TrimEndMultiple_001 (0.00s)
+=== RUN   TestStrOps_TrimEndMultiple_002
+--- PASS: TestStrOps_TrimEndMultiple_002 (0.00s)
+=== RUN   TestStrOps_TrimEndMultiple_003
+--- PASS: TestStrOps_TrimEndMultiple_003 (0.00s)
+=== RUN   TestStrOps_TrimEndMultiple_004
+--- PASS: TestStrOps_TrimEndMultiple_004 (0.00s)
+=== RUN   TestStrOps_TrimEndMultiple_005
+--- PASS: TestStrOps_TrimEndMultiple_005 (0.00s)
+=== RUN   TestStrOps_TrimEndMultiple_006
+--- PASS: TestStrOps_TrimEndMultiple_006 (0.00s)
+=== RUN   TestStrOps_TrimEndMultiple_007
+--- PASS: TestStrOps_TrimEndMultiple_007 (0.00s)
+=== RUN   TestStrOps_SwapRune_001
+--- PASS: TestStrOps_SwapRune_001 (0.00s)
+=== RUN   TestStrOps_SwapRune_002
+--- PASS: TestStrOps_SwapRune_002 (0.00s)
+=== RUN   TestStrOps_SwapRune_003
+--- PASS: TestStrOps_SwapRune_003 (0.00s)
+=== RUN   TestStrOps_SwapRune_004
+--- PASS: TestStrOps_SwapRune_004 (0.00s)
+PASS
+ok  	MikeAustin71/stringopsgo/strops	2.512s
