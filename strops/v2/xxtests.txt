@@ -172,6 +172,24 @@
 --- PASS: TestStrOps_ReplaceNewLines_07 (0.00s)
 === RUN   TestStrOps_ReplaceNewLines_08
 --- PASS: TestStrOps_ReplaceNewLines_08 (0.00s)
+=== RUN   TestStrOps_ReplaceRunes_01
+--- PASS: TestStrOps_ReplaceRunes_01 (0.00s)
+=== RUN   TestStrOps_ReplaceRunes_02
+--- PASS: TestStrOps_ReplaceRunes_02 (0.00s)
+=== RUN   TestStrOps_ReplaceRunes_03
+--- PASS: TestStrOps_ReplaceRunes_03 (0.00s)
+=== RUN   TestStrOps_ReplaceRunes_04
+--- PASS: TestStrOps_ReplaceRunes_04 (0.00s)
+=== RUN   TestStrOps_ReplaceRunes_05
+--- PASS: TestStrOps_ReplaceRunes_05 (0.00s)
+=== RUN   TestStrOps_ReplaceRunes_06
+--- PASS: TestStrOps_ReplaceRunes_06 (0.00s)
+=== RUN   TestStrOps_ReplaceRunes_07
+--- PASS: TestStrOps_ReplaceRunes_07 (0.00s)
+=== RUN   TestStrOps_ReplaceRunes_08
+--- PASS: TestStrOps_ReplaceRunes_08 (0.00s)
+=== RUN   TestStrOps_ReplaceRunes_09
+--- PASS: TestStrOps_ReplaceRunes_09 (0.00s)
 === RUN   TestStrOps_StrCenterInStr_001
 --- PASS: TestStrOps_StrCenterInStr_001 (0.00s)
 === RUN   TestStrOps_StrLeftJustify_001
@@ -227,4 +245,4 @@
 === RUN   TestStrOps_TrimStringEnds_09
 --- PASS: TestStrOps_TrimStringEnds_09 (0.00s)
 PASS
-ok  	MikeAustin71/stringopsgo/strops/v2	2.807s
+ok  	MikeAustin71/stringopsgo/strops/v2	3.357s

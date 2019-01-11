@@ -808,6 +808,92 @@ func (sops StrOps) ReplaceNewLines(targetStr string, replacement string) string 
 	return strings.Replace(targetStr, "\n", replacement, -1)
 }
 
+// ReplaceRunes - Replaces characters in a string with those specified in a two dimensional
+// slice of runes.
+//
+// Input Parameters
+// ================
+//
+// targetRunes	[]rune	- The rune array which will be examined. If target characters ('runes') are
+//                      	identified they will be replaced.
+//
+// replacementRunes	[][]rune - A two dimensional slice of type rune. [i][0] contains the target
+//                             character to locate in 'targetRunes'. [i][1] contains the replacement
+//                             character which will replace the target character in 'targetRunes'. If
+//                             the replacement character [i][1] is a zero value, the target character
+//                             will not be replaced. Instead, it will be eliminated or removed from
+//                             the returned rune array ([]rune).
+//
+// Return Values
+// =============
+// []rune						- The returned rune array containing the characters and replaced characters
+//                    from the original 'targetRunes'.
+//
+// error						- If the method completes successfully this value is 'nil'. If an error is
+//                    encountered this value will contain the error message. Examples of possible
+//                    errors include a zero length targetRunes[] array or replacementRunes[][] array.
+// 										In addition, if any of the replacementRunes[][x] 2nd dimension elements have
+//                    a length less than two, an error will be returned.
+//
+func (sops StrOps) ReplaceRunes(targetRunes []rune, replacementRunes [][]rune) ([]rune, error) {
+
+	ePrefix := "StrOps.ReplaceRunes() "
+
+	output := make([]rune, 0, 100)
+
+	targetLen := len(targetRunes)
+
+	if targetLen == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'targetRunes' is a zero length array!")
+	}
+
+	baseReplaceLen := len(replacementRunes)
+
+	if baseReplaceLen == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'replacementRunes' is a zero length array!")
+	}
+
+	for h := 0; h < baseReplaceLen; h++ {
+
+		if len(replacementRunes[h]) < 2 {
+			return output,
+				fmt.Errorf(ePrefix+
+					"Error: Invalid Replacement Array Element. replacementRunes[%v] has "+
+					"a length less than two. ", h)
+		}
+
+	}
+
+	foundReplacement := false
+
+	for i := 0; i < targetLen; i++ {
+
+		foundReplacement = false
+
+		for k := 0; k < baseReplaceLen; k++ {
+
+			if targetRunes[i] == replacementRunes[k][0] {
+
+				if replacementRunes[k][1] != 0 {
+					output = append(output, replacementRunes[k][1])
+				}
+
+				foundReplacement = true
+				break
+			}
+		}
+
+		if !foundReplacement {
+			output = append(output, targetRunes[i])
+		}
+
+	}
+
+	return output, nil
+}
+
 // StrCenterInStrLeft - returns a string which includes
 // a left pad blank string plus the original string. It
 // does NOT include the Right pad blank string.

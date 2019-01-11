@@ -1,6 +1,7 @@
-package strops
+package main
 
 import (
+	strOps "./strops/v2"
 	"errors"
 	"fmt"
 	"regexp"
@@ -119,9 +120,9 @@ func FindExpressionExample01(targetStr string, regex string) (string, error) {
 
 func TrimMultipleStringsExample01(tStr string, trimChar rune) {
 
-	su := StrOps{}
+	su := strOps.StrOps{}
 
-	r, err := su.TrimEndMultiple(tStr, trimChar)
+	r, err := su.TrimMultipleChars(tStr, trimChar)
 
 	if err != nil {
 		fmt.Println("Error Return from TrimMultipleChars: ", err.Error())
@@ -145,7 +146,7 @@ func RegExFindSingleTimeDigitsExample01() {
 	targetStr := "November 12, 2016 1:6:3pm +0000 UTC"
 
 	fmt.Println("targetStr = ", targetStr)
-	su := StrOps{}
+	su := strOps.StrOps{}
 
 	idx := su.FindRegExIndex(targetStr, regex)
 
