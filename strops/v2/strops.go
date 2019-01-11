@@ -757,55 +757,59 @@ func (sops StrOps) MakeSingleCharString(charRune rune, strLen int) (string, erro
 	return b.String(), nil
 }
 
-// ReplaceMultipleStrs - Replaces all instances of string replaceArray[i][0] with
-// replacement string from replaceArray[i][1] in 'targetStr'.
+// ReplaceStringChars - Replaces string characters in a target string ('targetStr') with those
+// specified in a two dimensional slice of runes, 'replacementRunes[][]'.
 //
-// Note: The original 'targetStr' is NOT altered.
+// Input Parameters
+// ================
 //
-// Input parameter 'replaceArray' should be passed as multi-dimensional slices.
-// If the length of the 'replaceArray' second dimension is less than '2', an
-// error will be returned.
+// targetStr				string		- The string which will be examined. If target string characters
+// 															eligible for replacement are identified by replacementRunes[i][0], they
+// 															will be replaced by the character specified in replacementRunes[i][1].
 //
-func (sops StrOps) ReplaceMultipleStrs(targetStr string, replaceArray [][]string) (string, error) {
+// replacementRunes	[][]rune 	- A two dimensional slice of type 'rune'. Element [i][0] contains the target
+//                             	character to locate in 'targetStr'. Element[i][1] contains the
+//                             	replacement character which will replace the target character in
+//                             	'targetStr'. If the replacement character element [i][1] is a zero value,
+//                             	the	target character will not be replaced. Instead, it will be eliminated
+//                             	or removed from the returned string.
+//
+// Return Values
+// =============
+// string						- The returned string containing the characters and replaced characters
+//                    from the original target string, ('targetStr').
+//
+// error						- If the method completes successfully this value is 'nil'. If an error is
+//                    encountered this value will contain the error message. Examples of possible
+//                    errors include a zero length 'targetStr' or 'replacementRunes[][]' array.
+// 										In addition, if any of the replacementRunes[][x] 2nd dimension elements have
+//                    a length less than two, an error will be returned.
+//
+func (sops StrOps) ReplaceStringChars(
+	targetStr string,
+	replacementRunes [][]rune) (string, error) {
 
-	ePrefix := "StrOps.ReplaceMultipleStrs() "
+	ePrefix := "StrOps.ReplaceStringChars() "
 
-	if targetStr == "" {
-		return targetStr,
-			errors.New(ePrefix + "Input parameter 'targetStr' is an EMPTY STRING.")
-	}
-
-	if len(replaceArray) == 0 {
+	if len(targetStr) == 0 {
 		return "",
-			errors.New(ePrefix +
-				"Length of first dimension [X][] in two dimensional array 'replaceArray' is ZERO!")
+			errors.New(ePrefix + "Error: Input parameter 'targetStr' is an EMPTY STRING!")
 	}
 
-	newString := targetStr
-
-	for aIdx, aVal := range replaceArray {
-
-		if len(aVal) < 2 {
-			return "",
-				fmt.Errorf(ePrefix+
-					"Length of second dimension [][X] in two dimensional array 'replaceArray' is Less Than 2! "+
-					"replaceArray[%v][]", aIdx)
-		}
-
-		newString = strings.Replace(newString, replaceArray[aIdx][0], replaceArray[aIdx][1], -1)
-
+	if len(replacementRunes) == 0 {
+		return "",
+			errors.New(ePrefix + "Error: Input parameter 'replacementRunes' is an EMPTY STRING!")
 	}
 
-	return newString, nil
-}
+	outputStr, err := sops.ReplaceRunes([]rune(targetStr), replacementRunes)
 
-// RemoveNewLines - Replaces New Line characters from string. If the specified
-// replacement string is empty, the New Line characters are simply removed
-// from the input parameter, 'targetStr'.
-//
-func (sops StrOps) ReplaceNewLines(targetStr string, replacement string) string {
+	if err != nil {
+		return "",
+			fmt.Errorf(ePrefix+"Error returned by ReplaceRunes([]rune(targetStr), replacementRunes). "+
+				"Error='%v' ", err.Error())
+	}
 
-	return strings.Replace(targetStr, "\n", replacement, -1)
+	return string(outputStr), nil
 }
 
 // ReplaceBytes	- Replaces characters in a target array of bytes ([]bytes) with those specified in
@@ -895,22 +899,73 @@ func (sops StrOps) ReplaceBytes(targetBytes []byte, replacementBytes [][]byte) (
 	return output, nil
 }
 
+// ReplaceMultipleStrs - Replaces all instances of string replaceArray[i][0] with
+// replacement string from replaceArray[i][1] in 'targetStr'.
+//
+// Note: The original 'targetStr' is NOT altered.
+//
+// Input parameter 'replaceArray' should be passed as multi-dimensional slices.
+// If the length of the 'replaceArray' second dimension is less than '2', an
+// error will be returned.
+//
+func (sops StrOps) ReplaceMultipleStrs(targetStr string, replaceArray [][]string) (string, error) {
+
+	ePrefix := "StrOps.ReplaceMultipleStrs() "
+
+	if targetStr == "" {
+		return targetStr,
+			errors.New(ePrefix + "Input parameter 'targetStr' is an EMPTY STRING.")
+	}
+
+	if len(replaceArray) == 0 {
+		return "",
+			errors.New(ePrefix +
+				"Length of first dimension [X][] in two dimensional array 'replaceArray' is ZERO!")
+	}
+
+	newString := targetStr
+
+	for aIdx, aVal := range replaceArray {
+
+		if len(aVal) < 2 {
+			return "",
+				fmt.Errorf(ePrefix+
+					"Length of second dimension [][X] in two dimensional array 'replaceArray' is Less Than 2! "+
+					"replaceArray[%v][]", aIdx)
+		}
+
+		newString = strings.Replace(newString, replaceArray[aIdx][0], replaceArray[aIdx][1], -1)
+
+	}
+
+	return newString, nil
+}
+
+// RemoveNewLines - Replaces New Line characters from string. If the specified
+// replacement string is empty, the New Line characters are simply removed
+// from the input parameter, 'targetStr'.
+//
+func (sops StrOps) ReplaceNewLines(targetStr string, replacement string) string {
+
+	return strings.Replace(targetStr, "\n", replacement, -1)
+}
+
 // ReplaceRunes - Replaces characters in a target array of runes ([]rune) with those specified in
 // a two dimensional slice of runes, 'replacementRunes[][]'.
 //
 // Input Parameters
 // ================
 //
-// targetRunes	[]rune				- The rune array which will be examined. If target characters ('runes')
+// targetRunes			[]rune		- The rune array which will be examined. If target characters ('runes')
 // 															eligible for replacement are identified by replacementRunes[i][0], they
 // 															will be replaced by the character specified in replacementRunes[i][1].
 //
-// replacementRunes	[][]rune 	- A two dimensional slice of type rune. Element [i][0] contains the target
+// replacementRunes	[][]rune 	- A two dimensional slice of type 'rune'. Element [i][0] contains the target
 //                             	character to locate in 'targetRunes'. Element[i][1] contains the
 //                             	replacement character which will replace the target character in
-//                             	'targetRunes'. If the replacement character [i][1] is a zero value, the
-//                             	target character will not be replaced. Instead, it will be eliminated or
-//                             	removed from the returned rune array ([]rune).
+//                             	'targetRunes'. If the replacement character element [i][1] is a zero value,
+//                             	the	target character will not be replaced. Instead, it will be eliminated
+//                             	or removed from the returned rune array ([]rune).
 //
 // Return Values
 // =============
@@ -919,9 +974,9 @@ func (sops StrOps) ReplaceBytes(targetBytes []byte, replacementBytes [][]byte) (
 //
 // error						- If the method completes successfully this value is 'nil'. If an error is
 //                    encountered this value will contain the error message. Examples of possible
-//                    errors include a zero length targetRunes[] array or replacementRunes[][] array.
-// 										In addition, if any of the replacementRunes[][x] 2nd dimension elements have
-//                    a length less than two, an error will be returned.
+//                    errors include a zero length 'targetRunes[]' array or 'replacementRunes[][]'
+//                    array. In addition, if any of the replacementRunes[][x] 2nd dimension elements
+//                    have a length less than two, an error will be returned.
 //
 func (sops StrOps) ReplaceRunes(targetRunes []rune, replacementRunes [][]rune) ([]rune, error) {
 
