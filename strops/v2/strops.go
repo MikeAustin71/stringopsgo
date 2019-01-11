@@ -808,26 +808,114 @@ func (sops StrOps) ReplaceNewLines(targetStr string, replacement string) string 
 	return strings.Replace(targetStr, "\n", replacement, -1)
 }
 
-// ReplaceRunes - Replaces characters in a string with those specified in a two dimensional
-// slice of runes.
+// ReplaceBytes	- Replaces characters in a target array of bytes ([]bytes) with those specified in
+// a two dimensional slice of bytes.
 //
 // Input Parameters
 // ================
 //
-// targetRunes	[]rune	- The rune array which will be examined. If target characters ('runes') are
-//                      	identified they will be replaced.
+// targetBytes	[]byte				- The byte array which will be examined. If characters ('bytes') eligible
+// 															for replacement are identified by replacementBytes[i][0] they will be
+// 															replaced by the character specified in replacementBytes[i][1].
 //
-// replacementRunes	[][]rune - A two dimensional slice of type rune. [i][0] contains the target
-//                             character to locate in 'targetRunes'. [i][1] contains the replacement
-//                             character which will replace the target character in 'targetRunes'. If
-//                             the replacement character [i][1] is a zero value, the target character
-//                             will not be replaced. Instead, it will be eliminated or removed from
-//                             the returned rune array ([]rune).
+// replacementBytes	[][]byte 	- A two dimensional slice of type byte. Element [i][0] contains the target
+//                             	character to locate in 'targetBytes'. Element[i][1] contains the replacement
+//                             	character which will replace the target character in 'targetBytes'. If
+//                             	the replacement character element [i][1] is a zero value, the target character
+//                             	will not be replaced. Instead, it will be eliminated or removed from
+//                             	the returned byte array ([]byte).
+//
+// Return Values
+// =============
+// []byte						- The returned byte array containing the characters and replaced characters
+//                    from the original 'targetBytes' array.
+//
+// error						- If the method completes successfully this value is 'nil'. If an error is
+//                    encountered this value will contain the error message. Examples of possible
+//                    errors include a zero length targetBytes[] array or replacementBytes[][] array.
+// 										In addition, if any of the replacementBytes[][x] 2nd dimension elements have
+//                    a length less than two, an error will be returned.
+//
+func (sops StrOps) ReplaceBytes(targetBytes []byte, replacementBytes [][]byte) ([]byte, error) {
+
+	ePrefix := "StrOps.ReplaceBytes() "
+
+	output := make([]byte, 0, 100)
+
+	targetLen := len(targetBytes)
+
+	if targetLen == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'targetBytes' is a zero length array!")
+	}
+
+	baseReplaceLen := len(replacementBytes)
+
+	if baseReplaceLen == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'replacementBytes' is a zero length array!")
+	}
+
+	for h := 0; h < baseReplaceLen; h++ {
+
+		if len(replacementBytes[h]) < 2 {
+			return output,
+				fmt.Errorf(ePrefix+
+					"Error: Invalid Replacement Array Element. replacementBytes[%v] has "+
+					"a length less than two. ", h)
+		}
+
+	}
+
+	foundReplacement := false
+
+	for i := 0; i < targetLen; i++ {
+
+		foundReplacement = false
+
+		for k := 0; k < baseReplaceLen; k++ {
+
+			if targetBytes[i] == replacementBytes[k][0] {
+
+				if replacementBytes[k][1] != 0 {
+					output = append(output, replacementBytes[k][1])
+				}
+
+				foundReplacement = true
+				break
+			}
+		}
+
+		if !foundReplacement {
+			output = append(output, targetBytes[i])
+		}
+
+	}
+
+	return output, nil
+}
+
+// ReplaceRunes - Replaces characters in a target array of runes ([]rune) with those specified in
+// a two dimensional slice of runes, 'replacementRunes[][]'.
+//
+// Input Parameters
+// ================
+//
+// targetRunes	[]rune				- The rune array which will be examined. If target characters ('runes')
+// 															eligible for replacement are identified by replacementRunes[i][0], they
+// 															will be replaced by the character specified in replacementRunes[i][1].
+//
+// replacementRunes	[][]rune 	- A two dimensional slice of type rune. Element [i][0] contains the target
+//                             	character to locate in 'targetRunes'. Element[i][1] contains the
+//                             	replacement character which will replace the target character in
+//                             	'targetRunes'. If the replacement character [i][1] is a zero value, the
+//                             	target character will not be replaced. Instead, it will be eliminated or
+//                             	removed from the returned rune array ([]rune).
 //
 // Return Values
 // =============
 // []rune						- The returned rune array containing the characters and replaced characters
-//                    from the original 'targetRunes'.
+//                    from the original 'targetRunes' array.
 //
 // error						- If the method completes successfully this value is 'nil'. If an error is
 //                    encountered this value will contain the error message. Examples of possible

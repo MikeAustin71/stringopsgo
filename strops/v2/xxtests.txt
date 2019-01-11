@@ -148,6 +148,24 @@
 --- PASS: TestStrOps_MakeSingleCharString_01 (0.00s)
 === RUN   TestStrOps_MakeSingleCharString_02
 --- PASS: TestStrOps_MakeSingleCharString_02 (0.00s)
+=== RUN   TestStrOps_ReplaceBytes_01
+--- PASS: TestStrOps_ReplaceBytes_01 (0.00s)
+=== RUN   TestStrOps_ReplaceBytes_02
+--- PASS: TestStrOps_ReplaceBytes_02 (0.00s)
+=== RUN   TestStrOps_ReplaceBytes_03
+--- PASS: TestStrOps_ReplaceBytes_03 (0.00s)
+=== RUN   TestStrOps_ReplaceBytes_04
+--- PASS: TestStrOps_ReplaceBytes_04 (0.00s)
+=== RUN   TestStrOps_ReplaceBytes_05
+--- PASS: TestStrOps_ReplaceBytes_05 (0.00s)
+=== RUN   TestStrOps_ReplaceBytes_06
+--- PASS: TestStrOps_ReplaceBytes_06 (0.00s)
+=== RUN   TestStrOps_ReplaceBytes_07
+--- PASS: TestStrOps_ReplaceBytes_07 (0.00s)
+=== RUN   TestStrOps_ReplaceBytes_08
+--- PASS: TestStrOps_ReplaceBytes_08 (0.00s)
+=== RUN   TestStrOps_ReplaceBytes_09
+--- PASS: TestStrOps_ReplaceBytes_09 (0.00s)
 === RUN   TestStrOps_ReplaceMultipleStrs_01
 --- PASS: TestStrOps_ReplaceMultipleStrs_01 (0.00s)
 === RUN   TestStrOps_ReplaceMultipleStrs_02
@@ -245,4 +263,4 @@
 === RUN   TestStrOps_TrimStringEnds_09
 --- PASS: TestStrOps_TrimStringEnds_09 (0.00s)
 PASS
-ok  	MikeAustin71/stringopsgo/strops/v2	3.357s
+ok  	MikeAustin71/stringopsgo/strops/v2	3.312s
