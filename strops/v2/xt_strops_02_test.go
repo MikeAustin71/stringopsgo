@@ -180,7 +180,7 @@ func TestStrOps_GetValidRunes_06(t *testing.T) {
 
 	validRunes := []rune{'1', '2', '3', '4', '5'}
 
-	testRunes := []rune{}
+	testRunes := make([]rune, 0, 5)
 
 	_, err := StrOps{}.GetValidRunes(testRunes, validRunes)
 
@@ -193,7 +193,7 @@ func TestStrOps_GetValidRunes_06(t *testing.T) {
 
 func TestStrOps_GetValidRunes_07(t *testing.T) {
 
-	validRunes := []rune{}
+	validRunes := make([]rune, 0, 5)
 
 	testRunes := []rune{'x', 'z', 'U', 'm', 'M', 'a', 'J', '9', 'Z', 'i', 'F', 'd', '&'}
 
