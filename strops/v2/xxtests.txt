@@ -323,4 +323,4 @@
 === RUN   TestStrOps_TrimStringEnds_09
 --- PASS: TestStrOps_TrimStringEnds_09 (0.00s)
 PASS
-ok  	MikeAustin71/stringopsgo/strops/v2	2.885s
+ok  	MikeAustin71/stringopsgo/strops/v2	3.610s

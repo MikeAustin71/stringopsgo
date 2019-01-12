@@ -3,6 +3,7 @@ package strops
 import (
 	"errors"
 	"fmt"
+	"io"
 	"regexp"
 	"strings"
 	"unicode/utf8"
@@ -696,6 +697,18 @@ func (sops StrOps) FindRegExIndex(targetStr string, regex string) []int {
 
 }
 
+// GetReader() Returns an io.Reader which will read the internal
+// data element StrOps.StrOut.
+//
+func (sops *StrOps) GetReader() io.Reader {
+	return strings.NewReader(sops.StrOut)
+}
+
+// GetSoftwareVersion - Returns the major software version for StrOps.
+func (sops StrOps) GetSoftwareVersion() string {
+	return "2.0.0"
+}
+
 // GetValidBytes - Receives an array of 'targetBytes' which will be examined to determine
 // the validity of individual bytes or characters. Each character (byte) in input array
 // 'targetBytes' will be compared to input parameter 'validBytes', another array of bytes.
@@ -877,11 +890,6 @@ func (sops StrOps) GetValidString(targetStr string, validRunes []rune) (string, 
 	}
 
 	return string(validRunes), nil
-}
-
-// GetSoftwareVersion - Returns the major software version for StrOps.
-func (sops StrOps) GetSoftwareVersion() string {
-	return "2.0.0"
 }
 
 // IsEmptyOrWhiteSpace - If a string is zero length or consists solely of
@@ -1514,4 +1522,57 @@ func (sops StrOps) SwapRune(currentStr string, oldRune rune, newRune rune) (stri
 	}
 
 	return string(rStr), nil
+}
+
+// Write - Implements the io.Writer interface. Receives a
+// byte array and writes those bytes to internal structure
+// data element 'StrOut'.
+func (sops *StrOps) Write(p []byte) (n int, err error) {
+
+	ePrefix := "StrOps.Write() "
+	n = 0
+	err = nil
+
+	if len(p) == 0 {
+		err = errors.New(ePrefix +
+			"Error: Input parameter p []byte is zero length!")
+		return n, err
+	}
+
+	b := strings.Builder{}
+	var err2 error
+
+	n, err2 = b.Write(p)
+
+	if err2 != nil {
+		n = 0
+		err = fmt.Errorf(ePrefix+
+			"Error returned by b.Write(p). Error='%v' ", err2.Error())
+
+		return n, err
+	}
+
+	sops.StrOut = b.String()
+
+	return n, err
+}
+
+// WriteStingOut - Receives an object supporting the io.Writer interface
+// and writes the StrOps data element, 'StrOut' to the object's
+// 'Write' method.
+//
+func (sops *StrOps) WriteStingOut(w io.Writer) (int, error) {
+
+	ePrefix := "StrOps.Write() "
+
+	n, err := w.Write([]byte(sops.StrOut))
+
+	if err != nil {
+		return 0,
+			fmt.Errorf(ePrefix+
+				"Error returned by w.Write([]byte(sops.StrOut)). "+
+				"Error='%v' ", err.Error())
+	}
+
+	return n, nil
 }
