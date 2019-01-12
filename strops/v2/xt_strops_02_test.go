@@ -356,6 +356,143 @@ func TestStrOps_GetValidRunes_07(t *testing.T) {
 
 }
 
+func TestStrOps_GetValidString_01(t *testing.T) {
+
+	validRunes := []rune{'v', 'a', 'l', 'i', 'd'}
+
+	testStr := "xjvmRaJlZiFdS"
+
+	expected := "valid"
+
+	actualStr, err := StrOps{}.GetValidString(testStr, validRunes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.GetValidString(testStr, validRunes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+}
+
+func TestStrOps_GetValidString_02(t *testing.T) {
+
+	validRunes := []rune{'1', '2', '3', '4', '5'}
+
+	testStr := "x13m5aJ7ZiFd5"
+
+	expected := "1355"
+
+	actualStr, err := StrOps{}.GetValidString(testStr, validRunes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.GetValidString(testStr, validRunes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+
+}
+
+func TestStrOps_GetValidString_03(t *testing.T) {
+
+	validRunes := []rune{'1', '2', '3', '4', '5'}
+
+	testStr := "xz3m5aJ7ZiFd5"
+
+	expected := "355"
+
+	actualStr, err := StrOps{}.GetValidString(testStr, validRunes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.GetValidString(testStr, validRunes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+
+}
+
+func TestStrOps_GetValidString_04(t *testing.T) {
+
+	validRunes := []rune{'1', '2', '3', '4', '5'}
+
+	testStr := "xzJm!aJ%ZiFd^"
+
+	expected := ""
+
+	actualStr, err := StrOps{}.GetValidString(testStr, validRunes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.GetValidString(testStr, validRunes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+}
+
+func TestStrOps_GetValidString_05(t *testing.T) {
+
+	validRunes := []rune{'1', '2', '3', '4', '5'}
+
+	testStr := "xzUmMaJ9ZiFd&"
+
+	expected := ""
+
+	actualStr, err := StrOps{}.GetValidString(testStr, validRunes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.GetValidString(testStr, validRunes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+
+}
+
+func TestStrOps_GetValidString_06(t *testing.T) {
+
+	validRunes := []rune{'1', '2', '3', '4', '5'}
+
+	testStr := ""
+
+	_, err := StrOps{}.GetValidString(testStr, validRunes)
+
+	if err == nil {
+		t.Error("Expected an Error Return due to empty 'testStr'. " +
+			"NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestStrOps_GetValidString_07(t *testing.T) {
+
+	validRunes := make([]rune, 0, 5)
+
+	testStr := "xzUmMaJ9ZiFd&"
+
+	_, err := StrOps{}.GetValidString(testStr, validRunes)
+
+	if err == nil {
+		t.Error("Expected Error return due to empty 'validRunes'. " +
+			"NO ERROR WAS RETURNED!")
+	}
+}
+
 func TestStrOps_IsEmptyOrWhiteSpace_01(t *testing.T) {
 
 	testStr := "       "
@@ -847,318 +984,4 @@ func TestStrOps_ReplaceBytes_09(t *testing.T) {
 	if err == nil {
 		t.Errorf("Error: Expected error return. NO ERROR WAS RETURNED!")
 	}
-}
-
-func TestStrOps_ReplaceMultipleStrs_01(t *testing.T) {
-
-	rStrs := make([][]string, 3, 5)
-
-	for i := 0; i < 3; i++ {
-		rStrs[i] = make([]string, 2, 5)
-	}
-
-	testStr := "Hello World"
-
-	rStrs[0][0] = "o"
-	rStrs[0][1] = "x"
-	rStrs[1][0] = " "
-	rStrs[1][1] = "J"
-	rStrs[2][0] = "l"
-	rStrs[2][1] = "F"
-
-	expectedStr := "HeFFxJWxrFd"
-
-	actualStr, err := StrOps{}.ReplaceMultipleStrs(testStr, rStrs)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ReplaceMultipleStrs(testStr, rStrs). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedStr != actualStr {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v' ",
-			expectedStr, actualStr)
-	}
-
-}
-
-func TestStrOps_ReplaceMultipleStrs_02(t *testing.T) {
-
-	rStrs := make([][]string, 3, 5)
-
-	for i := 0; i < 3; i++ {
-		rStrs[i] = make([]string, 2, 5)
-	}
-
-	testStr := "Hello World"
-
-	rStrs[0][0] = "o"
-	rStrs[0][1] = ""
-	rStrs[1][0] = " "
-	rStrs[1][1] = ""
-	rStrs[2][0] = "l"
-	rStrs[2][1] = ""
-
-	expectedStr := "HeWrd"
-
-	actualStr, err := StrOps{}.ReplaceMultipleStrs(testStr, rStrs)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ReplaceMultipleStrs(testStr, rStrs). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedStr != actualStr {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v' ",
-			expectedStr, actualStr)
-	}
-
-}
-
-func TestStrOps_ReplaceMultipleStrs_03(t *testing.T) {
-
-	rStrs := make([][]string, 3, 5)
-
-	for i := 0; i < 3; i++ {
-		rStrs[i] = make([]string, 2, 5)
-	}
-
-	testStr := "Hello World"
-
-	rStrs[0][0] = "f"
-	rStrs[0][1] = " "
-	rStrs[1][0] = "j"
-	rStrs[1][1] = "r"
-	rStrs[2][0] = "M"
-	rStrs[2][1] = "x"
-
-	expectedStr := "Hello World"
-
-	actualStr, err := StrOps{}.ReplaceMultipleStrs(testStr, rStrs)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ReplaceMultipleStrs(testStr, rStrs). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedStr != actualStr {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v' ",
-			expectedStr, actualStr)
-	}
-
-}
-
-func TestStrOps_ReplaceMultipleStrs_04(t *testing.T) {
-
-	rStrs := make([][]string, 3, 5)
-
-	for i := 0; i < 3; i++ {
-		rStrs[i] = make([]string, 2, 5)
-	}
-
-	testStr := "Hello World Hello World"
-
-	rStrs[0][0] = "o"
-	rStrs[0][1] = "x"
-	rStrs[1][0] = " "
-	rStrs[1][1] = "J"
-	rStrs[2][0] = "l"
-	rStrs[2][1] = "F"
-
-	expectedStr := "HeFFxJWxrFdJHeFFxJWxrFd"
-
-	actualStr, err := StrOps{}.ReplaceMultipleStrs(testStr, rStrs)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ReplaceMultipleStrs(testStr, rStrs). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedStr != actualStr {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v' ",
-			expectedStr, actualStr)
-	}
-
-}
-
-func TestStrOps_ReplaceNewLines_01(t *testing.T) {
-
-	testStr := "Hello\nWorld"
-	replaceStr := " "
-	expectedStr := "Hello World"
-
-	actualStr := StrOps{}.ReplaceNewLines(testStr, replaceStr)
-
-	if expectedStr != actualStr {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
-			expectedStr, actualStr)
-	}
-
-	lenExpectedStr := len(expectedStr)
-
-	lenActualStr := len(actualStr)
-
-	if lenExpectedStr != lenActualStr {
-		t.Errorf("Error: Expected actual length='%v'. Instead, actual length='%v'",
-			lenExpectedStr, lenActualStr)
-	}
-
-}
-
-func TestStrOps_ReplaceNewLines_02(t *testing.T) {
-
-	testStr := "Hello World"
-	replaceStr := " "
-	expectedStr := "Hello World"
-
-	actualStr := StrOps{}.ReplaceNewLines(testStr, replaceStr)
-
-	if expectedStr != actualStr {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
-			expectedStr, actualStr)
-	}
-
-}
-
-func TestStrOps_ReplaceNewLines_03(t *testing.T) {
-
-	testStr := "\n\nHello\nWorld\n\n\n"
-	replaceStr := ""
-	expectedStr := "HelloWorld"
-	lenExpectedStr := len(expectedStr)
-
-	actualStr := StrOps{}.ReplaceNewLines(testStr, replaceStr)
-
-	if expectedStr != actualStr {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
-			expectedStr, actualStr)
-	}
-
-	lenActualStr := len(actualStr)
-
-	if lenExpectedStr != lenActualStr {
-		t.Errorf("Error: Expected actual length='%v'. Instead, actual length='%v'",
-			lenExpectedStr, lenActualStr)
-	}
-
-}
-
-func TestStrOps_ReplaceNewLines_04(t *testing.T) {
-
-	testStr := "\n\nHello World"
-	replaceStr := ""
-	expectedStr := "Hello World"
-
-	actualStr := StrOps{}.ReplaceNewLines(testStr, replaceStr)
-
-	if expectedStr != actualStr {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
-			expectedStr, actualStr)
-	}
-
-	lenExpectedStr := len(expectedStr)
-
-	lenActualStr := len(actualStr)
-
-	if lenExpectedStr != lenActualStr {
-		t.Errorf("Error: Expected actual length='%v'. Instead, actual length='%v'",
-			lenExpectedStr, lenActualStr)
-	}
-
-}
-
-func TestStrOps_ReplaceNewLines_05(t *testing.T) {
-
-	testStr := "Hello World\n\n"
-	replaceStr := ""
-	expectedStr := "Hello World"
-
-	actualStr := StrOps{}.ReplaceNewLines(testStr, replaceStr)
-
-	if expectedStr != actualStr {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
-			expectedStr, actualStr)
-	}
-
-	lenExpectedStr := len(expectedStr)
-
-	lenActualStr := len(actualStr)
-
-	if lenExpectedStr != lenActualStr {
-		t.Errorf("Error: Expected actual length='%v'. Instead, actual length='%v'",
-			lenExpectedStr, lenActualStr)
-	}
-
-}
-
-func TestStrOps_ReplaceNewLines_06(t *testing.T) {
-
-	testStr := "Hello World\n"
-	replaceStr := ""
-	expectedStr := "Hello World"
-
-	actualStr := StrOps{}.ReplaceNewLines(testStr, replaceStr)
-
-	if expectedStr != actualStr {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
-			expectedStr, actualStr)
-	}
-
-	lenExpectedStr := len(expectedStr)
-
-	lenActualStr := len(actualStr)
-
-	if lenExpectedStr != lenActualStr {
-		t.Errorf("Error: Expected actual length='%v'. Instead, actual length='%v'",
-			lenExpectedStr, lenActualStr)
-	}
-
-}
-
-func TestStrOps_ReplaceNewLines_07(t *testing.T) {
-
-	testStr := "\nHello World"
-	replaceStr := ""
-	expectedStr := "Hello World"
-
-	actualStr := StrOps{}.ReplaceNewLines(testStr, replaceStr)
-
-	if expectedStr != actualStr {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
-			expectedStr, actualStr)
-	}
-
-	lenExpectedStr := len(expectedStr)
-
-	lenActualStr := len(actualStr)
-
-	if lenExpectedStr != lenActualStr {
-		t.Errorf("Error: Expected actual length='%v'. Instead, actual length='%v'",
-			lenExpectedStr, lenActualStr)
-	}
-
-}
-
-func TestStrOps_ReplaceNewLines_08(t *testing.T) {
-
-	testStr := "\tHello World"
-	replaceStr := ""
-	expectedStr := "\tHello World"
-
-	actualStr := StrOps{}.ReplaceNewLines(testStr, replaceStr)
-
-	if expectedStr != actualStr {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
-			expectedStr, actualStr)
-	}
-
-	lenExpectedStr := len(expectedStr)
-
-	lenActualStr := len(actualStr)
-
-	if lenExpectedStr != lenActualStr {
-		t.Errorf("Error: Expected actual length='%v'. Instead, actual length='%v'",
-			lenExpectedStr, lenActualStr)
-	}
-
 }

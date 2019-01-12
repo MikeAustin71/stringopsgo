@@ -824,6 +824,61 @@ func (sops StrOps) GetValidRunes(targetRunes []rune, validRunes []rune) ([]rune,
 	return output, nil
 }
 
+// GetValidString - Validates the individual characters in input parameter string,
+// 'targetStr'. To identify valid characters, the characters in 'targetStr' are
+// compared against input parameter 'validRunes', an array of type rune. If a character
+// exists in both 'targetStr' and 'validRunes' it is deemed valid and returned in
+// an output string.
+//
+// Input Parameter
+// ===============
+//
+// targetStr	string	-	The string which will be screened for valid characters.
+//
+// validRunes	[] rune	- An array of type rune containing valid characters. Characters
+//                      which exist in both 'targetStr' and 'validRunes' will be
+//                      returned as a new string. Invalid characters are discarded.
+//
+// Return Values
+// =============
+//
+// string					- This string will be returned containing valid characters extracted
+//                  from 'targetStr'. A character is considered valid if it exists in
+//                  both 'targetStr' and 'validRunes'. Invalid characters are discarded.
+//                  This means that if no valid characters are identified, a zero length
+//                  string will be returned.
+//
+// error					- If the method completes successfully this value is 'nil'. If an error is
+//                  encountered this value will contain the error message. Examples of possible
+//                  errors include a zero length 'targetStr' (string) or a zero length
+//                  'validRunes' array.
+//
+func (sops StrOps) GetValidString(targetStr string, validRunes []rune) (string, error) {
+
+	ePrefix := "StrOps.GetValidString() "
+
+	if len(targetStr) == 0 {
+		return "",
+			errors.New(ePrefix + "Error: Input parameter 'targetStr' is a ZERO LENGTH STRING!")
+	}
+
+	if len(validRunes) == 0 {
+		return "",
+			errors.New(ePrefix + "Error: Input parameter 'validRunes' is a ZERO LENGTH ARRAY!")
+	}
+
+	validRunes, err := sops.GetValidRunes([]rune(targetStr), validRunes)
+
+	if err != nil {
+		return "",
+			fmt.Errorf(ePrefix+
+				"Error returned by sops.GetValidRunes([]rune(targetStr), validRunes). "+
+				"Error='%v' ", err.Error())
+	}
+
+	return string(validRunes), nil
+}
+
 // GetSoftwareVersion - Returns the major software version for StrOps.
 func (sops StrOps) GetSoftwareVersion() string {
 	return "2.0.0"

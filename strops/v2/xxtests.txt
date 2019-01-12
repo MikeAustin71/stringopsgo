@@ -154,6 +154,20 @@
 --- PASS: TestStrOps_GetValidRunes_06 (0.00s)
 === RUN   TestStrOps_GetValidRunes_07
 --- PASS: TestStrOps_GetValidRunes_07 (0.00s)
+=== RUN   TestStrOps_GetValidString_01
+--- PASS: TestStrOps_GetValidString_01 (0.00s)
+=== RUN   TestStrOps_GetValidString_02
+--- PASS: TestStrOps_GetValidString_02 (0.00s)
+=== RUN   TestStrOps_GetValidString_03
+--- PASS: TestStrOps_GetValidString_03 (0.00s)
+=== RUN   TestStrOps_GetValidString_04
+--- PASS: TestStrOps_GetValidString_04 (0.00s)
+=== RUN   TestStrOps_GetValidString_05
+--- PASS: TestStrOps_GetValidString_05 (0.00s)
+=== RUN   TestStrOps_GetValidString_06
+--- PASS: TestStrOps_GetValidString_06 (0.00s)
+=== RUN   TestStrOps_GetValidString_07
+--- PASS: TestStrOps_GetValidString_07 (0.00s)
 === RUN   TestStrOps_IsEmptyOrWhiteSpace_01
 --- PASS: TestStrOps_IsEmptyOrWhiteSpace_01 (0.00s)
 === RUN   TestStrOps_IsEmptyOrWhiteSpace_02
@@ -309,4 +323,4 @@
 === RUN   TestStrOps_TrimStringEnds_09
 --- PASS: TestStrOps_TrimStringEnds_09 (0.00s)
 PASS
-ok  	MikeAustin71/stringopsgo/strops/v2	4.722s
+ok  	MikeAustin71/stringopsgo/strops/v2	2.885s
