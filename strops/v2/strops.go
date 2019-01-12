@@ -696,11 +696,75 @@ func (sops StrOps) FindRegExIndex(targetStr string, regex string) []int {
 
 }
 
+// GetValidBytes - Receives an array of 'targetBytes' which will be examined to determine
+// the validity of individual bytes or characters. Each character (byte) in input array
+// 'targetBytes' will be compared to input parameter 'validBytes', another array of bytes.
+// If a character in 'targetBytes' also exists in 'validBytes' it will be considered valid
+// and included in the returned array of bytes.
+//
+// Input Parameters
+// ================
+// targetBytes		[] byte		- An array of characters (bytes) which will be examined
+//                            for valid characters. The list of valid characters is
+//                            found in input parameter 'validBytes'. Valid characters
+//                            in targetBytes will be returned by this method as an
+//                            array of bytes. Invalid characters will be discarded.
+//
+//	validBytes		[] byte		- An array of bytes containing valid characters. If a character
+//                            (byte) in 'targetBytes' is also present in 'validBytes' it will
+//                            be classified as 'valid' and included in the returned array of
+//                            bytes. Invalid characters will be discarded.
+//
+// Return Values
+// =============
+//
+//	[] byte					- An array of bytes which contains bytes that are present in both 'targetBytes'
+//										and 'validBytes'. Note: If all characters in 'targetBytes' are classified as
+//                    'invalid', the returned array of bytes will be a zero length array.
+//
+//	error						- If the method completes successfully this value is 'nil'. If an error is
+//                    encountered this value will contain the error message. Examples of possible
+//                    errors include a zero length 'targetBytes array or 'validBytes' array.
+//
+func (sops StrOps) GetValidBytes(targetBytes, validBytes []byte) ([]byte, error) {
+
+	ePrefix := "StrOps.GetValidBytes() "
+
+	lenTargetBytes := len(targetBytes)
+
+	output := make([]byte, 0, lenTargetBytes+10)
+
+	if lenTargetBytes == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'targetBytes' is a ZERO LENGTH ARRAY!")
+	}
+
+	lenValidBytes := len(validBytes)
+
+	if lenValidBytes == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'validBytes' is a ZERO LENGTH ARRAY!")
+	}
+
+	for i := 0; i < lenTargetBytes; i++ {
+
+		for j := 0; j < lenValidBytes; j++ {
+			if targetBytes[i] == validBytes[j] {
+				output = append(output, targetBytes[i])
+				break
+			}
+		}
+
+	}
+
+	return output, nil
+}
+
 // GetValidRunes - Receives an array of 'targetRunes' which will be examined to determine
 // the validity of individual runes or characters. Each character (rune) in input array
 // 'targetRunes' will be compared to input parameter 'validRunes', another array of runes.
-// If the characters in 'targetRunes' also exist in 'validRunes' they will be included
-// in the returned array of runes.
+// If a character in 'targetRunes' also exists in 'validRunes', that character will be considered
+// valid and included in the returned array of runes.
 //
 // Input Parameters
 // ================
@@ -743,7 +807,7 @@ func (sops StrOps) GetValidRunes(targetRunes []rune, validRunes []rune) ([]rune,
 
 	if lenValidRunes == 0 {
 		return output,
-			errors.New(ePrefix + "Error: Input parameter 'lenValidRunes' is a ZERO LENGTH ARRAY!")
+			errors.New(ePrefix + "Error: Input parameter 'validRunes' is a ZERO LENGTH ARRAY!")
 	}
 
 	for i := 0; i < lenTargetRunes; i++ {

@@ -56,6 +56,156 @@ func TestStrOps_FindRegExIndex_01(t *testing.T) {
 	}
 }
 
+func TestStrOps_GetValidBytes_01(t *testing.T) {
+
+	validBytes := []byte{'v', 'a', 'l', 'i', 'd'}
+
+	testBytes := []byte{'x', 'j', 'v', 'm', 'R', 'a', 'J', 'l', 'Z', 'i', 'F', 'd', 'S'}
+
+	expected := "valid"
+
+	actualBytes, err := StrOps{}.GetValidBytes(testBytes, validBytes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.GetValidBytes(testBytes, validBytes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	actualStr := string(actualBytes)
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+
+}
+
+func TestStrOps_GetValidBytes_02(t *testing.T) {
+
+	validBytes := []byte{'1', '2', '3', '4', '5'}
+
+	testBytes := []byte{'x', '1', '3', 'm', '5', 'a', 'J', '7', 'Z', 'i', 'F', 'd', '5'}
+
+	expected := "1355"
+
+	actualBytes, err := StrOps{}.GetValidBytes(testBytes, validBytes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.GetValidBytes(testBytes, validBytes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	actualStr := string(actualBytes)
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+
+}
+
+func TestStrOps_GetValidBytes_03(t *testing.T) {
+
+	validBytes := []byte{'1', '2', '3', '4', '5'}
+
+	testBytes := []byte{'x', 'z', '3', 'm', '5', 'a', 'J', '7', 'Z', 'i', 'F', 'd', '5'}
+
+	expected := "355"
+
+	actualBytes, err := StrOps{}.GetValidBytes(testBytes, validBytes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.GetValidBytes(testBytes, validBytes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	actualStr := string(actualBytes)
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+
+}
+
+func TestStrOps_GetValidBytes_04(t *testing.T) {
+
+	validBytes := []byte{'1', '2', '3', '4', '5'}
+
+	testBytes := []byte{'x', 'z', 'J', 'm', '!', 'a', 'J', '%', 'Z', 'i', 'F', 'd', '^'}
+
+	expected := ""
+
+	actualBytes, err := StrOps{}.GetValidBytes(testBytes, validBytes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.GetValidBytes(testBytes, validBytes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	actualStr := string(actualBytes)
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+
+}
+
+func TestStrOps_GetValidBytes_05(t *testing.T) {
+
+	validBytes := []byte{'1', '2', '3', '4', '5'}
+
+	testBytes := []byte{'x', 'z', 'U', 'm', 'M', 'a', 'J', '9', 'Z', 'i', 'F', 'd', '&'}
+
+	expected := ""
+
+	actualBytes, err := StrOps{}.GetValidBytes(testBytes, validBytes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.GetValidBytes(testBytes, validBytes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	actualStr := string(actualBytes)
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+
+}
+
+func TestStrOps_GetValidBytes_06(t *testing.T) {
+
+	validBytes := []byte{'1', '2', '3', '4', '5'}
+
+	testBytes := make([]byte, 0, 5)
+
+	_, err := StrOps{}.GetValidBytes(testBytes, validBytes)
+
+	if err == nil {
+		t.Error("Expected an Error Return due to empty 'testBytes'. " +
+			"NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestStrOps_GetValidBytes_07(t *testing.T) {
+
+	validBytes := make([]byte, 0, 5)
+
+	testBytes := []byte{'x', 'z', 'U', 'm', 'M', 'a', 'J', '9', 'Z', 'i', 'F', 'd', '&'}
+
+	_, err := StrOps{}.GetValidBytes(testBytes, validBytes)
+
+	if err == nil {
+		t.Error("Expected Error return due to empty 'validBytes'. " +
+			"NO ERROR WAS RETURNED!")
+	}
+
+}
+
 func TestStrOps_GetValidRunes_01(t *testing.T) {
 
 	validRunes := []rune{'v', 'a', 'l', 'i', 'd'}
