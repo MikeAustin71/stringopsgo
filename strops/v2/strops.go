@@ -696,6 +696,70 @@ func (sops StrOps) FindRegExIndex(targetStr string, regex string) []int {
 
 }
 
+// GetValidRunes - Receives an array of 'targetRunes' which will be examined to determine
+// the validity of individual runes or characters. Each character (rune) in input array
+// 'targetRunes' will be compared to input parameter 'validRunes', another array of runes.
+// If the characters in 'targetRunes' also exist in 'validRunes' they will be included
+// in the returned array of runes.
+//
+// Input Parameters
+// ================
+// targetRunes		[] rune		- An array of characters (runes) which will be examined
+//                            for valid characters. The list of valid characters is
+//                            found in input parameter 'validRunes'. Valid characters
+//                            in targetRunes will be returned by this method as an
+//                            array of runes. Invalid characters will be discarded.
+//
+//	validRunes		[] rune		- An array of runes containing valid characters. If a character
+//                            (rune) in targetRunes is also present in 'validRunes' it will
+//                            be classified as 'valid' and included in the returned array of
+//                            runes. Invalid characters will be discarded.
+//
+// Return Values
+// =============
+//
+//	[] rune					- An array of runes which contains runes that are present in 'targetRunes' and
+//                    'validRunes'. Note: If all characters in 'targetRunes' are classified as
+//                    'invalid', the returned array of runes will be a zero length array.
+//
+// error						- If the method completes successfully this value is 'nil'. If an error is
+//                    encountered this value will contain the error message. Examples of possible
+//                    errors include a zero length 'targetRunes array or 'validRunes' array.
+//
+func (sops StrOps) GetValidRunes(targetRunes []rune, validRunes []rune) ([]rune, error) {
+
+	ePrefix := "StrOps.GetValidRunes() "
+
+	lenTargetRunes := len(targetRunes)
+
+	output := make([]rune, 0, lenTargetRunes+10)
+
+	if lenTargetRunes == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'targetRunes' is a ZERO LENGTH ARRAY!")
+	}
+
+	lenValidRunes := len(validRunes)
+
+	if lenValidRunes == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'lenValidRunes' is a ZERO LENGTH ARRAY!")
+	}
+
+	for i := 0; i < lenTargetRunes; i++ {
+
+		for j := 0; j < lenValidRunes; j++ {
+			if targetRunes[i] == validRunes[j] {
+				output = append(output, targetRunes[i])
+				break
+			}
+		}
+
+	}
+
+	return output, nil
+}
+
 // GetSoftwareVersion - Returns the major software version for StrOps.
 func (sops StrOps) GetSoftwareVersion() string {
 	return "2.0.0"
@@ -755,61 +819,6 @@ func (sops StrOps) MakeSingleCharString(charRune rune, strLen int) (string, erro
 	}
 
 	return b.String(), nil
-}
-
-// ReplaceStringChars - Replaces string characters in a target string ('targetStr') with those
-// specified in a two dimensional slice of runes, 'replacementRunes[][]'.
-//
-// Input Parameters
-// ================
-//
-// targetStr				string		- The string which will be examined. If target string characters
-// 															eligible for replacement are identified by replacementRunes[i][0], they
-// 															will be replaced by the character specified in replacementRunes[i][1].
-//
-// replacementRunes	[][]rune 	- A two dimensional slice of type 'rune'. Element [i][0] contains the target
-//                             	character to locate in 'targetStr'. Element[i][1] contains the
-//                             	replacement character which will replace the target character in
-//                             	'targetStr'. If the replacement character element [i][1] is a zero value,
-//                             	the	target character will not be replaced. Instead, it will be eliminated
-//                             	or removed from the returned string.
-//
-// Return Values
-// =============
-// string						- The returned string containing the characters and replaced characters
-//                    from the original target string, ('targetStr').
-//
-// error						- If the method completes successfully this value is 'nil'. If an error is
-//                    encountered this value will contain the error message. Examples of possible
-//                    errors include a zero length 'targetStr' or 'replacementRunes[][]' array.
-// 										In addition, if any of the replacementRunes[][x] 2nd dimension elements have
-//                    a length less than two, an error will be returned.
-//
-func (sops StrOps) ReplaceStringChars(
-	targetStr string,
-	replacementRunes [][]rune) (string, error) {
-
-	ePrefix := "StrOps.ReplaceStringChars() "
-
-	if len(targetStr) == 0 {
-		return "",
-			errors.New(ePrefix + "Error: Input parameter 'targetStr' is an EMPTY STRING!")
-	}
-
-	if len(replacementRunes) == 0 {
-		return "",
-			errors.New(ePrefix + "Error: Input parameter 'replacementRunes' is an EMPTY STRING!")
-	}
-
-	outputStr, err := sops.ReplaceRunes([]rune(targetStr), replacementRunes)
-
-	if err != nil {
-		return "",
-			fmt.Errorf(ePrefix+"Error returned by ReplaceRunes([]rune(targetStr), replacementRunes). "+
-				"Error='%v' ", err.Error())
-	}
-
-	return string(outputStr), nil
 }
 
 // ReplaceBytes	- Replaces characters in a target array of bytes ([]bytes) with those specified in
@@ -974,9 +983,9 @@ func (sops StrOps) ReplaceNewLines(targetStr string, replacement string) string 
 //
 // error						- If the method completes successfully this value is 'nil'. If an error is
 //                    encountered this value will contain the error message. Examples of possible
-//                    errors include a zero length 'targetRunes[]' array or 'replacementRunes[][]'
-//                    array. In addition, if any of the replacementRunes[][x] 2nd dimension elements
-//                    have a length less than two, an error will be returned.
+//                    errors include a zero length 'targetRunes' array or 'replacementRunes' array.
+//                    In addition, if any of the replacementRunes[][x] 2nd dimension elements have
+//                    a length less than two, an error will be returned.
 //
 func (sops StrOps) ReplaceRunes(targetRunes []rune, replacementRunes [][]rune) ([]rune, error) {
 
@@ -1037,6 +1046,61 @@ func (sops StrOps) ReplaceRunes(targetRunes []rune, replacementRunes [][]rune) (
 	return output, nil
 }
 
+// ReplaceStringChars - Replaces string characters in a target string ('targetStr') with those
+// specified in a two dimensional slice of runes, 'replacementRunes[][]'.
+//
+// Input Parameters
+// ================
+//
+// targetStr				string		- The string which will be examined. If target string characters
+// 															eligible for replacement are identified by replacementRunes[i][0], they
+// 															will be replaced by the character specified in replacementRunes[i][1].
+//
+// replacementRunes	[][]rune 	- A two dimensional slice of type 'rune'. Element [i][0] contains the target
+//                             	character to locate in 'targetStr'. Element[i][1] contains the
+//                             	replacement character which will replace the target character in
+//                             	'targetStr'. If the replacement character element [i][1] is a zero value,
+//                             	the	target character will not be replaced. Instead, it will be eliminated
+//                             	or removed from the returned string.
+//
+// Return Values
+// =============
+// string						- The returned string containing the characters and replaced characters
+//                    from the original target string, ('targetStr').
+//
+// error						- If the method completes successfully this value is 'nil'. If an error is
+//                    encountered this value will contain the error message. Examples of possible
+//                    errors include a zero length 'targetStr' or 'replacementRunes[][]' array.
+// 										In addition, if any of the replacementRunes[][x] 2nd dimension elements have
+//                    a length less than two, an error will be returned.
+//
+func (sops StrOps) ReplaceStringChars(
+	targetStr string,
+	replacementRunes [][]rune) (string, error) {
+
+	ePrefix := "StrOps.ReplaceStringChars() "
+
+	if len(targetStr) == 0 {
+		return "",
+			errors.New(ePrefix + "Error: Input parameter 'targetStr' is an EMPTY STRING!")
+	}
+
+	if len(replacementRunes) == 0 {
+		return "",
+			errors.New(ePrefix + "Error: Input parameter 'replacementRunes' is an EMPTY STRING!")
+	}
+
+	outputStr, err := sops.ReplaceRunes([]rune(targetStr), replacementRunes)
+
+	if err != nil {
+		return "",
+			fmt.Errorf(ePrefix+"Error returned by ReplaceRunes([]rune(targetStr), replacementRunes). "+
+				"Error='%v' ", err.Error())
+	}
+
+	return string(outputStr), nil
+}
+
 // StrCenterInStrLeft - returns a string which includes
 // a left pad blank string plus the original string. It
 // does NOT include the Right pad blank string.
@@ -1090,6 +1154,20 @@ func (sops StrOps) StrCenterInStr(strToCenter string, fieldLen int) (string, err
 
 }
 
+// StrGetRuneCnt - Uses utf8 Rune Count
+// function to return the number of characters
+// in a string.
+func (sops StrOps) StrGetRuneCnt(targetStr string) int {
+	return utf8.RuneCountInString(targetStr)
+}
+
+// StrGetCharCnt - Uses the 'len' method to
+// return the number of characters in a
+// string.
+func (sops StrOps) StrGetCharCnt(targetStr string) int {
+	return len([]rune(targetStr))
+}
+
 func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, error) {
 
 	strLen := len(strToJustify)
@@ -1110,6 +1188,26 @@ func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, er
 
 	return strToJustify + rightPadStr, nil
 
+}
+
+// StrPadLeftToCenter - Returns a blank string
+// which allows centering of the target string
+// in a fixed length field.
+func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string, error) {
+
+	sLen := sops.StrGetRuneCnt(strToCenter)
+
+	if sLen > fieldLen {
+		return "", errors.New("StrOps:StrPadLeftToCenter() - String To Center is longer than Field Length")
+	}
+
+	if sLen == fieldLen {
+		return "", nil
+	}
+
+	margin := (fieldLen - sLen) / 2
+
+	return strings.Repeat(" ", margin), nil
 }
 
 // StrRightJustify - Returns a string where input parameter
@@ -1135,40 +1233,6 @@ func (sops StrOps) StrRightJustify(strToJustify string, fieldLen int) (string, e
 	leftPadStr := strings.Repeat(" ", lefPadCnt)
 
 	return leftPadStr + strToJustify, nil
-}
-
-// StrPadLeftToCenter - Returns a blank string
-// which allows centering of the target string
-// in a fixed length field.
-func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string, error) {
-
-	sLen := sops.StrGetRuneCnt(strToCenter)
-
-	if sLen > fieldLen {
-		return "", errors.New("StrOps:StrPadLeftToCenter() - String To Center is longer than Field Length")
-	}
-
-	if sLen == fieldLen {
-		return "", nil
-	}
-
-	margin := (fieldLen - sLen) / 2
-
-	return strings.Repeat(" ", margin), nil
-}
-
-// StrGetRuneCnt - Uses utf8 Rune Count
-// function to return the number of characters
-// in a string.
-func (sops StrOps) StrGetRuneCnt(targetStr string) int {
-	return utf8.RuneCountInString(targetStr)
-}
-
-// StrGetCharCnt - Uses the 'len' method to
-// return the number of characters in a
-// string.
-func (sops StrOps) StrGetCharCnt(targetStr string) int {
-	return len([]rune(targetStr))
 }
 
 // TrimMultipleChars- Performs the following operations on strings:
