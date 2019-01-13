@@ -17,8 +17,18 @@ import (
 
 */
 
-// StrOps - encapsulates a collection of
-// methods used to manipulate strings
+// StrOps - encapsulates a collection of methods used to manage string
+// operations.
+//
+// Most of the utility offered by this type is provided through its
+// associated methods. However, given that two data elements, 'StrIn'
+// and 'StrOut' are provided, the structure may be used as a data
+// transport object (dto) containing two strings.
+//
+// Be advised that this type, 'StrOps', implements the io.Reader and io.Writer
+// interfaces. All io.Reader and io.Writer operations utilize the string data
+// element, 'StrOps.StrOut'.
+//
 type StrOps struct {
 	StrIn  string
 	StrOut string
@@ -221,6 +231,29 @@ func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineD
 	}
 
 	return b.String(), nil
+}
+
+// CopyIn - Copies string information from another StrOps
+// instance passed as an input parameter to the current
+// StrOps instance.
+//
+func (sops *StrOps) CopyIn(strops2 *StrOps) {
+
+	sops.StrIn = strops2.StrIn
+	sops.StrOut = strops2.StrIn
+
+}
+
+// CopyOut - Creates a 'deep' copy of the current
+// StrOps instance and returns a pointer to a
+// new instance containing that copied information.
+func (sops *StrOps) CopyOut() *StrOps {
+
+	strops2 := StrOps{}
+	strops2.StrIn = sops.StrIn
+	strops2.StrOut = sops.StrOut
+
+	return &strops2
 }
 
 // DoesLastCharExist - returns true if the last character (rune) of
@@ -701,6 +734,7 @@ func (sops StrOps) FindRegExIndex(targetStr string, regex string) []int {
 // data element StrOps.StrOut.
 //
 func (sops *StrOps) GetReader() io.Reader {
+
 	return strings.NewReader(sops.StrOut)
 }
 
@@ -946,6 +980,51 @@ func (sops StrOps) MakeSingleCharString(charRune rune, strLen int) (string, erro
 	}
 
 	return b.String(), nil
+}
+
+// NewPtr - Returns a pointer to a new instance of
+// StrOps. Useful for cases requiring io.Reader
+// and io.Writer.
+func (sops StrOps) NewPtr() *StrOps {
+
+	sopsNew := StrOps{}
+
+	return &sopsNew
+}
+
+// Read - Implement io.Reader interface. Read reads up to len(p)
+// bytes into 'p'.
+//
+// The internal member string variable, 'StrOps.StrOut' is written
+// into 'p'.
+//
+func (sops *StrOps) Read(p []byte) (n int, err error) {
+
+	n = len(p)
+	err = io.EOF
+
+	if n == 0 {
+		return 0, err
+	}
+
+	w := []byte(sops.StrOut)
+
+	lenW := len(w)
+
+	if lenW == 0 {
+		n = 0
+		return n, err
+	}
+
+	if n > lenW {
+		n = lenW
+	}
+
+	for i := 0; i < n; i++ {
+		p[i] = w[i]
+	}
+
+	return n, err
 }
 
 // ReplaceBytes	- Replaces characters in a target array of bytes ([]bytes) with those specified in
@@ -1524,35 +1603,41 @@ func (sops StrOps) SwapRune(currentStr string, oldRune rune, newRune rune) (stri
 	return string(rStr), nil
 }
 
-// Write - Implements the io.Writer interface. Receives a
-// byte array and writes those bytes to internal structure
-// data element 'StrOut'.
+// Write - Implements the io.Writer interface.
+// Write writes len(p) bytes from p to the underlying
+// data stream.
+//
+// Receives a byte array 'p' and writes the contents to
+// a string, internal structure data element 'StrOpsStrOut'.
+//
 func (sops *StrOps) Write(p []byte) (n int, err error) {
 
-	ePrefix := "StrOps.Write() "
 	n = 0
 	err = nil
 
-	if len(p) == 0 {
-		err = errors.New(ePrefix +
-			"Error: Input parameter p []byte is zero length!")
+	n = len(p)
+
+	if n == 0 {
 		return n, err
 	}
 
-	b := strings.Builder{}
-	var err2 error
+	w := strings.Builder{}
+	w.Grow(n)
+	cnt := 0
 
-	n, err2 = b.Write(p)
+	for i := 0; i < n; i++ {
 
-	if err2 != nil {
-		n = 0
-		err = fmt.Errorf(ePrefix+
-			"Error returned by b.Write(p). Error='%v' ", err2.Error())
+		if p[i] == 0 {
+			break
+		}
 
-		return n, err
+		w.WriteByte(p[i])
+		cnt++
 	}
 
-	sops.StrOut = b.String()
+	n = cnt
+
+	sops.StrOut = w.String()
 
 	return n, err
 }

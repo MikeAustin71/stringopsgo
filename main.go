@@ -3,35 +3,86 @@ package main
 import (
 	strOps "./strops/v2"
 	"fmt"
+	"io"
+	"os"
 )
 
 func main() {
 
 	fmt.Println("main() - Version 2")
 
-	validRunes := []rune{'v', 'a', 'l', 'i', 'd'}
+	originalStr := "Original sops1 base string"
 
-	testRunes := []rune{'x', 'j', 'v', 'm', 'R', 'a', 'J', 'l', 'Z', 'i', 'F', 'd', 'S'}
+	sops1 := strOps.StrOps{}.NewPtr()
+	sops1.StrOut = originalStr
 
-	expected := "valid"
+	p := make([]byte, 100)
 
-	actualRunes, err := strOps.StrOps{}.GetValidRunes(testRunes, validRunes)
+	n, err := sops1.Read(p)
+
+	if err != nil && err != io.EOF {
+		fmt.Printf("Error returned by sops1.Read(p). "+
+			"Error='%v' \n", err.Error())
+		return
+	}
+
+	sops2 := strOps.StrOps{}.NewPtr()
+
+	n2, err := sops2.Write(p)
+
+	if err != nil && err != io.EOF {
+		fmt.Printf("Error returned by sops2.Write(p). "+
+			"Error='%v' \n", err.Error())
+		return
+	}
+
+	fmt.Println("        Original Str: ", originalStr)
+	fmt.Println(" Original Str Length: ", len(originalStr))
+	fmt.Println("        sops1.StrOut: ", sops1.StrOut)
+	fmt.Println(" sops1.StrOut Length: ", len(sops1.StrOut))
+	fmt.Println("    sops1 Bytes Read: ", n)
+	fmt.Println("        sops2.StrOut: ", sops2.StrOut)
+	fmt.Println(" sops2.StrOut Length: ", len(sops2.StrOut))
+	fmt.Println(" sops2 Bytes Written: ", n2)
+	fmt.Println("**********************************************")
+
+}
+
+func ExampleIoCopy01() {
+	fmt.Println("ExampleIOCopy_01() - Version 2")
+
+	originalStr := "Original sops1 base string"
+
+	sops1 := strOps.StrOps{}.NewPtr()
+	sops1.StrOut = originalStr
+	sops2 := strOps.StrOps{}.NewPtr()
+
+	n, err := io.Copy(sops2, sops1)
 
 	if err != nil {
-		fmt.Printf("Error returned by StrOps{}.GetValidRunes(testRunes, validRunes). "+
-			"Error='%v' ", err.Error())
+		fmt.Printf("Error returned by io.Copy(sops2, sops1). "+
+			"Error='%v' \n", err.Error())
+		return
 	}
 
-	actualStr := string(actualRunes)
+	fmt.Println("       Original Str: ", originalStr)
+	fmt.Println("Original Str Length: ", len(originalStr))
+	fmt.Println("       sops1.StrOut: ", sops1.StrOut)
+	fmt.Println("       sops2.StrOut: ", sops2.StrOut)
+	fmt.Println("sops2.StrOut Length: ", len(sops2.StrOut))
+	fmt.Println("      Bytes Written: ", n)
+	fmt.Println("**********************************************")
+	fmt.Println("      Copying sops2 To StdOut")
+	fmt.Println("**********************************************")
 
-	if expected != actualStr {
-		fmt.Printf("Error: Expected result='%v'. Instead, result='%v'. \n",
-			expected, actualStr)
-		fmt.Println()
+	n, err = io.Copy(os.Stdout, sops2)
+
+	if err != nil {
+		fmt.Printf("Error returned by io.Copy(os.Stdout, sops2). "+
+			"Error='%v' \n", err.Error())
+		return
 	}
-
-	fmt.Println("  target Runes: ", string(testRunes))
-	fmt.Println("  expected Str: ", expected)
-	fmt.Println("  actual Runes: ", actualStr)
+	fmt.Println()
+	fmt.Println("New value of n: ", n)
 
 }
