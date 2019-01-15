@@ -6,6 +6,7 @@ import (
 	"io"
 	"regexp"
 	"strings"
+	"sync"
 	"unicode/utf8"
 )
 
@@ -32,6 +33,8 @@ import (
 type StrOps struct {
 	StrIn           string
 	StrOut          string
+	stringData      string
+	stringDataMutex sync.Mutex
 	cntBytesRead    uint64
 	cntBytesWritten uint64
 }
@@ -754,6 +757,19 @@ func (sops StrOps) GetSoftwareVersion() string {
 	return "2.0.0"
 }
 
+// GetStringData - Returns the current value of internal
+// member string, StrOps.stringData
+//
+func (sops *StrOps) GetStringData() string {
+	var output string
+
+	sops.stringDataMutex.Lock()
+	output = sops.stringData
+	sops.stringDataMutex.Unlock()
+
+	return output
+}
+
 // GetValidBytes - Receives an array of 'targetBytes' which will be examined to determine
 // the validity of individual bytes or characters. Each character (byte) in input array
 // 'targetBytes' will be compared to input parameter 'validBytes', another array of bytes.
@@ -1006,8 +1022,11 @@ func (sops StrOps) NewPtr() *StrOps {
 // Read - Implements io.Reader interface. Read reads up to len(p)
 // bytes into 'p'. This method supports buffered 'read' operations.
 //
-// The internal member string variable, 'StrOps.StrOut' is written
+// The internal member string variable, 'StrOps.stringData' is written
 // into 'p'.
+//
+// 'StrOps.stringData' can be accessed through Getter an Setter methods,
+// GetStringData() and SetStringData()
 //
 func (sops *StrOps) Read(p []byte) (n int, err error) {
 
@@ -1021,17 +1040,25 @@ func (sops *StrOps) Read(p []byte) (n int, err error) {
 		return 0, err
 	}
 
-	w := []byte(sops.StrOut)
-	cntBytesRead := sops.cntBytesRead
+	sops.stringDataMutex.Lock()
+
+	strData := sops.stringData
+
+	w := []byte(strData)
 
 	lenW := uint64(len(w))
+
+	cntBytesRead := sops.cntBytesRead
 
 	if lenW == 0 ||
 		cntBytesRead >= lenW {
 		sops.cntBytesRead = 0
 		n = 0
+		sops.stringDataMutex.Unlock()
 		return n, err
 	}
+
+	sops.stringDataMutex.Unlock()
 
 	startReadIdx := cntBytesRead
 
@@ -1054,11 +1081,15 @@ func (sops *StrOps) Read(p []byte) (n int, err error) {
 
 	cntBytesRead += uint64(n)
 
+	sops.stringDataMutex.Lock()
+
 	if cntBytesRead >= lenW {
 		sops.cntBytesRead = 0
 	} else {
 		sops.cntBytesRead = cntBytesRead
 	}
+
+	sops.stringDataMutex.Unlock()
 
 	return n, err
 }
@@ -1351,6 +1382,15 @@ func (sops StrOps) ReplaceStringChars(
 //
 func (sops *StrOps) ResetBytesReadCounter() {
 	sops.cntBytesRead = 0
+}
+
+// SetStringData - Sets the value of internal
+// member string variable, StrOps.stringData.
+//
+func (sops *StrOps) SetStringData(str string) {
+	sops.stringDataMutex.Lock()
+	sops.stringData = str
+	sops.stringDataMutex.Unlock()
 }
 
 // StrCenterInStrLeft - returns a string which includes
@@ -1654,7 +1694,10 @@ func (sops StrOps) SwapRune(currentStr string, oldRune rune, newRune rune) (stri
 // data stream.
 //
 // Receives a byte array 'p' and writes the contents to
-// a string, internal structure data element 'StrOpsStrOut'.
+// a string, internal structure data element 'StrOps.stringData'.
+//
+// 'StrOps.stringData' can be accessed through 'Getter' and
+// 'Setter' methods, 'GetStringData()' and 'SetStringData()'.
 //
 func (sops *StrOps) Write(p []byte) (n int, err error) {
 
@@ -1683,27 +1726,11 @@ func (sops *StrOps) Write(p []byte) (n int, err error) {
 
 	n = cnt
 
-	sops.StrOut = w.String()
+	sops.stringDataMutex.Lock()
+
+	sops.stringData = w.String()
+
+	sops.stringDataMutex.Unlock()
 
 	return n, err
-}
-
-// WriteStingOut - Receives an object supporting the io.Writer interface
-// and writes the StrOps data element, 'StrOut' to the object's
-// 'Write' method.
-//
-func (sops *StrOps) WriteStingOut(w io.Writer) (int, error) {
-
-	ePrefix := "StrOps.Write() "
-
-	n, err := w.Write([]byte(sops.StrOut))
-
-	if err != nil {
-		return 0,
-			fmt.Errorf(ePrefix+
-				"Error returned by w.Write([]byte(sops.StrOut)). "+
-				"Error='%v' ", err.Error())
-	}
-
-	return n, nil
 }

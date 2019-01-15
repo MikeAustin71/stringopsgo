@@ -676,7 +676,7 @@ func TestStrOps_Read_01(t *testing.T) {
 	p := make([]byte, 100)
 
 	s1 := StrOps{}.NewPtr()
-	s1.StrOut = expected
+	s1.SetStringData(expected)
 
 	n, err := s1.Read(p)
 
@@ -705,7 +705,7 @@ func TestStrOps_Read_02(t *testing.T) {
 	p := make([]byte, 5, 15)
 
 	s1 := StrOps{}.NewPtr()
-	s1.StrOut = expected
+	s1.SetStringData(expected)
 	n := 0
 	var err error
 	err = nil
@@ -751,7 +751,7 @@ func TestStrOps_Read_03(t *testing.T) {
 	lenExpected := int64(len(expected))
 
 	s1 := StrOps{}.NewPtr()
-	s1.StrOut = expected
+	s1.SetStringData(expected)
 
 	s2 := StrOps{}.NewPtr()
 
@@ -763,9 +763,11 @@ func TestStrOps_Read_03(t *testing.T) {
 		return
 	}
 
-	if expected != s2.StrOut {
-		t.Errorf("Error: Expected StrOut='%v'. Instead, StrOut='%v' ",
-			expected, s2.StrOut)
+	actualData := s2.GetStringData()
+
+	if expected != actualData {
+		t.Errorf("Error: Expected StrOut='%v'. Instead, String Data='%v' ",
+			expected, actualData)
 	}
 
 	if lenExpected != n {
