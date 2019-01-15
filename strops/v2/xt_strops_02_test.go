@@ -1,7 +1,9 @@
 package strops
 
 import (
+	"fmt"
 	"io"
+	"strings"
 	"testing"
 )
 
@@ -697,29 +699,77 @@ func TestStrOps_Read_01(t *testing.T) {
 
 func TestStrOps_Read_02(t *testing.T) {
 
-	expected := "original base string"
+	expected := "Original sops1 base string"
 	lenExpected := len(expected)
 
-	p := make([]byte, 100)
+	p := make([]byte, 5, 15)
 
 	s1 := StrOps{}.NewPtr()
 	s1.StrOut = expected
+	n := 0
+	var err error
+	err = nil
+	b := strings.Builder{}
+	b.Grow(len(expected) + 150)
 
-	n, err := s1.Read(p)
+	for err != io.EOF {
 
-	if err != nil && err != io.EOF {
-		t.Errorf("Error returned by s1.Read(p). Error='%v' ", err.Error())
+		n, err = s1.Read(p)
+
+		if err != nil && err != io.EOF {
+			fmt.Printf("Error returned by s1.Read(p). "+
+				"Error='%v' \n", err.Error())
+			return
+		}
+
+		b.Write(p[:n])
+
+		for i := 0; i < len(p); i++ {
+			p[i] = byte(0)
+		}
+
 	}
 
-	actualStr := string(p[:n])
+	actualStr := b.String()
 
 	if expected != actualStr {
 		t.Errorf("Error: Expected StrOut='%v'. Instead, StrOut='%v' ",
 			expected, actualStr)
 	}
 
+	lenActual := len(actualStr)
+
+	if lenExpected != lenActual {
+		t.Errorf("Error: Expected bytes read ='%v'. Instead, bytes read='%v' ",
+			lenExpected, lenActual)
+	}
+}
+
+func TestStrOps_Read_03(t *testing.T) {
+
+	expected := "Original sops1 base string"
+	lenExpected := int64(len(expected))
+
+	s1 := StrOps{}.NewPtr()
+	s1.StrOut = expected
+
+	s2 := StrOps{}.NewPtr()
+
+	n, err := io.Copy(s2, s1)
+
+	if err != nil {
+		fmt.Printf("Error returned by io.Copy(sops2, sops1). "+
+			"Error='%v' \n", err.Error())
+		return
+	}
+
+	if expected != s2.StrOut {
+		t.Errorf("Error: Expected StrOut='%v'. Instead, StrOut='%v' ",
+			expected, s2.StrOut)
+	}
+
 	if lenExpected != n {
-		t.Errorf("Error: Expected bytes read n='%v'. Instead, n='%v' ",
+		t.Errorf("Error: Expected bytes read ='%v'. Instead, bytes read='%v' ",
 			lenExpected, n)
 	}
 }

@@ -30,8 +30,10 @@ import (
 // element, 'StrOps.StrOut'.
 //
 type StrOps struct {
-	StrIn  string
-	StrOut string
+	StrIn           string
+	StrOut          string
+	cntBytesRead    uint64
+	cntBytesWritten uint64
 }
 
 // BreakTextAtLineLength - Breaks string text into lines. Takes a string and inserts a
@@ -730,6 +732,15 @@ func (sops StrOps) FindRegExIndex(targetStr string, regex string) []int {
 
 }
 
+// GetCountBytesRead - Returns private member variable
+// StrOps.cntBytesRead which holds the number of bytes
+// accumulated by the last Read operation executed through
+// method StroOps.Read().
+//
+func (sops *StrOps) GetCountBytesRead() uint64 {
+	return sops.cntBytesRead
+}
+
 // GetReader() Returns an io.Reader which will read the internal
 // data element StrOps.StrOut.
 //
@@ -992,36 +1003,61 @@ func (sops StrOps) NewPtr() *StrOps {
 	return &sopsNew
 }
 
-// Read - Implement io.Reader interface. Read reads up to len(p)
-// bytes into 'p'.
+// Read - Implements io.Reader interface. Read reads up to len(p)
+// bytes into 'p'. This method supports buffered 'read' operations.
 //
 // The internal member string variable, 'StrOps.StrOut' is written
 // into 'p'.
 //
 func (sops *StrOps) Read(p []byte) (n int, err error) {
 
+	ePrefix := "StrOps.Read() "
+
 	n = len(p)
 	err = io.EOF
 
 	if n == 0 {
+		err = errors.New(ePrefix + "Error: Input byte array 'p' is zero length!")
 		return 0, err
 	}
 
 	w := []byte(sops.StrOut)
+	cntBytesRead := sops.cntBytesRead
 
-	lenW := len(w)
+	lenW := uint64(len(w))
 
-	if lenW == 0 {
+	if lenW == 0 ||
+		cntBytesRead >= lenW {
+		sops.cntBytesRead = 0
 		n = 0
 		return n, err
 	}
 
-	if n > lenW {
-		n = lenW
+	startReadIdx := cntBytesRead
+
+	remainingBytesToRead := lenW - cntBytesRead
+
+	if uint64(n) < remainingBytesToRead {
+		remainingBytesToRead = startReadIdx + uint64(n)
+		err = nil
+	} else {
+		remainingBytesToRead += startReadIdx
+		err = io.EOF
 	}
 
-	for i := 0; i < n; i++ {
-		p[i] = w[i]
+	n = 0
+	i := uint64(0)
+	for i = startReadIdx; i < remainingBytesToRead; i++ {
+		p[n] = w[i]
+		n++
+	}
+
+	cntBytesRead += uint64(n)
+
+	if cntBytesRead >= lenW {
+		sops.cntBytesRead = 0
+	} else {
+		sops.cntBytesRead = cntBytesRead
 	}
 
 	return n, err
@@ -1305,6 +1341,16 @@ func (sops StrOps) ReplaceStringChars(
 	}
 
 	return string(outputStr), nil
+}
+
+// ResetBytesReadCounter - Resets the internal 'Bytes Read' counter
+// to zero. As practical matter, this method is rarely if ever used.
+// It use restricted primarily to debugging operations.
+//
+// This method sets StrOps.cntBytesRead equal to zero.
+//
+func (sops *StrOps) ResetBytesReadCounter() {
+	sops.cntBytesRead = 0
 }
 
 // StrCenterInStrLeft - returns a string which includes
