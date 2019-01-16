@@ -1440,12 +1440,12 @@ func (sops StrOps) StrCenterInStrLeft(strToCenter string, fieldLen int) (string,
 
 }
 
-// StrCenterInStr - returns a string which includes
-// a left pad blank string plus the original string,
-// plus a right pad blank string.
+// StrCenterInStr - returns a string which includes a left pad blank string plus
+// the original string ('strToCenter'), plus a right pad blank string.
 //
-// The complete string will effectively center the
-// original string is a field of specified length.
+// The complete string will effectively center the original string is a field of
+// specified length ('fieldLen').
+//
 func (sops StrOps) StrCenterInStr(strToCenter string, fieldLen int) (string, error) {
 
 	sLen := len(strToCenter)
@@ -1472,7 +1472,6 @@ func (sops StrOps) StrCenterInStr(strToCenter string, fieldLen int) (string, err
 	}
 
 	return leftPadStr + strToCenter + rightPadStr, nil
-
 }
 
 // StrGetRuneCnt - Uses utf8 Rune Count
@@ -1483,12 +1482,25 @@ func (sops StrOps) StrGetRuneCnt(targetStr string) int {
 }
 
 // StrGetCharCnt - Uses the 'len' method to
-// return the number of characters in a
+// return the number of rune characters in a
 // string.
 func (sops StrOps) StrGetCharCnt(targetStr string) int {
 	return len([]rune(targetStr))
 }
 
+// StrLeftJustify - Creates a new string with a total length equal to input parameter
+// 'fieldLen'.
+//
+// Input parameter 'strToJustify' is placed on the left side of the output string and
+// spaces are padded to the right in order to create a string with total length of
+// 'fieldLen'.
+//
+// Example:
+// fieldLen = 15
+// strToJustify = "Hello World"
+// Returned String = "Hello World    "
+// String Index    =  012345648901234
+//
 func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, error) {
 
 	strLen := len(strToJustify)
@@ -1511,15 +1523,22 @@ func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, er
 
 }
 
-// StrPadLeftToCenter - Returns a blank string
-// which allows centering of the target string
-// in a fixed length field.
+// StrPadLeftToCenter - Returns a blank string which allows centering of the target
+// string in a fixed length field.
+//
+// Assume that total field length ('fieldlen') is 70. Assume that the string to Center
+// ('strToCenter') is 10-characters. In order to center a 10-character string in a
+// 70-character field, 30-space characters would need to be positioned on each side
+// of the string to center. This method only returns the left segment or 30-spaces.
+//
 func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string, error) {
 
 	sLen := sops.StrGetRuneCnt(strToCenter)
 
 	if sLen > fieldLen {
-		return "", errors.New("StrOps:StrPadLeftToCenter() - String To Center is longer than Field Length")
+		return "",
+			errors.New("StrOps:StrPadLeftToCenter() - String To Center " +
+				"is longer than Field Length")
 	}
 
 	if sLen == fieldLen {
@@ -1534,6 +1553,14 @@ func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string,
 // StrRightJustify - Returns a string where input parameter
 // 'strToJustify' is right justified. The length of the returned
 // string is determined by input parameter 'fieldlen'.
+//
+// Example:
+// ========
+//
+// If the total field length ('fieldLen') is specified as 50-characters and the
+// length of string to justify ('strToJustify') is 20-characters, then this method
+// would return a string consisting of 30-space characters + 'strToJustify'.
+//
 func (sops StrOps) StrRightJustify(strToJustify string, fieldLen int) (string, error) {
 
 	strLen := len(strToJustify)
