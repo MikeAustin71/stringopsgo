@@ -2,6 +2,7 @@ package strops
 
 import (
 	"fmt"
+	"io"
 	"strings"
 	"testing"
 )
@@ -513,5 +514,136 @@ func TestStrOps_TrimStringEnds_09(t *testing.T) {
 
 	if err == nil {
 		t.Error("Expected an error to be returned. NO ERROR RETURNED!")
+	}
+}
+
+func TestStrOps_Write_01(t *testing.T) {
+
+	originalStr := "Original base string written to sops1"
+
+	sops1 := StrOps{}.NewPtr()
+
+	lenOriginalStr := len(originalStr)
+
+	p := []byte(originalStr)
+
+	n, err := sops1.Write(p)
+
+	if err != nil {
+		t.Errorf("Error returned by sops1.Write(p). Error='%v' \n",
+			err.Error())
+	}
+
+	actualStr := sops1.GetStringData()
+
+	if originalStr != actualStr {
+		t.Errorf("Error: Expected string='%v'. Instead, string='%v'. \n",
+			originalStr, actualStr)
+	}
+
+	if lenOriginalStr != n {
+		t.Errorf("Error: Expected Length='%v'. Instead, Bytes Written='%v'. \n",
+			lenOriginalStr, n)
+	}
+
+}
+
+func TestStrOps_Write_02(t *testing.T) {
+
+	originalStr := "Hello World"
+
+	sops1 := StrOps{}.NewPtr()
+
+	p := make([]byte, 3)
+
+	for i := 0; i < 4; i++ {
+
+		if i == 0 {
+			p[0] = 'H'
+			p[1] = 'e'
+			p[2] = 'l'
+		} else if i == 1 {
+			p[0] = 'l'
+			p[1] = 'o'
+			p[2] = ' '
+		} else if i == 2 {
+			p[0] = 'W'
+			p[1] = 'o'
+			p[2] = 'r'
+
+		} else if i == 3 {
+			p[0] = 'l'
+			p[1] = 'd'
+			p[2] = byte(0)
+
+		}
+
+		_, err := sops1.Write(p)
+
+		if err != nil {
+			t.Errorf("Error returned by sops1.Write(p). Error='%v' ", err.Error())
+			return
+		}
+	}
+
+	actualStr := sops1.GetStringData()
+
+	if originalStr != actualStr {
+		t.Errorf("Error: Expected final string='%v'. Instead, string='%v'. ",
+			originalStr, actualStr)
+	}
+
+	if 11 != len(actualStr) {
+		t.Errorf("Error: Expected Length='11'. Instead, Length='%v'. ",
+			len(actualStr))
+	}
+
+}
+
+func TestStrOps_Write_03(t *testing.T) {
+
+	originalStr := "Original base string written to sops1"
+
+	lenOriginalStr := len(originalStr)
+
+	sops1 := StrOps{}.NewPtr()
+
+	sops1.SetStringData(originalStr)
+
+	sops2 := StrOps{}.NewPtr()
+
+	n, err := io.Copy(sops2, sops1)
+
+	if err != nil {
+		t.Errorf("Error returned by io.Copy(sops2, sops1). Error='%v' \n", err.Error())
+		return
+	}
+
+	if int64(lenOriginalStr) != n {
+		t.Errorf("Error: Expected bytes copied='%v'. Instead, bytes copied='%v'. ",
+			lenOriginalStr, n)
+	}
+
+	actualStr := sops2.GetStringData()
+
+	if originalStr != actualStr {
+		t.Errorf("Error: Expected string='%v'. Instead, string='%v'. ",
+			originalStr, actualStr)
+	}
+}
+
+func TestStrOps_Write_04(t *testing.T) {
+
+	originalStr := "Original base string written to sops1"
+
+	sops1 := StrOps{}.NewPtr()
+	sops1.SetStringData(originalStr)
+
+	p := make([]byte, 0)
+
+	_, err := sops1.Write(p)
+
+	if err == nil {
+		t.Error("Error: Expected Error Return. NO ERROR WAS RETURNED!")
 	}
 }

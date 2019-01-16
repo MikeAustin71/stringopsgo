@@ -736,12 +736,35 @@ func (sops StrOps) FindRegExIndex(targetStr string, regex string) []int {
 }
 
 // GetCountBytesRead - Returns private member variable
-// StrOps.cntBytesRead which holds the number of bytes
-// accumulated by the last Read operation executed through
-// method StroOps.Read().
+// 'StrOps.cntBytesRead' which holds the number of bytes
+// accumulated through the last Read operation executed through
+// method StrOps.Read().
 //
 func (sops *StrOps) GetCountBytesRead() uint64 {
-	return sops.cntBytesRead
+
+	var bytesRead uint64
+
+	sops.stringDataMutex.Lock()
+	bytesRead = sops.cntBytesRead
+	sops.stringDataMutex.Unlock()
+
+	return bytesRead
+}
+
+// GetCountBytesWritten - Returns private member variable
+// 'StrOps.cntBytesWritten' which holds the number of bytes
+// accumulated through the last Write operation executed
+// through method StrOps.Write().
+//
+func (sops *StrOps) GetCountBytesWritten() uint64 {
+
+	var bytesWritten uint64
+
+	sops.stringDataMutex.Lock()
+	bytesWritten = sops.cntBytesWritten
+	sops.stringDataMutex.Unlock()
+
+	return bytesWritten
 }
 
 // GetReader() Returns an io.Reader which will read the internal
@@ -765,6 +788,8 @@ func (sops *StrOps) GetStringData() string {
 
 	sops.stringDataMutex.Lock()
 	output = sops.stringData
+	sops.cntBytesWritten = 0
+	sops.cntBytesRead = 0
 	sops.stringDataMutex.Unlock()
 
 	return output
@@ -1035,12 +1060,14 @@ func (sops *StrOps) Read(p []byte) (n int, err error) {
 	n = len(p)
 	err = io.EOF
 
+	sops.stringDataMutex.Lock()
+
 	if n == 0 {
+		sops.cntBytesRead = 0
+		sops.stringDataMutex.Unlock()
 		err = errors.New(ePrefix + "Error: Input byte array 'p' is zero length!")
 		return 0, err
 	}
-
-	sops.stringDataMutex.Lock()
 
 	strData := sops.stringData
 
@@ -1390,6 +1417,8 @@ func (sops *StrOps) ResetBytesReadCounter() {
 func (sops *StrOps) SetStringData(str string) {
 	sops.stringDataMutex.Lock()
 	sops.stringData = str
+	sops.cntBytesWritten = 0
+	sops.cntBytesRead = 0
 	sops.stringDataMutex.Unlock()
 }
 
@@ -1701,22 +1730,41 @@ func (sops StrOps) SwapRune(currentStr string, oldRune rune, newRune rune) (stri
 //
 func (sops *StrOps) Write(p []byte) (n int, err error) {
 
+	ePrefix := "StrOps.Write() "
 	n = 0
 	err = nil
+
+	sops.stringDataMutex.Lock()
+
+	if sops.cntBytesWritten == 0 {
+		sops.stringData = ""
+	}
 
 	n = len(p)
 
 	if n == 0 {
+
+		sops.cntBytesWritten = 0
+
+		sops.stringDataMutex.Unlock()
+
+		err = fmt.Errorf(ePrefix + "Error: Input byte array 'p' is ZERO LENGHT!")
+
 		return n, err
 	}
 
+	sops.stringDataMutex.Unlock()
+
 	w := strings.Builder{}
-	w.Grow(n)
+	w.Grow(n + 5)
 	cnt := 0
+
+	endOfString := false
 
 	for i := 0; i < n; i++ {
 
 		if p[i] == 0 {
+			endOfString = true
 			break
 		}
 
@@ -1728,7 +1776,13 @@ func (sops *StrOps) Write(p []byte) (n int, err error) {
 
 	sops.stringDataMutex.Lock()
 
-	sops.stringData = w.String()
+	sops.stringData += w.String()
+
+	if endOfString {
+		sops.cntBytesWritten = 0
+	} else {
+		sops.cntBytesWritten += uint64(n)
+	}
 
 	sops.stringDataMutex.Unlock()
 

@@ -776,6 +776,21 @@ func TestStrOps_Read_03(t *testing.T) {
 	}
 }
 
+func TestStrOps_Read_04(t *testing.T) {
+	originalStr := "Hello World"
+
+	sops1 := StrOps{}.NewPtr()
+	sops1.SetStringData(originalStr)
+	p := make([]byte, 0)
+
+	_, err := sops1.Read(p)
+
+	if err == nil {
+		t.Error("Error: Expected error return. NO ERROR WAS RETURNED!")
+	}
+
+}
+
 func TestStrOps_ReplaceBytes_01(t *testing.T) {
 
 	testStr := "1a2b3c4d5e6"
