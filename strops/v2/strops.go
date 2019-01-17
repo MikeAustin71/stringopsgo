@@ -261,7 +261,12 @@ func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineD
 func (sops *StrOps) CopyIn(strops2 *StrOps) {
 
 	sops.StrIn = strops2.StrIn
-	sops.StrOut = strops2.StrIn
+	sops.StrOut = strops2.StrOut
+	sops.stringDataMutex.Lock()
+	strops2.stringDataMutex.Lock()
+	sops.stringData = strops2.stringData
+	strops2.stringDataMutex.Unlock()
+	sops.stringDataMutex.Unlock()
 
 }
 
@@ -273,6 +278,9 @@ func (sops *StrOps) CopyOut() *StrOps {
 	strops2 := StrOps{}
 	strops2.StrIn = sops.StrIn
 	strops2.StrOut = sops.StrOut
+	sops.stringDataMutex.Lock()
+	strops2.stringData = sops.stringData
+	sops.stringDataMutex.Unlock()
 
 	return &strops2
 }

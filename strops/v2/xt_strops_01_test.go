@@ -35,7 +35,7 @@ func TestStrOps_BreakTextAtLineLength_01(t *testing.T) {
 
 	actualTxt = StrOps{}.ReplaceNewLines(actualTxt, "%")
 
-	assert.Equal(t,expected,actualTxt,
+	assert.Equal(t, expected, actualTxt,
 		"'expected' and 'actualTxt' should be Equal. They are not!")
 }
 
@@ -207,6 +207,68 @@ func TestStrOps_BreakTextAtLineLength_08(t *testing.T) {
 		t.Error("Error: Expected error return from StrOps{}.BreakTextAtLineLength(...). " +
 			"NO ERROR RETURNED!")
 	}
+}
+
+func TestStrOps_CopyIn_01(t *testing.T) {
+
+	string1 := "What in the world is Garfield doing!"
+	string2 := "Now is the time for all good men to come to the aid of their country."
+	string3 := "From this valley they say you are going."
+
+	s2 := StrOps{StrOut: string2, StrIn: string1}
+	s2.SetStringData(string3)
+
+	s1 := StrOps{}
+
+	s1.CopyIn(&s2)
+
+	if string1 != s1.StrIn {
+		t.Errorf("Error: expected s1.StrIn='%v'. Instead,  "+
+			"s1.StrIn='%v'", string1, s1.StrIn)
+	}
+
+	if string2 != s1.StrOut {
+		t.Errorf("Error: expected s1.StrOut='%v'. Instead,  "+
+			"s1.StrOut='%v'", string2, s1.StrOut)
+	}
+
+	actualStr := s1.GetStringData()
+
+	if string3 != actualStr {
+		t.Errorf("Error: expected s1 StringData='%v'. Instead,  "+
+			"s1 StringData='%v'", string3, actualStr)
+	}
+
+}
+
+func TestStrOps_CopyOut_01(t *testing.T) {
+
+	string1 := "What in the world is Garfield doing!"
+	string2 := "Now is the time for all good men to come to the aid of their country."
+	string3 := "From this valley they say you are going."
+
+	s1 := StrOps{StrOut: string2, StrIn: string1}
+	s1.SetStringData(string3)
+
+	s2 := s1.CopyOut()
+
+	if string1 != s2.StrIn {
+		t.Errorf("Error: expected s2.StrIn='%v'. Instead,  "+
+			"s2.StrIn='%v'", string1, s1.StrIn)
+	}
+
+	if string2 != s2.StrOut {
+		t.Errorf("Error: expected s2.StrOut='%v'. Instead,  "+
+			"s2.StrOut='%v'", string2, s2.StrOut)
+	}
+
+	actualStr := s2.GetStringData()
+
+	if string3 != actualStr {
+		t.Errorf("Error: expected s2 StringData='%v'. Instead,  "+
+			"s2 StringData='%v'", string3, actualStr)
+	}
+
 }
 
 func TestStrOps_DoesLastCharExist_01(t *testing.T) {

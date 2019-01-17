@@ -14,6 +14,10 @@
 --- PASS: TestStrOps_BreakTextAtLineLength_07 (0.00s)
 === RUN   TestStrOps_BreakTextAtLineLength_08
 --- PASS: TestStrOps_BreakTextAtLineLength_08 (0.00s)
+=== RUN   TestStrOps_CopyIn_01
+--- PASS: TestStrOps_CopyIn_01 (0.00s)
+=== RUN   TestStrOps_CopyOut_01
+--- PASS: TestStrOps_CopyOut_01 (0.00s)
 === RUN   TestStrOps_DoesLastCharExist_01
 --- PASS: TestStrOps_DoesLastCharExist_01 (0.00s)
 === RUN   TestStrOps_DoesLastCharExist_02
@@ -343,4 +347,4 @@
 === RUN   TestStrOps_Write_04
 --- PASS: TestStrOps_Write_04 (0.00s)
 PASS
-ok  	MikeAustin71/stringopsgo/strops/v2	3.322s
+ok  	MikeAustin71/stringopsgo/strops/v2	3.811s
