@@ -26,17 +26,27 @@ import (
 // and 'StrOut' are provided, the structure may be used as a data
 // transport object (dto) containing two strings.
 //
-// Be advised that this type, 'StrOps', implements the io.Reader and io.Writer
-// interfaces. All io.Reader and io.Writer operations utilize the string data
-// element, 'StrOps.StrOut'.
+// Version 2.0.0 and all later versions of this type support Go Modules.
+// For Version 2+ implementations, use the following import statement:
 //
+//		import "github.com/MikeAustin71/stringopsgo/strops/v2"
+//
+// Earlier Version 1.0.0 implementations require a different import statement:
+//
+//    import "github.com/MikeAustin71/stringopsgo/strops"
+//
+// Be advised that this type, 'StrOps', implements the io.Reader and io.Writer
+// interfaces. All io.Reader and io.Writer operations utilize the private string
+// data element, 'StrOps.stringData'.
 type StrOps struct {
-	StrIn           string
-	StrOut          string
-	stringData      string
-	stringDataMutex sync.Mutex
-	cntBytesRead    uint64
-	cntBytesWritten uint64
+	StrIn      string // public string variable available at user's discretion
+	StrOut     string // public string variable available at user's discretion
+	stringData string // private string variable accessed by StrOps.Read and
+	//	StrOps.Write. Accessed through methods
+	//	StrOps.GetStringData() and StrOps.SetStringData()
+	stringDataMutex sync.Mutex // Used internally to ensure thread safe operations
+	cntBytesRead    uint64     // Used internally to track Bytes Read by StrOps.Read()
+	cntBytesWritten uint64     // Used internally to track Bytes Written by StrOps.Write()
 }
 
 // BreakTextAtLineLength - Breaks string text into lines. Takes a string and inserts a
@@ -51,7 +61,6 @@ type StrOps struct {
 //
 // Note: If the caller specifies a line length of 50, new characters may be placed in the
 // 51st character position depending upon the word breaks.
-//
 func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineDelimiter rune) (string, error) {
 
 	ePrefix := "StrOps.BreakTextAtLineLength() "
@@ -241,7 +250,6 @@ func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineD
 // CopyIn - Copies string information from another StrOps
 // instance passed as an input parameter to the current
 // StrOps instance.
-//
 func (sops *StrOps) CopyIn(strops2 *StrOps) {
 
 	sops.StrIn = strops2.StrIn
@@ -264,7 +272,6 @@ func (sops *StrOps) CopyOut() *StrOps {
 // DoesLastCharExist - returns true if the last character (rune) of
 // input string 'testStr' is equal to input parameter 'lastChar' which
 // is of type 'rune'.
-//
 func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
 
 	testStrLen := len(testStr)
@@ -297,7 +304,6 @@ func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
 // The method returns the index of the first non-space character in the target string
 // segment using a left to right search. If the entire string consists of space characters,
 // this method returns a value of -1.
-//
 func (sops StrOps) FindFirstNonSpaceChar(targetStr string, startIndex, endIndex int) (int, error) {
 
 	ePrefix := "StrOps.FindFirstNonSpaceChar() "
@@ -359,7 +365,6 @@ func (sops StrOps) FindFirstNonSpaceChar(targetStr string, startIndex, endIndex 
 //
 // if 'targetStr' is a zero length string, an error will be triggered. Likewise, if 'startIdx'
 // of 'endIdx' are invalid, an error will be returned.
-//
 func (sops StrOps) FindLastNonSpaceChar(targetStr string, startIdx, endIdx int) (int, error) {
 
 	ePrefix := "StrOps.FindLastNonSpaceChar() "
@@ -420,7 +425,6 @@ func (sops StrOps) FindLastNonSpaceChar(targetStr string, startIdx, endIdx int) 
 //
 // if 'targetStr' is a zero length string, an error will be triggered. Likewise, if 'startIdx'
 // of 'endIdx' are invalid, an error will be returned.
-//
 func (sops StrOps) FindLastSpace(targetStr string, startIdx, endIdx int) (int, error) {
 
 	ePrefix := "StrOps.FindLastSpace() "
@@ -544,7 +548,6 @@ func (sops StrOps) FindLastSpace(targetStr string, startIdx, endIdx int) (int, e
 //  err						error		- If targetStr is empty or if startIndex or endIndex is invalid,
 //                          an error is returned. If the method completes successfully,
 //                          err = nil.
-//
 func (sops StrOps) FindLastWord(
 	targetStr string,
 	startIndex,
@@ -726,7 +729,6 @@ func (sops StrOps) FindLastWord(
 // value is 'nil'.  If regular expression is successfully matched, the match
 // will be located at targetStr[loc[0]:loc[1]]. Again, a return value of 'nil'
 // signals that no match was found.
-//
 func (sops StrOps) FindRegExIndex(targetStr string, regex string) []int {
 
 	re := regexp.MustCompile(regex)
@@ -739,7 +741,6 @@ func (sops StrOps) FindRegExIndex(targetStr string, regex string) []int {
 // 'StrOps.cntBytesRead' which holds the number of bytes
 // accumulated through the last Read operation executed through
 // method StrOps.Read().
-//
 func (sops *StrOps) GetCountBytesRead() uint64 {
 
 	var bytesRead uint64
@@ -755,7 +756,6 @@ func (sops *StrOps) GetCountBytesRead() uint64 {
 // 'StrOps.cntBytesWritten' which holds the number of bytes
 // accumulated through the last Write operation executed
 // through method StrOps.Write().
-//
 func (sops *StrOps) GetCountBytesWritten() uint64 {
 
 	var bytesWritten uint64
@@ -769,20 +769,18 @@ func (sops *StrOps) GetCountBytesWritten() uint64 {
 
 // GetReader() Returns an io.Reader which will read the internal
 // data element StrOps.StrOut.
-//
 func (sops *StrOps) GetReader() io.Reader {
 
 	return strings.NewReader(sops.StrOut)
 }
 
-// GetSoftwareVersion - Returns the major software version for StrOps.
+// GetSoftwareVersion - Returns the software version for type 'StrOps'.
 func (sops StrOps) GetSoftwareVersion() string {
 	return "2.0.0"
 }
 
 // GetStringData - Returns the current value of internal
 // member string, StrOps.stringData
-//
 func (sops *StrOps) GetStringData() string {
 	var output string
 
@@ -824,7 +822,6 @@ func (sops *StrOps) GetStringData() string {
 //	error						- If the method completes successfully this value is 'nil'. If an error is
 //                    encountered this value will contain the error message. Examples of possible
 //                    errors include a zero length 'targetBytes array or 'validBytes' array.
-//
 func (sops StrOps) GetValidBytes(targetBytes, validBytes []byte) ([]byte, error) {
 
 	ePrefix := "StrOps.GetValidBytes() "
@@ -888,7 +885,6 @@ func (sops StrOps) GetValidBytes(targetBytes, validBytes []byte) ([]byte, error)
 // error						- If the method completes successfully this value is 'nil'. If an error is
 //                    encountered this value will contain the error message. Examples of possible
 //                    errors include a zero length 'targetRunes array or 'validRunes' array.
-//
 func (sops StrOps) GetValidRunes(targetRunes []rune, validRunes []rune) ([]rune, error) {
 
 	ePrefix := "StrOps.GetValidRunes() "
@@ -951,7 +947,6 @@ func (sops StrOps) GetValidRunes(targetRunes []rune, validRunes []rune) ([]rune,
 //                  encountered this value will contain the error message. Examples of possible
 //                  errors include a zero length 'targetStr' (string) or a zero length
 //                  'validRunes' array.
-//
 func (sops StrOps) GetValidString(targetStr string, validRunes []rune) (string, error) {
 
 	ePrefix := "StrOps.GetValidString() "
@@ -982,7 +977,6 @@ func (sops StrOps) GetValidString(targetStr string, validRunes []rune) (string, 
 // white space (contiguous spaces), this method will return 'true'.
 //
 // Otherwise, a value of false is returned.
-//
 func (sops StrOps) IsEmptyOrWhiteSpace(targetStr string) bool {
 
 	targetLen := len(targetStr)
@@ -999,7 +993,6 @@ func (sops StrOps) IsEmptyOrWhiteSpace(targetStr string) bool {
 // MakeSingleCharString - Creates a string of length 'strLen' consisting of
 // a single character passed through input parameter, 'charRune' as type
 // 'rune'.
-//
 func (sops StrOps) MakeSingleCharString(charRune rune, strLen int) (string, error) {
 
 	ePrefix := "StrOps.MakeSingleCharString() "
@@ -1052,7 +1045,6 @@ func (sops StrOps) NewPtr() *StrOps {
 //
 // 'StrOps.stringData' can be accessed through Getter an Setter methods,
 // GetStringData() and SetStringData()
-//
 func (sops *StrOps) Read(p []byte) (n int, err error) {
 
 	ePrefix := "StrOps.Read() "
@@ -1148,7 +1140,6 @@ func (sops *StrOps) Read(p []byte) (n int, err error) {
 //                    errors include a zero length targetBytes[] array or replacementBytes[][] array.
 // 										In addition, if any of the replacementBytes[][x] 2nd dimension elements have
 //                    a length less than two, an error will be returned.
-//
 func (sops StrOps) ReplaceBytes(targetBytes []byte, replacementBytes [][]byte) ([]byte, error) {
 
 	ePrefix := "StrOps.ReplaceBytes() "
@@ -1216,7 +1207,6 @@ func (sops StrOps) ReplaceBytes(targetBytes []byte, replacementBytes [][]byte) (
 // Input parameter 'replaceArray' should be passed as multi-dimensional slices.
 // If the length of the 'replaceArray' second dimension is less than '2', an
 // error will be returned.
-//
 func (sops StrOps) ReplaceMultipleStrs(targetStr string, replaceArray [][]string) (string, error) {
 
 	ePrefix := "StrOps.ReplaceMultipleStrs() "
@@ -1253,7 +1243,6 @@ func (sops StrOps) ReplaceMultipleStrs(targetStr string, replaceArray [][]string
 // RemoveNewLines - Replaces New Line characters from string. If the specified
 // replacement string is empty, the New Line characters are simply removed
 // from the input parameter, 'targetStr'.
-//
 func (sops StrOps) ReplaceNewLines(targetStr string, replacement string) string {
 
 	return strings.Replace(targetStr, "\n", replacement, -1)
@@ -1286,7 +1275,6 @@ func (sops StrOps) ReplaceNewLines(targetStr string, replacement string) string 
 //                    errors include a zero length 'targetRunes' array or 'replacementRunes' array.
 //                    In addition, if any of the replacementRunes[][x] 2nd dimension elements have
 //                    a length less than two, an error will be returned.
-//
 func (sops StrOps) ReplaceRunes(targetRunes []rune, replacementRunes [][]rune) ([]rune, error) {
 
 	ePrefix := "StrOps.ReplaceRunes() "
@@ -1373,7 +1361,6 @@ func (sops StrOps) ReplaceRunes(targetRunes []rune, replacementRunes [][]rune) (
 //                    errors include a zero length 'targetStr' or 'replacementRunes[][]' array.
 // 										In addition, if any of the replacementRunes[][x] 2nd dimension elements have
 //                    a length less than two, an error will be returned.
-//
 func (sops StrOps) ReplaceStringChars(
 	targetStr string,
 	replacementRunes [][]rune) (string, error) {
@@ -1403,17 +1390,30 @@ func (sops StrOps) ReplaceStringChars(
 
 // ResetBytesReadCounter - Resets the internal 'Bytes Read' counter
 // to zero. As practical matter, this method is rarely if ever used.
-// It use restricted primarily to debugging operations.
+// Its use is restricted primarily to special circumstances or debugging
+// operations.
 //
 // This method sets StrOps.cntBytesRead equal to zero.
-//
 func (sops *StrOps) ResetBytesReadCounter() {
+	sops.stringDataMutex.Lock()
 	sops.cntBytesRead = 0
+	sops.stringDataMutex.Unlock()
+}
+
+// ResetBytesWrittenCounter - Resets the internal 'Bytes Written' counter
+// to zero. As practical matter, this method is rarely if ever used.
+// Its use is restricted primarily to special circumstances or debugging
+// operations.
+//
+// This method sets StrOps.cntBytesWritten equal to zero.
+func (sops *StrOps) ResetBytesWrittenCounter() {
+	sops.stringDataMutex.Lock()
+	sops.cntBytesWritten = 0
+	sops.stringDataMutex.Unlock()
 }
 
 // SetStringData - Sets the value of internal
-// member string variable, StrOps.stringData.
-//
+// string data element, StrOps.stringData.
 func (sops *StrOps) SetStringData(str string) {
 	sops.stringDataMutex.Lock()
 	sops.stringData = str
@@ -1430,10 +1430,21 @@ func (sops *StrOps) SetStringData(str string) {
 // center the original string is a field of specified length.
 func (sops StrOps) StrCenterInStrLeft(strToCenter string, fieldLen int) (string, error) {
 
+	ePrefix := "StrOps.StrCenterInStrLeft() "
+
+	if sops.IsEmptyOrWhiteSpace(strToCenter) {
+		return strToCenter,
+			errors.New(ePrefix +
+				"Error: Input parameter 'strToCenter' is All White Space or an EMPTY String!")
+	}
+
 	pad, err := sops.StrPadLeftToCenter(strToCenter, fieldLen)
 
 	if err != nil {
-		return "", errors.New("StrOps:StrCenterInStrLeft() - " + err.Error())
+		return "",
+			fmt.Errorf(ePrefix+
+				"Error returned by sops.StrPadLeftToCenter(strToCenter, fieldLen). "+
+				"Error='%v'", err.Error())
 	}
 
 	return pad + strToCenter, nil
@@ -1445,14 +1456,23 @@ func (sops StrOps) StrCenterInStrLeft(strToCenter string, fieldLen int) (string,
 //
 // The complete string will effectively center the original string is a field of
 // specified length ('fieldLen').
-//
 func (sops StrOps) StrCenterInStr(strToCenter string, fieldLen int) (string, error) {
+
+	ePrefix := "StrOps.StrCenterInStr() "
+
+	if sops.IsEmptyOrWhiteSpace(strToCenter) {
+		return strToCenter,
+			errors.New(ePrefix +
+				"Error: Input parameter 'strToCenter' is All White Space or an EMPTY String!")
+	}
 
 	sLen := len(strToCenter)
 
 	if sLen > fieldLen {
-		return strToCenter, fmt.Errorf("'fieldLen' = '%v' strToCenter Length= '%v'. "+
-			"'fieldLen is shorter than strToCenter Length!", fieldLen, sLen)
+		return strToCenter,
+			fmt.Errorf(ePrefix+
+				"Error: 'fieldLen' = '%v' strToCenter Length= '%v'. "+
+				"'fieldLen is shorter than strToCenter Length!", fieldLen, sLen)
 	}
 
 	if sLen == fieldLen {
@@ -1500,8 +1520,15 @@ func (sops StrOps) StrGetCharCnt(targetStr string) int {
 // strToJustify = "Hello World"
 // Returned String = "Hello World    "
 // String Index    =  012345648901234
-//
 func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, error) {
+
+	ePrefix := "StrOps.StrLeftJustify() "
+
+	if sops.IsEmptyOrWhiteSpace(strToJustify) {
+		return strToJustify,
+			errors.New(ePrefix +
+				"Error: Input parameter 'strToJustify' is All White Space or an EMPTY String!")
+	}
 
 	strLen := len(strToJustify)
 
@@ -1511,7 +1538,8 @@ func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, er
 
 	if fieldLen < strLen {
 		return strToJustify,
-			fmt.Errorf("StrLeftJustify() Error: Length of string to left justify is '%v'. "+
+			fmt.Errorf(ePrefix+
+				"Error: Length of string to left justify is '%v'. "+
 				"'fieldLen' is less. 'fieldLen'= '%v'", strLen, fieldLen)
 	}
 
@@ -1530,14 +1558,22 @@ func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, er
 // ('strToCenter') is 10-characters. In order to center a 10-character string in a
 // 70-character field, 30-space characters would need to be positioned on each side
 // of the string to center. This method only returns the left segment or 30-spaces.
-//
 func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string, error) {
+
+	ePrefix := "StrOps.StrPadLeftToCenter() "
+
+	if sops.IsEmptyOrWhiteSpace(strToCenter) {
+		return strToCenter,
+			errors.New(ePrefix +
+				"Error: Input parameter 'strToCenter' is All White Space or an EMPTY String!")
+	}
 
 	sLen := sops.StrGetRuneCnt(strToCenter)
 
 	if sLen > fieldLen {
 		return "",
-			errors.New("StrOps:StrPadLeftToCenter() - String To Center " +
+			errors.New(ePrefix +
+				"Error: Input Parameter String To Center ('strToCenter') " +
 				"is longer than Field Length")
 	}
 
@@ -1560,8 +1596,15 @@ func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string,
 // If the total field length ('fieldLen') is specified as 50-characters and the
 // length of string to justify ('strToJustify') is 20-characters, then this method
 // would return a string consisting of 30-space characters + 'strToJustify'.
-//
 func (sops StrOps) StrRightJustify(strToJustify string, fieldLen int) (string, error) {
+
+	ePrefix := "StrOps.StrRightJustify() "
+
+	if sops.IsEmptyOrWhiteSpace(strToJustify) {
+		return strToJustify,
+			errors.New(ePrefix +
+				"Error: Input parameter 'strToJustify' is All White Space or an EMPTY String!")
+	}
 
 	strLen := len(strToJustify)
 
@@ -1571,8 +1614,10 @@ func (sops StrOps) StrRightJustify(strToJustify string, fieldLen int) (string, e
 
 	if fieldLen < strLen {
 		return strToJustify,
-			fmt.Errorf("StrRightJustify() Error: Length of string to "+
-				"right justify is '%v'. 'fieldLen' is less. 'fieldLen'= '%v'", strLen, fieldLen)
+			fmt.Errorf(ePrefix+
+				"Error: Length of string to "+
+				"right justify is '%v'. 'fieldLen' is less. 'fieldLen'= '%v'",
+				strLen, fieldLen)
 	}
 
 	// fieldLen must be greater than strLen
@@ -1593,7 +1638,6 @@ func (sops StrOps) StrRightJustify(strToJustify string, fieldLen int) (string, e
 // targetStr = "       Hello          World        "
 // trimChar  = ' ' (One Space)
 // returned string (rStr) = "Hello World"
-//
 func (sops StrOps) TrimMultipleChars(
 	targetStr string,
 	trimChar rune) (rStr string, err error) {
@@ -1656,7 +1700,6 @@ func (sops StrOps) TrimMultipleChars(
 // TrimStringEnds - Removes all instances of input
 // parameter 'trimChar' from the beginning and end
 // of input parameter string 'targetStr'.
-//
 func (sops StrOps) TrimStringEnds(
 	targetStr string,
 	trimChar rune) (rStr string, err error) {
@@ -1725,7 +1768,7 @@ func (sops StrOps) TrimStringEnds(
 }
 
 // SwapRune - Swaps all instances of 'oldRune' character with 'newRune'
-// character.
+// character in input parameter target string ('targetStr').
 func (sops StrOps) SwapRune(currentStr string, oldRune rune, newRune rune) (string, error) {
 
 	if currentStr == "" {
@@ -1754,7 +1797,6 @@ func (sops StrOps) SwapRune(currentStr string, oldRune rune, newRune rune) (stri
 //
 // 'StrOps.stringData' can be accessed through 'Getter' and
 // 'Setter' methods, 'GetStringData()' and 'SetStringData()'.
-//
 func (sops *StrOps) Write(p []byte) (n int, err error) {
 
 	ePrefix := "StrOps.Write() "
