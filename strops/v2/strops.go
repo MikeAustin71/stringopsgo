@@ -264,6 +264,8 @@ func (sops *StrOps) CopyIn(strops2 *StrOps) {
 	sops.StrOut = strops2.StrOut
 	sops.stringDataMutex.Lock()
 	strops2.stringDataMutex.Lock()
+	sops.cntBytesWritten = 0
+	sops.cntBytesRead = 0
 	sops.stringData = strops2.stringData
 	strops2.stringDataMutex.Unlock()
 	sops.stringDataMutex.Unlock()
