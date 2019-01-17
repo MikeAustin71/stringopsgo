@@ -59,6 +59,62 @@ func TestStrOps_FindRegExIndex_01(t *testing.T) {
 	}
 }
 
+func TestStrOps_GetReader_01(t *testing.T) {
+	originalStr := "Now is the time for all good men to come to the aid of their country."
+	s1 := StrOps{}.NewPtr()
+	s1.SetStringData(originalStr)
+	s2 := StrOps{}.NewPtr()
+	rdr := s1.GetReader()
+	n, err := io.Copy(s2, rdr)
+
+	if err != nil {
+		t.Errorf("Error returned by io.Copy(s2, s1.GetReader()). "+
+			"Error='%v' ", err.Error())
+	}
+
+	actualStr := s2.GetStringData()
+
+	if originalStr != actualStr {
+		t.Errorf("Error: Expected actualStr='%v'. Instead, actualStr='%v'",
+			originalStr, actualStr)
+	}
+
+	if int64(len(originalStr)) != n {
+		t.Errorf("Error: Expected characters read='%v'. Instead, "+
+			"characters read='%v' ",
+			len(originalStr), n)
+	}
+
+}
+
+func TestStrOps_GetReader_02(t *testing.T) {
+	originalStr := "xx"
+	s1 := StrOps{}.NewPtr()
+	s1.SetStringData(originalStr)
+	s2 := StrOps{}.NewPtr()
+	rdr := s1.GetReader()
+	n, err := io.Copy(s2, rdr)
+
+	if err != nil {
+		t.Errorf("Error returned by io.Copy(s2, s1.GetReader()). "+
+			"Error='%v' ", err.Error())
+	}
+
+	actualStr := s2.GetStringData()
+
+	if originalStr != actualStr {
+		t.Errorf("Error: Expected actualStr='%v'. Instead, actualStr='%v'",
+			originalStr, actualStr)
+	}
+
+	if int64(len(originalStr)) != n {
+		t.Errorf("Error: Expected characters read='%v'. Instead, "+
+			"characters read='%v' ",
+			len(originalStr), n)
+	}
+
+}
+
 func TestStrOps_GetValidBytes_01(t *testing.T) {
 
 	validBytes := []byte{'v', 'a', 'l', 'i', 'd'}

@@ -1,3 +1,17 @@
+// package strops (string operations) provides string management
+// utilities designed to perform a variety of string operations
+// including string centering, justification, multiple replacements
+// and implementation of the the io.Reader and io.Writer interfaces.
+//
+// Source file, 'strops.go', is located in source code repository:
+// 	https://github.com/MikeAustin71/stringopsgo.git
+//
+// The file xxtests.txt contains the latest test results from 170 unit
+// tests. See xxHowToRunTests.md for further information on test execution.
+//
+// Copyright 2019 Mike Rapp. All rights reserved. Use of this source code
+// is governed by the MIT-style license that can be found in the LICENSE
+// file.
 package strops
 
 import (
@@ -9,14 +23,6 @@ import (
 	"sync"
 	"unicode/utf8"
 )
-
-/*
-	'strops.go' is located in source code repository:
-
-			https://github.com/MikeAustin71/stringopsgo.git
-
-
-*/
 
 // StrOps - encapsulates a collection of methods used to manage string
 // operations.
@@ -52,14 +58,16 @@ type StrOps struct {
 // BreakTextAtLineLength - Breaks string text into lines. Takes a string and inserts a
 // line delimiter character (a.k.a 'rune') at the specified line length ('lineLength').
 //
+// ------------------------------------------------------------------------
+//
 // Input Parameters
-// ================
 //
-// targetStr	string	- The string which will be parsed into text lines.
 //
-// lineLength	int			- The maximum length of each line.
+//	targetStr	string	- The string which will be parsed into text lines.
 //
-// Note: If the caller specifies a line length of 50, new characters may be placed in the
+//	lineLength	int	- The maximum length of each line.
+//
+// Note: If the caller specifies a line length of 50, the line delimiter character may be placed in the
 // 51st character position depending upon the word breaks.
 func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineDelimiter rune) (string, error) {
 
@@ -298,12 +306,13 @@ func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
 // (any character that is NOT a space ' ') in the target string segment and returns
 // the index associated with that non-space character.
 //
-// Return Values
-// =============
+// ------------------------------------------------------------------------
 //
-// The method returns the index of the first non-space character in the target string
-// segment using a left to right search. If the entire string consists of space characters,
-// this method returns a value of -1.
+// Return Values
+//
+//	This method returns the index of the first non-space character in the target string
+//	segment using a left to right search. If the entire string consists of space characters,
+//	this method returns a value of -1.
 func (sops StrOps) FindFirstNonSpaceChar(targetStr string, startIndex, endIndex int) (int, error) {
 
 	ePrefix := "StrOps.FindFirstNonSpaceChar() "
@@ -477,23 +486,26 @@ func (sops StrOps) FindLastSpace(targetStr string, startIdx, endIdx int) (int, e
 // character such as an article 'a' or a punctuation mark '.'
 //
 // ------------------------------------------------------------------------
+//
 // Examples
-// ========
+//
 //
 //	Example (1)
-// 				In the text string segment:
+// 		In the text string segment:
 //
-//       				"The cow jumped over the moon."
+//			"The cow jumped over the moon."
 //
-// 						The last word would be defined as "moon."
+//		The last word would be defined as "moon."
 //
 //	Example (2)
-//				In the text string segment:
-//							"  somewhere over the rainbow  "
+//		In the text string segment:
 //
-//							The last word would be defined as "rainbow"
+//			"  somewhere over the rainbow  "
+//
+//		The last word would be defined as "rainbow"
 //
 // ------------------------------------------------------------------------
+//
 // The string to be searched is contained in input parameter, 'targetStr'.
 // The string segment within 'targetStr' is defined by input parameters
 // 'startIndex' and 'endIndex'.
@@ -509,45 +521,48 @@ func (sops StrOps) FindLastSpace(targetStr string, startIdx, endIdx int) (int, e
 //
 // If 'targetStr' is an empty string, an error will be returned.
 //
-// Input Parameters
-// ================
+// ------------------------------------------------------------------------
 //
-// targetStr			string	- The string containing the string segment which
+// Input Parameters
+//
+//
+//	targetStr	string	- The string containing the string segment which
 //                      		will be searched to identify the last word
 //                      		in the string segment.
 //
-// startIndex			int			- The index marking the beginning of the string
+//	startIndex	int	- The index marking the beginning of the string
 //                      		segment in 'targetStr'.
 //
-// endIndex				int			- The index marking the end of the string segment
+//	endIndex	int	- The index marking the end of the string segment
 //                      		in 'targetStr'.
 //
+// ------------------------------------------------------------------------
+//
 // Return Values
-// =============
 //
-//	beginWrdIdx		int			-	The index marking the beginning of the last word
-//                          in the string segment identified by input parameters
-//                          'startIndex' and 'endIndex'. If the string segment
-//                          consists of all spaces or is empty, this value is
-//                          set to -1.
+//	beginWrdIdx	int	-	The index marking the beginning of the last word
+// 					in the string segment identified by input parameters
+//					'startIndex' and 'endIndex'. If the string segment
+//					consists of all spaces or is empty, this value is
+//					set to -1.
 //
-//	endWrdIdx			int			- The index marking the end of the last word in the
-//                          string segment identified by input parameters 'startIndex'
-//                          and 'endIndex'. If the string segment consists of all
-//                          spaces or is empty, this value is set to -1.
+//	endWrdIdx	int	-	The index marking the end of the last word in the
+//					string segment identified by input parameters 'startIndex'
+//					and 'endIndex'. If the string segment consists of all
+//					spaces or is empty, this value is set to -1.
 //
-//	isAllOneWord	bool		- If the string segment identified by input parameters
-//                          'startIndex' and 'endIndex' consists entirely of non-space
-//                          characters (characters other than ' '), this value is set
-//                          to 'true'.
+//	isAllOneWord	bool	-	If the string segment identified by input parameters
+//					'startIndex' and 'endIndex' consists entirely of non-space
+//					characters (characters other than ' '), this value is set
+//					to 'true'.
 //
-//	isAllSpaces		bool		- If the string segment identified by input parameters
-//                          'startIndex' and 'endIndex' consists entirely of space
-//                          characters (character = ' '), this value is set to 'true'.
+//	isAllSpaces	bool	-	If the string segment identified by input parameters
+//					'startIndex' and 'endIndex' consists entirely of space
+//					characters (character = ' '), this value is set to 'true'.
 //
-//  err						error		- If targetStr is empty or if startIndex or endIndex is invalid,
-//                          an error is returned. If the method completes successfully,
-//                          err = nil.
+//	err		error	-	If targetStr is empty or if startIndex or endIndex is invalid,
+//					an error is returned. If the method completes successfully,
+//					err = nil.
 func (sops StrOps) FindLastWord(
 	targetStr string,
 	startIndex,
@@ -723,12 +738,14 @@ func (sops StrOps) FindLastWord(
 // FindRegExIndex - returns a two-element slice of integers defining the location
 // of the leftmost match in targetStr of the regular expression (regex).
 //
+// ------------------------------------------------------------------------
+//
 // Return Value
-// ============
-// The return value is an array of integers. If no match is found the return
-// value is 'nil'.  If regular expression is successfully matched, the match
-// will be located at targetStr[loc[0]:loc[1]]. Again, a return value of 'nil'
-// signals that no match was found.
+//
+//	The return value is an array of integers. If no match is found the return
+//	value is 'nil'.  If regular expression is successfully matched, the match
+//	will be located at targetStr[loc[0]:loc[1]]. Again, a return value of 'nil'
+//	signals that no match was found.
 func (sops StrOps) FindRegExIndex(targetStr string, regex string) []int {
 
 	re := regexp.MustCompile(regex)
@@ -767,11 +784,15 @@ func (sops *StrOps) GetCountBytesWritten() uint64 {
 	return bytesWritten
 }
 
-// GetReader() Returns an io.Reader which will read the internal
-// data element StrOps.StrOut.
+// GetReader() Returns an io.Reader which will read the private
+// member data element StrOps.stringData.
 func (sops *StrOps) GetReader() io.Reader {
+	var stringData string
 
-	return strings.NewReader(sops.StrOut)
+	sops.stringDataMutex.Lock()
+	stringData = sops.stringData
+	sops.stringDataMutex.Unlock()
+	return strings.NewReader(stringData)
 }
 
 // GetSoftwareVersion - Returns the software version for type 'StrOps'.
@@ -799,29 +820,32 @@ func (sops *StrOps) GetStringData() string {
 // If a character in 'targetBytes' also exists in 'validBytes' it will be considered valid
 // and included in the returned array of bytes.
 //
-// Input Parameters
-// ================
-// targetBytes		[] byte		- An array of characters (bytes) which will be examined
-//                            for valid characters. The list of valid characters is
-//                            found in input parameter 'validBytes'. Valid characters
-//                            in targetBytes will be returned by this method as an
-//                            array of bytes. Invalid characters will be discarded.
+// ------------------------------------------------------------------------
 //
-//	validBytes		[] byte		- An array of bytes containing valid characters. If a character
-//                            (byte) in 'targetBytes' is also present in 'validBytes' it will
-//                            be classified as 'valid' and included in the returned array of
-//                            bytes. Invalid characters will be discarded.
+// Input Parameters
+//
+//	targetBytes	[] byte	- An array of characters (bytes) which will be examined
+//				for valid characters. The list of valid characters is
+//				found in input parameter 'validBytes'. Valid characters
+//				in targetBytes will be returned by this method as an
+//				array of bytes. Invalid characters will be discarded.
+//
+//	validBytes	[] byte	- An array of bytes containing valid characters. If a character
+//				(byte) in 'targetBytes' is also present in 'validBytes' it will
+//				be classified as 'valid' and included in the returned array of
+//				bytes. Invalid characters will be discarded.
+//
+// ------------------------------------------------------------------------
 //
 // Return Values
-// =============
 //
-//	[] byte					- An array of bytes which contains bytes that are present in both 'targetBytes'
-//										and 'validBytes'. Note: If all characters in 'targetBytes' are classified as
-//                    'invalid', the returned array of bytes will be a zero length array.
+//	[] byte	- An array of bytes which contains bytes that are present in both 'targetBytes'
+//		and 'validBytes'. Note: If all characters in 'targetBytes' are classified as
+//		'invalid', the returned array of bytes will be a zero length array.
 //
-//	error						- If the method completes successfully this value is 'nil'. If an error is
-//                    encountered this value will contain the error message. Examples of possible
-//                    errors include a zero length 'targetBytes array or 'validBytes' array.
+//	error	- If the method completes successfully this value is 'nil'. If an error is
+//		encountered this value will contain the error message. Examples of possible
+//		errors include a zero length 'targetBytes array or 'validBytes' array.
 func (sops StrOps) GetValidBytes(targetBytes, validBytes []byte) ([]byte, error) {
 
 	ePrefix := "StrOps.GetValidBytes() "
@@ -862,29 +886,32 @@ func (sops StrOps) GetValidBytes(targetBytes, validBytes []byte) ([]byte, error)
 // If a character in 'targetRunes' also exists in 'validRunes', that character will be considered
 // valid and included in the returned array of runes.
 //
-// Input Parameters
-// ================
-// targetRunes		[] rune		- An array of characters (runes) which will be examined
-//                            for valid characters. The list of valid characters is
-//                            found in input parameter 'validRunes'. Valid characters
-//                            in targetRunes will be returned by this method as an
-//                            array of runes. Invalid characters will be discarded.
+// ------------------------------------------------------------------------
 //
-//	validRunes		[] rune		- An array of runes containing valid characters. If a character
-//                            (rune) in targetRunes is also present in 'validRunes' it will
-//                            be classified as 'valid' and included in the returned array of
-//                            runes. Invalid characters will be discarded.
+// Input Parameters
+//
+//	targetRunes		[] rune	- An array of characters (runes) which will be examined
+//					for valid characters. The list of valid characters is
+//					found in input parameter 'validRunes'. Valid characters
+//					in targetRunes will be returned by this method as an
+//					array of runes. Invalid characters will be discarded.
+//
+//	validRunes		[] rune	- An array of runes containing valid characters. If a character
+//					(rune) in targetRunes is also present in 'validRunes' it will
+//					be classified as 'valid' and included in the returned array of
+//					runes. Invalid characters will be discarded.
+//
+// ------------------------------------------------------------------------
 //
 // Return Values
-// =============
 //
-//	[] rune					- An array of runes which contains runes that are present in 'targetRunes' and
-//                    'validRunes'. Note: If all characters in 'targetRunes' are classified as
-//                    'invalid', the returned array of runes will be a zero length array.
+//	[] rune	- An array of runes which contains runes that are present in 'targetRunes' and
+//		'validRunes'. Note: If all characters in 'targetRunes' are classified as
+//		'invalid', the returned array of runes will be a zero length array.
 //
-// error						- If the method completes successfully this value is 'nil'. If an error is
-//                    encountered this value will contain the error message. Examples of possible
-//                    errors include a zero length 'targetRunes array or 'validRunes' array.
+//	error - If the method completes successfully this value is 'nil'. If an error is
+//		encountered this value will contain the error message. Examples of possible
+//		errors include a zero length 'targetRunes array or 'validRunes' array.
 func (sops StrOps) GetValidRunes(targetRunes []rune, validRunes []rune) ([]rune, error) {
 
 	ePrefix := "StrOps.GetValidRunes() "
@@ -925,28 +952,30 @@ func (sops StrOps) GetValidRunes(targetRunes []rune, validRunes []rune) ([]rune,
 // exists in both 'targetStr' and 'validRunes' it is deemed valid and returned in
 // an output string.
 //
+// ------------------------------------------------------------------------
+//
 // Input Parameter
-// ===============
 //
-// targetStr	string	-	The string which will be screened for valid characters.
+//	targetStr	string	-	The string which will be screened for valid characters.
 //
-// validRunes	[] rune	- An array of type rune containing valid characters. Characters
-//                      which exist in both 'targetStr' and 'validRunes' will be
-//                      returned as a new string. Invalid characters are discarded.
+//	validRunes	[] rune	-	An array of type rune containing valid characters. Characters
+//					which exist in both 'targetStr' and 'validRunes' will be
+//					returned as a new string. Invalid characters are discarded.
+//
+// ------------------------------------------------------------------------
 //
 // Return Values
-// =============
 //
-// string					- This string will be returned containing valid characters extracted
-//                  from 'targetStr'. A character is considered valid if it exists in
-//                  both 'targetStr' and 'validRunes'. Invalid characters are discarded.
-//                  This means that if no valid characters are identified, a zero length
-//                  string will be returned.
+//	string	- This string will be returned containing valid characters extracted
+//		from 'targetStr'. A character is considered valid if it exists in
+//		both 'targetStr' and 'validRunes'. Invalid characters are discarded.
+//		This means that if no valid characters are identified, a zero length
+//		string will be returned.
 //
-// error					- If the method completes successfully this value is 'nil'. If an error is
-//                  encountered this value will contain the error message. Examples of possible
-//                  errors include a zero length 'targetStr' (string) or a zero length
-//                  'validRunes' array.
+//	error - If the method completes successfully this value is 'nil'. If an error is
+//		encountered this value will contain the error message. Examples of possible
+//		errors include a zero length 'targetStr' (string) or a zero length
+//		'validRunes' array.
 func (sops StrOps) GetValidString(targetStr string, validRunes []rune) (string, error) {
 
 	ePrefix := "StrOps.GetValidString() "
@@ -1010,7 +1039,7 @@ func (sops StrOps) MakeSingleCharString(charRune rune, strLen int) (string, erro
 	}
 
 	var b strings.Builder
-	b.Grow(32)
+	b.Grow(strLen + 1)
 
 	for i := 0; i < strLen; i++ {
 
@@ -1116,30 +1145,34 @@ func (sops *StrOps) Read(p []byte) (n int, err error) {
 // ReplaceBytes	- Replaces characters in a target array of bytes ([]bytes) with those specified in
 // a two dimensional slice of bytes.
 //
+// ------------------------------------------------------------------------
+//
 // Input Parameters
-// ================
 //
-// targetBytes	[]byte				- The byte array which will be examined. If characters ('bytes') eligible
-// 															for replacement are identified by replacementBytes[i][0] they will be
-// 															replaced by the character specified in replacementBytes[i][1].
 //
-// replacementBytes	[][]byte 	- A two dimensional slice of type byte. Element [i][0] contains the target
-//                             	character to locate in 'targetBytes'. Element[i][1] contains the replacement
-//                             	character which will replace the target character in 'targetBytes'. If
-//                             	the replacement character element [i][1] is a zero value, the target character
-//                             	will not be replaced. Instead, it will be eliminated or removed from
-//                             	the returned byte array ([]byte).
+//	targetBytes	[]byte	- The byte array which will be examined. If characters ('bytes') eligible
+//				for replacement are identified by replacementBytes[i][0] they will be
+//				replaced by the character specified in replacementBytes[i][1].
+//
+//	replacementBytes [][]byte - A two dimensional slice of type byte. Element [i][0] contains the target
+//				character to locate in 'targetBytes'. Element[i][1] contains the replacement
+//				character which will replace the target character in 'targetBytes'. If
+//				the replacement character element [i][1] is a zero value, the target character
+//				will not be replaced. Instead, it will be eliminated or removed from
+//				the returned byte array ([]byte).
+//
+// ------------------------------------------------------------------------
 //
 // Return Values
-// =============
-// []byte						- The returned byte array containing the characters and replaced characters
-//                    from the original 'targetBytes' array.
 //
-// error						- If the method completes successfully this value is 'nil'. If an error is
-//                    encountered this value will contain the error message. Examples of possible
-//                    errors include a zero length targetBytes[] array or replacementBytes[][] array.
-// 										In addition, if any of the replacementBytes[][x] 2nd dimension elements have
-//                    a length less than two, an error will be returned.
+//	[]byte	- The returned byte array containing the characters and replaced characters
+//		from the original 'targetBytes' array.
+//
+//	error	- If the method completes successfully this value is 'nil'. If an error is
+//		encountered this value will contain the error message. Examples of possible
+//		errors include a zero length targetBytes[] array or replacementBytes[][] array.
+//		In addition, if any of the replacementBytes[][x] 2nd dimension elements have
+//		a length less than two, an error will be returned.
 func (sops StrOps) ReplaceBytes(targetBytes []byte, replacementBytes [][]byte) ([]byte, error) {
 
 	ePrefix := "StrOps.ReplaceBytes() "
@@ -1251,30 +1284,34 @@ func (sops StrOps) ReplaceNewLines(targetStr string, replacement string) string 
 // ReplaceRunes - Replaces characters in a target array of runes ([]rune) with those specified in
 // a two dimensional slice of runes, 'replacementRunes[][]'.
 //
+// ------------------------------------------------------------------------
+//
 // Input Parameters
-// ================
 //
-// targetRunes			[]rune		- The rune array which will be examined. If target characters ('runes')
-// 															eligible for replacement are identified by replacementRunes[i][0], they
-// 															will be replaced by the character specified in replacementRunes[i][1].
 //
-// replacementRunes	[][]rune 	- A two dimensional slice of type 'rune'. Element [i][0] contains the target
-//                             	character to locate in 'targetRunes'. Element[i][1] contains the
-//                             	replacement character which will replace the target character in
-//                             	'targetRunes'. If the replacement character element [i][1] is a zero value,
-//                             	the	target character will not be replaced. Instead, it will be eliminated
-//                             	or removed from the returned rune array ([]rune).
+//	targetRunes	[]rune	- The rune array which will be examined. If target characters ('runes')
+//				eligible for replacement are identified by replacementRunes[i][0], they
+//				will be replaced by the character specified in replacementRunes[i][1].
+//
+//	replacementRunes [][]rune - A two dimensional slice of type 'rune'. Element [i][0] contains the target
+//				 character to locate in 'targetRunes'. Element[i][1] contains the
+//				 replacement character which will replace the target character in
+//				 'targetRunes'. If the replacement character element [i][1] is a zero value,
+//				 the	target character will not be replaced. Instead, it will be eliminated
+//				 or removed from the returned rune array ([]rune).
+//
+// ------------------------------------------------------------------------
 //
 // Return Values
-// =============
-// []rune						- The returned rune array containing the characters and replaced characters
-//                    from the original 'targetRunes' array.
 //
-// error						- If the method completes successfully this value is 'nil'. If an error is
-//                    encountered this value will contain the error message. Examples of possible
-//                    errors include a zero length 'targetRunes' array or 'replacementRunes' array.
-//                    In addition, if any of the replacementRunes[][x] 2nd dimension elements have
-//                    a length less than two, an error will be returned.
+//	[]rune	- The returned rune array containing the characters and replaced characters
+//		from the original 'targetRunes' array.
+//
+//	error	- If the method completes successfully this value is 'nil'. If an error is
+//		encountered this value will contain the error message. Examples of possible
+//		errors include a zero length 'targetRunes' array or 'replacementRunes' array.
+//		In addition, if any of the replacementRunes[][x] 2nd dimension elements have
+//		a length less than two, an error will be returned.
 func (sops StrOps) ReplaceRunes(targetRunes []rune, replacementRunes [][]rune) ([]rune, error) {
 
 	ePrefix := "StrOps.ReplaceRunes() "
@@ -1337,30 +1374,34 @@ func (sops StrOps) ReplaceRunes(targetRunes []rune, replacementRunes [][]rune) (
 // ReplaceStringChars - Replaces string characters in a target string ('targetStr') with those
 // specified in a two dimensional slice of runes, 'replacementRunes[][]'.
 //
+// ------------------------------------------------------------------------
+//
 // Input Parameters
-// ================
 //
-// targetStr				string		- The string which will be examined. If target string characters
-// 															eligible for replacement are identified by replacementRunes[i][0], they
-// 															will be replaced by the character specified in replacementRunes[i][1].
 //
-// replacementRunes	[][]rune 	- A two dimensional slice of type 'rune'. Element [i][0] contains the target
-//                             	character to locate in 'targetStr'. Element[i][1] contains the
-//                             	replacement character which will replace the target character in
-//                             	'targetStr'. If the replacement character element [i][1] is a zero value,
-//                             	the	target character will not be replaced. Instead, it will be eliminated
-//                             	or removed from the returned string.
+//	targetStr	string		- The string which will be examined. If target string characters
+//					eligible for replacement are identified by replacementRunes[i][0], they
+//					will be replaced by the character specified in replacementRunes[i][1].
+//
+//	replacementRunes [][]rune	- A two dimensional slice of type 'rune'. Element [i][0] contains the target
+//				 	character to locate in 'targetStr'. Element[i][1] contains the
+//					replacement character which will replace the target character in
+//					'targetStr'. If the replacement character element [i][1] is a zero value,
+//					the target character will not be replaced. Instead, it will be eliminated
+//					or removed from the returned string.
+//
+// ------------------------------------------------------------------------
 //
 // Return Values
-// =============
-// string						- The returned string containing the characters and replaced characters
-//                    from the original target string, ('targetStr').
 //
-// error						- If the method completes successfully this value is 'nil'. If an error is
-//                    encountered this value will contain the error message. Examples of possible
-//                    errors include a zero length 'targetStr' or 'replacementRunes[][]' array.
-// 										In addition, if any of the replacementRunes[][x] 2nd dimension elements have
-//                    a length less than two, an error will be returned.
+//	string	- The returned string containing the characters and replaced characters
+//		from the original target string, ('targetStr').
+//
+//	error	- If the method completes successfully this value is 'nil'. If an error is
+//		encountered this value will contain the error message. Examples of possible
+//		errors include a zero length 'targetStr' or 'replacementRunes[][]' array.
+//		In addition, if any of the replacementRunes[][x] 2nd dimension elements have
+//		a length less than two, an error will be returned.
 func (sops StrOps) ReplaceStringChars(
 	targetStr string,
 	replacementRunes [][]rune) (string, error) {
@@ -1516,10 +1557,11 @@ func (sops StrOps) StrGetCharCnt(targetStr string) int {
 // 'fieldLen'.
 //
 // Example:
-// fieldLen = 15
-// strToJustify = "Hello World"
-// Returned String = "Hello World    "
-// String Index    =  012345648901234
+//
+//	fieldLen = 15
+//	strToJustify 	= "Hello World"
+//	Returned String = "Hello World    "
+//	String Index    =  012345648901234
 func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, error) {
 
 	ePrefix := "StrOps.StrLeftJustify() "
@@ -1554,10 +1596,13 @@ func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, er
 // StrPadLeftToCenter - Returns a blank string which allows centering of the target
 // string in a fixed length field.
 //
-// Assume that total field length ('fieldlen') is 70. Assume that the string to Center
-// ('strToCenter') is 10-characters. In order to center a 10-character string in a
-// 70-character field, 30-space characters would need to be positioned on each side
-// of the string to center. This method only returns the left segment or 30-spaces.
+// Example:
+//
+//	Assume that total field length ('fieldlen') is 70. Assume that the string to Center
+//	('strToCenter') is 10-characters. In order to center a 10-character string in a
+//	70-character field, 30-space characters would need to be positioned on each side
+//	of the string to center. This method only returns the left segment, or a string
+//	consisting of 30-spaces.
 func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string, error) {
 
 	ePrefix := "StrOps.StrPadLeftToCenter() "
@@ -1591,11 +1636,10 @@ func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string,
 // string is determined by input parameter 'fieldlen'.
 //
 // Example:
-// ========
 //
-// If the total field length ('fieldLen') is specified as 50-characters and the
-// length of string to justify ('strToJustify') is 20-characters, then this method
-// would return a string consisting of 30-space characters + 'strToJustify'.
+//	If the total field length ('fieldLen') is specified as 50-characters and the
+//	length of string to justify ('strToJustify') is 20-characters, then this method
+//	would return a string consisting of 30-space characters plus the 'strToJustify'.
 func (sops StrOps) StrRightJustify(strToJustify string, fieldLen int) (string, error) {
 
 	ePrefix := "StrOps.StrRightJustify() "
@@ -1628,16 +1672,38 @@ func (sops StrOps) StrRightJustify(strToJustify string, fieldLen int) (string, e
 	return leftPadStr + strToJustify, nil
 }
 
+// SwapRune - Swaps all instances of 'oldRune' character with 'newRune'
+// character in input parameter target string ('targetStr').
+func (sops StrOps) SwapRune(targetStr string, oldRune rune, newRune rune) (string, error) {
+
+	if targetStr == "" {
+		return targetStr, nil
+	}
+
+	rStr := []rune(targetStr)
+
+	lrStr := len(rStr)
+
+	for i := 0; i < lrStr; i++ {
+		if rStr[i] == oldRune {
+			rStr[i] = newRune
+		}
+	}
+
+	return string(rStr), nil
+}
+
 // TrimMultipleChars- Performs the following operations on strings:
-// 1. Trims Right and Left for all instances of 'trimChar'
-// 2. Within the interior of a string, multiple instances
-// 		of 'trimChar' are reduce to a single instance.
+//
+// 	1. Trims Right and Left ends of 'targetStr' for all instances of 'trimChar'
+// 	2. Within the interior of a string, multiple instances of 'trimChar' are reduced
+//	   to a single instance.
 //
 // Example:
 //
-// targetStr = "       Hello          World        "
-// trimChar  = ' ' (One Space)
-// returned string (rStr) = "Hello World"
+//	targetStr = "       Hello          World        "
+//	trimChar  = ' ' (One Space)
+//	returned string (rStr) = "Hello World"
 func (sops StrOps) TrimMultipleChars(
 	targetStr string,
 	trimChar rune) (rStr string, err error) {
@@ -1767,33 +1833,13 @@ func (sops StrOps) TrimStringEnds(
 	return rStr, err
 }
 
-// SwapRune - Swaps all instances of 'oldRune' character with 'newRune'
-// character in input parameter target string ('targetStr').
-func (sops StrOps) SwapRune(currentStr string, oldRune rune, newRune rune) (string, error) {
-
-	if currentStr == "" {
-		return currentStr, nil
-	}
-
-	rStr := []rune(currentStr)
-
-	lrStr := len(rStr)
-
-	for i := 0; i < lrStr; i++ {
-		if rStr[i] == oldRune {
-			rStr[i] = newRune
-		}
-	}
-
-	return string(rStr), nil
-}
-
 // Write - Implements the io.Writer interface.
 // Write writes len(p) bytes from p to the underlying
-// data stream.
+// data stream. In this case the underlying data stream
+// is private member variable string, 'StrOps.stringData'.
 //
 // Receives a byte array 'p' and writes the contents to
-// a string, internal structure data element 'StrOps.stringData'.
+// a string, private structure data element 'StrOps.stringData'.
 //
 // 'StrOps.stringData' can be accessed through 'Getter' and
 // 'Setter' methods, 'GetStringData()' and 'SetStringData()'.
