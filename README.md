@@ -17,5 +17,5 @@ import statement:
 
     import "github.com/MikeAustin71/stringopsgo/strops"
     
-    
+[Click To View Documentation](http://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v2)    
 
