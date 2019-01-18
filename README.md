@@ -5,6 +5,7 @@ Copyright 2019 Mike Rapp. All rights reserved.
 Use of this source code is governed by the
 MIT-style license which can be found in the
 LICENSE file.
+
 ------------------------------------------------------------------------------------------
 
 Send questions or comments to:
