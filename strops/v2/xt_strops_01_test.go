@@ -1,7 +1,6 @@
 package strops
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -35,8 +34,11 @@ func TestStrOps_BreakTextAtLineLength_01(t *testing.T) {
 
 	actualTxt = StrOps{}.ReplaceNewLines(actualTxt, "%")
 
-	assert.Equal(t, expected, actualTxt,
-		"'expected' and 'actualTxt' should be Equal. They are not!")
+	if expected != actualTxt {
+		t.Errorf("Error: Expected string='%v'. Instead, string='%v'.",
+			expected, actualTxt)
+	}
+
 }
 
 func TestStrOps_BreakTextAtLineLength_02(t *testing.T) {

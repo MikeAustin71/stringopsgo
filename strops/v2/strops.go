@@ -1,17 +1,15 @@
-// package strops (string operations) provides string management
-// utilities designed to perform a variety of string operations
-// including string centering, justification, multiple replacements
-// and implementation of the the io.Reader and io.Writer interfaces.
-//
-// Source file, 'strops.go', is located in source code repository:
-// 	https://github.com/MikeAustin71/stringopsgo.git
-//
-// The file xxtests.txt contains the latest test results from 170 unit
-// tests. See xxHowToRunTests.md for further information on test execution.
-//
-// Copyright 2019 Mike Rapp. All rights reserved. Use of this source code
-// is governed by the MIT-style license that can be found in the LICENSE
-// file.
+/*
+package strops (string operations) provides string management
+utilities designed to perform a variety of string operations
+including string centering, justification, multiple replacements
+and implementation of the the io.Reader and io.Writer interfaces.
+
+Source file, 'strops.go', is located in source code repository:
+	https://github.com/MikeAustin71/stringopsgo.git
+
+Currently, the package consists of one type, 'StrOps' which is
+documented below.
+*/
 package strops
 
 import (
@@ -1247,7 +1245,7 @@ func (sops StrOps) ReplaceBytes(targetBytes []byte, replacementBytes [][]byte) (
 //
 // Note: The original 'targetStr' is NOT altered.
 //
-// Input parameter 'replaceArray' should be passed as multi-dimensional slices.
+// Input parameter 'replaceArray' should be passed as a two-dimensional slice.
 // If the length of the 'replaceArray' second dimension is less than '2', an
 // error will be returned.
 func (sops StrOps) ReplaceMultipleStrs(targetStr string, replaceArray [][]string) (string, error) {
@@ -1292,7 +1290,7 @@ func (sops StrOps) ReplaceNewLines(targetStr string, replacement string) string 
 }
 
 // ReplaceRunes - Replaces characters in a target array of runes ([]rune) with those specified in
-// a two dimensional slice of runes, 'replacementRunes[][]'.
+// a two-dimensional slice of runes, 'replacementRunes[][]'.
 //
 // ------------------------------------------------------------------------
 //
