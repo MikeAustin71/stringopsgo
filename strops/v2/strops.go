@@ -1215,7 +1215,7 @@ func (sops *StrOps) Read(p []byte) (n int, err error) {
 //	                        at the index in 'bytes' indicated by input parameter 'startIdx'.
 //
 //	nextStartIdx      int - The index of the beginning of the next string in the byte array
-//	                        'bytes' after 'extractedString'. If no more string exist in the
+//	                        'bytes' after 'extractedString'. If no more strings exist in the
 //	                        the byte array, 'nextStartIdx' will be set to -1.
 //
 func (sops StrOps) ReadStringFromBytes(
