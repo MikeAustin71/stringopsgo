@@ -194,6 +194,16 @@
 --- PASS: TestStrOps_IsEmptyOrWhiteSpace_08 (0.00s)
 === RUN   TestStrOps_IsEmptyOrWhiteSpace_09
 --- PASS: TestStrOps_IsEmptyOrWhiteSpace_09 (0.00s)
+=== RUN   TestStrOps_LowerCaseFirstLetter_01
+--- PASS: TestStrOps_LowerCaseFirstLetter_01 (0.00s)
+=== RUN   TestStrOps_LowerCaseFirstLetter_02
+--- PASS: TestStrOps_LowerCaseFirstLetter_02 (0.00s)
+=== RUN   TestStrOps_LowerCaseFirstLetter_03
+--- PASS: TestStrOps_LowerCaseFirstLetter_03 (0.00s)
+=== RUN   TestStrOps_LowerCaseFirstLetter_04
+--- PASS: TestStrOps_LowerCaseFirstLetter_04 (0.00s)
+=== RUN   TestStrOps_LowerCaseFirstLetter_05
+--- PASS: TestStrOps_LowerCaseFirstLetter_05 (0.00s)
 === RUN   TestStrOps_MakeSingleCharString_01
 --- PASS: TestStrOps_MakeSingleCharString_01 (0.00s)
 === RUN   TestStrOps_MakeSingleCharString_02
@@ -338,6 +348,16 @@
 --- PASS: TestStrOps_TrimStringEnds_08 (0.00s)
 === RUN   TestStrOps_TrimStringEnds_09
 --- PASS: TestStrOps_TrimStringEnds_09 (0.00s)
+=== RUN   TestStrOps_UpperCaseFirstLetter_01
+--- PASS: TestStrOps_UpperCaseFirstLetter_01 (0.00s)
+=== RUN   TestStrOps_UpperCaseFirstLetter_02
+--- PASS: TestStrOps_UpperCaseFirstLetter_02 (0.00s)
+=== RUN   TestStrOps_UpperCaseFirstLetter_03
+--- PASS: TestStrOps_UpperCaseFirstLetter_03 (0.00s)
+=== RUN   TestStrOps_UpperCaseFirstLetter_04
+--- PASS: TestStrOps_UpperCaseFirstLetter_04 (0.00s)
+=== RUN   TestStrOps_UpperCaseFirstLetter_05
+--- PASS: TestStrOps_UpperCaseFirstLetter_05 (0.00s)
 === RUN   TestStrOps_Write_01
 --- PASS: TestStrOps_Write_01 (0.00s)
 === RUN   TestStrOps_Write_02
@@ -347,4 +367,4 @@
 === RUN   TestStrOps_Write_04
 --- PASS: TestStrOps_Write_04 (0.00s)
 PASS
-ok  	MikeAustin71/stringopsgo/strops/v2	2.866s
+ok  	MikeAustin71/stringopsgo/strops/v2	2.487s

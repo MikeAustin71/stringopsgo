@@ -1027,6 +1027,42 @@ func (sops StrOps) IsEmptyOrWhiteSpace(targetStr string) bool {
 	return true
 }
 
+// LowerCaseFirstLetter - Finds the first alphabetic character
+// in a string (a-z A-Z) and converts it to lower case.
+func (sops StrOps) LowerCaseFirstLetter(str string) string {
+
+	if len(str) == 0 {
+		return str
+	}
+
+	runeStr := []rune(str)
+
+	for i := 0; i < len(runeStr); i++ {
+
+		if runeStr[i] == ' ' {
+			continue
+		}
+
+		if runeStr[i] >= 'A' &&
+
+			runeStr[i] <= 'Z' {
+
+			runeStr[i] += 32
+
+			break
+
+		} else if runeStr[i] >= 'a' &&
+
+			runeStr[i] <= 'z' {
+
+			break
+		}
+
+	}
+
+	return string(runeStr)
+}
+
 // MakeSingleCharString - Creates a string of length 'strLen' consisting of
 // a single character passed through input parameter, 'charRune' as type
 // 'rune'.
@@ -1839,6 +1875,39 @@ func (sops StrOps) TrimStringEnds(
 	rStr = targetStr[firstIdx:lastIdx]
 
 	return rStr, err
+}
+
+// UpperCaseFirstLetter - Finds the first alphabetic character in a string
+// (a-z A-Z) and converts it to upper case.
+func (sops StrOps) UpperCaseFirstLetter(str string) string {
+
+	if len(str) == 0 {
+		return str
+	}
+
+	runesStr := []rune(str)
+
+	for i := 0; i < len(runesStr); i++ {
+
+		// Skip leading spaces
+		if runesStr[i] == ' ' {
+			continue
+		}
+
+		// Find the first alphabetic character and
+		// convert to upper case.
+		if runesStr[i] >= 'a' && runesStr[i] <= 'z' {
+
+			runesStr[i] -= 32
+			break
+
+		} else if runesStr[i] >= 'A' && runesStr[i] <= 'Z' {
+			break
+		}
+
+	}
+
+	return string(runesStr)
 }
 
 // Write - Implements the io.Writer interface.

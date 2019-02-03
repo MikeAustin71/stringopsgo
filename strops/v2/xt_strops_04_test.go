@@ -1,649 +1,627 @@
 package strops
 
 import (
-	"fmt"
-	"io"
-	"strings"
 	"testing"
 )
 
-func TestStrOps_StrCenterInStr_001(t *testing.T) {
-	strToCntr := "1234567"
-	fieldLen := 79
-	exLeftPadLen := 36
-	exRightPadLen := 36
-	exTotalLen := 79
+func TestStrOps_ReplaceStringChars_01(t *testing.T) {
 
-	leftPad := strings.Repeat(" ", exLeftPadLen)
-	rightPad := strings.Repeat(" ", exRightPadLen)
-	exStr := leftPad + strToCntr + rightPad
+	testStr := "1a2b3c4d5e6"
 
-	su := StrOps{}
-	str, err := su.StrCenterInStr(strToCntr, fieldLen)
-	if err != nil {
-		t.Error("StrCenterInStr() generated error: ", err.Error())
+	expected := "1A2B3C4D5E6"
+
+	replaceRunes := make([][]rune, 5, 10)
+
+	for i := 0; i < 5; i++ {
+		replaceRunes[i] = make([]rune, 2, 5)
 	}
 
-	l1 := su.StrGetRuneCnt(str)
+	replaceRunes[0][0] = 'a'
+	replaceRunes[0][1] = 'A'
 
-	if l1 != exTotalLen {
-		t.Error(fmt.Sprintf("Expected total str length '%v', got", exTotalLen), l1)
-	}
+	replaceRunes[1][0] = 'b'
+	replaceRunes[1][1] = 'B'
 
-	if str != exStr {
-		t.Error(fmt.Sprintf("Strings did not match. Expected string '%v', got ", exStr), str)
-	}
+	replaceRunes[2][0] = 'c'
+	replaceRunes[2][1] = 'C'
 
-}
+	replaceRunes[3][0] = 'd'
+	replaceRunes[3][1] = 'D'
 
-func TestStrOps_StrLeftJustify_001(t *testing.T) {
-	strToJustify := "1234567"
-	fieldLen := 45
-	exTotalLen := fieldLen
-	exRightPad := strings.Repeat(" ", 38)
-	exStr := strToJustify + exRightPad
+	replaceRunes[4][0] = 'e'
+	replaceRunes[4][1] = 'E'
 
-	su := StrOps{}
-	str, err := su.StrLeftJustify(strToJustify, fieldLen)
-	if err != nil {
-		t.Error("StrLeftJustify() generated error: ", err.Error())
-	}
-
-	l1 := su.StrGetRuneCnt(str)
-
-	if l1 != exTotalLen {
-		t.Error(fmt.Sprintf("Expected total str length '%v', got", exTotalLen), l1)
-	}
-
-	if str != exStr {
-		t.Error(fmt.Sprintf("Strings did not match. Expected string '%v', got ", exStr), str)
-	}
-
-}
-
-func TestStrOps_StrRightJustify_001(t *testing.T) {
-
-	strToJustify := "1234567"
-	fieldLen := 45
-	exTotalLen := fieldLen
-	exLeftPad := strings.Repeat(" ", 38)
-	exStr := exLeftPad + strToJustify
-
-	su := StrOps{}
-	str, err := su.StrRightJustify(strToJustify, fieldLen)
-	if err != nil {
-		t.Error("StrRightJustify() generated error: ", err.Error())
-	}
-
-	l1 := su.StrGetRuneCnt(str)
-
-	if l1 != exTotalLen {
-		t.Error(fmt.Sprintf("Expected total str length '%v', got", exTotalLen), l1)
-	}
-
-	if str != exStr {
-		t.Error(fmt.Sprintf("Strings did not match. Expected string '%v', got ", exStr), str)
-	}
-
-}
-
-func TestStrOps_StrCenterInStrLeft_001(t *testing.T) {
-	strToCntr := "1234567"
-	fieldLen := 79
-	exPadLen := 36
-	exTotalLen := 43
-
-	exStr := strings.Repeat(" ", exPadLen) + strToCntr
-	su := StrOps{}
-	str, err := su.StrCenterInStrLeft(strToCntr, fieldLen)
-	if err != nil {
-		t.Error("StrCenterInStrLeft() generated error: ", err.Error())
-	}
-
-	l1 := su.StrGetRuneCnt(str)
-
-	if l1 != exTotalLen {
-		t.Error(fmt.Sprintf("Expected total str length '%v', got", exTotalLen), l1)
-	}
-
-	if str != exStr {
-		t.Error(fmt.Sprintf("Strings did not match. Expected string '%v', got ", exStr), str)
-	}
-
-}
-
-func TestStrOps_StrGetRuneCnt(t *testing.T) {
-	strToCnt := "1234567"
-	exCnt := 7
-	su := StrOps{}
-	l1 := su.StrGetRuneCnt(strToCnt)
-
-	if l1 != exCnt {
-		t.Error(fmt.Sprintf("Expected string character count of '%v', got", exCnt), l1)
-	}
-
-}
-
-func TestStrOps_StrGetCharCnt01(t *testing.T) {
-	strToCnt := "1234567"
-	exCnt := 7
-
-	su := StrOps{}
-	l1 := su.StrGetCharCnt(strToCnt)
-
-	if l1 != exCnt {
-		t.Error(fmt.Sprintf("Expected string character count of '%v', got", exCnt), l1)
-	}
-}
-
-func TestStrOps_StrPadLeftToCenter(t *testing.T) {
-	strToCntr := "1234567"
-	fieldLen := 79
-	exLen := 36
-	su := StrOps{}
-	padStr, err := su.StrPadLeftToCenter(strToCntr, fieldLen)
+	actualStr, err := StrOps{}.ReplaceStringChars(testStr, replaceRunes)
 
 	if err != nil {
-		t.Error("Error on StrPadLeftToCenter(), got", err.Error())
-	}
-
-	l1 := su.StrGetRuneCnt(padStr)
-
-	if l1 != exLen {
-		t.Error(fmt.Sprintf("Expected pad length of '%v', got ", exLen), l1)
-	}
-
-}
-
-func TestStrOps_SwapRune_001(t *testing.T) {
-	su := StrOps{}
-
-	tStr := "  Hello   World  "
-	expected := "!!Hello!!!World!!"
-	result, err := su.SwapRune(tStr, ' ', '!')
-
-	if err != nil {
-		t.Error("Error returned from SwapRune: ", err.Error())
-	}
-
-	if result != expected {
-		t.Errorf("Expected result == '%v' instead received result== '%v'", expected, result)
-	}
-
-	resultLen := len(result)
-	expectedLen := len(expected)
-
-	if resultLen != expectedLen {
-		t.Errorf("Expected result length == '%v' instead received result length == '%v'", expectedLen, resultLen)
-	}
-
-}
-
-func TestStrOps_SwapRune_002(t *testing.T) {
-	su := StrOps{}
-
-	tStr := "HelloWorld"
-	expected := "HelloWorld"
-	result, err := su.SwapRune(tStr, ' ', '!')
-
-	if err != nil {
-		t.Error("Error returned from SwapRune: ", err.Error())
-	}
-
-	if result != expected {
-		t.Errorf("Expected result == '%v' instead received result== '%v'", expected, result)
-	}
-
-	resultLen := len(result)
-	expectedLen := len(expected)
-
-	if resultLen != expectedLen {
-		t.Errorf("Expected result length == '%v' instead received result length == '%v'", expectedLen, resultLen)
-	}
-
-}
-
-func TestStrOps_SwapRune_003(t *testing.T) {
-	su := StrOps{}
-
-	tStr := "Hello Worldx"
-	expected := "Hello WorldX"
-	result, err := su.SwapRune(tStr, 'x', 'X')
-
-	if err != nil {
-		t.Error("Error returned from SwapRune: ", err.Error())
-	}
-
-	if result != expected {
-		t.Errorf("Expected result == '%v' instead received result== '%v'", expected, result)
-	}
-
-	resultLen := len(result)
-	expectedLen := len(expected)
-
-	if resultLen != expectedLen {
-		t.Errorf("Expected result length == '%v' instead received result length == '%v'", expectedLen, resultLen)
-	}
-
-}
-
-func TestStrOps_SwapRune_004(t *testing.T) {
-	su := StrOps{}
-
-	tStr := "xHello World"
-	expected := "XHello World"
-	result, err := su.SwapRune(tStr, 'x', 'X')
-
-	if err != nil {
-		t.Error("Error returned from SwapRune: ", err.Error())
-	}
-
-	if result != expected {
-		t.Errorf("Expected result == '%v' instead received result== '%v'", expected, result)
-	}
-
-	resultLen := len(result)
-	expectedLen := len(expected)
-
-	if resultLen != expectedLen {
-		t.Errorf("Expected result length == '%v' instead received result length == '%v'", expectedLen, resultLen)
-	}
-
-}
-
-func TestStrOps_TrimMultipleChars_001(t *testing.T) {
-	tStr := " 16:26:32   CST "
-	expected := "16:26:32 CST"
-	su := StrOps{}
-
-	result, err := su.TrimMultipleChars(tStr, ' ')
-
-	if err != nil {
-		t.Error("Error Return from TrimMultipleChars: ", err.Error())
-	}
-
-	if result != expected {
-		t.Errorf("Expected result == %v, instead received result== %v", expected, result)
-	}
-
-}
-
-func TestStrOps_TrimMultipleChars_002(t *testing.T) {
-	tStr := "       Hello          World        "
-	expected := "Hello World"
-	su := StrOps{}
-
-	result, err := su.TrimMultipleChars(tStr, ' ')
-
-	if err != nil {
-		t.Error("Error Return from TrimMultipleChars: ", err.Error())
-	}
-
-	if result != expected {
-		t.Errorf("Expected result == %v, instead received result== %v", expected, result)
-	}
-
-}
-
-func TestStrOps_TrimMultipleChars_003(t *testing.T) {
-	tStr := "Hello          World        "
-	expected := "Hello World"
-	su := StrOps{}
-
-	result, err := su.TrimMultipleChars(tStr, ' ')
-
-	if err != nil {
-		t.Error("Error Return from TrimMultipleChars: ", err.Error())
-	}
-
-	if result != expected {
-		t.Errorf("Expected result == %v, instead received result== %v", expected, result)
-	}
-
-}
-
-func TestStrOps_TrimMultipleChars_004(t *testing.T) {
-	tStr := " Hello          World"
-	expected := "Hello World"
-	su := StrOps{}
-
-	result, err := su.TrimMultipleChars(tStr, ' ')
-
-	if err != nil {
-		t.Error("Error Return from TrimMultipleChars: ", err.Error())
-	}
-
-	if result != expected {
-		t.Errorf("Expected result == '%v' instead received result== '%v'", expected, result)
-	}
-
-}
-
-func TestStrOps_TrimMultipleChars_005(t *testing.T) {
-	tStr := "Hello World"
-	expected := "Hello World"
-	su := StrOps{}
-
-	result, err := su.TrimMultipleChars(tStr, ' ')
-
-	if err != nil {
-		t.Error("Error Return from TrimMultipleChars: ", err.Error())
-	}
-
-	if result != expected {
-		t.Errorf("Expected result == '%v' instead received result== '%v'", expected, result)
-	}
-
-}
-
-func TestStrOps_TrimMultipleChars_006(t *testing.T) {
-	tStr := "Hello World "
-	expected := "Hello World"
-	su := StrOps{}
-
-	result, err := su.TrimMultipleChars(tStr, ' ')
-
-	if err != nil {
-		t.Error("Error Return from TrimMultipleChars: ", err.Error())
-	}
-
-	if result != expected {
-		t.Errorf("Expected result == '%v' instead received result== '%v'", expected, result)
-	}
-
-}
-
-func TestStrOps_TrimMultipleChars_007(t *testing.T) {
-	tStr := " Hello World "
-	expected := "Hello World"
-	su := StrOps{}
-
-	result, err := su.TrimMultipleChars(tStr, ' ')
-
-	if err != nil {
-		t.Error("Error Return from TrimMultipleChars: ", err.Error())
-	}
-
-	if result != expected {
-		t.Errorf("Expected result == '%v' instead received result== '%v'", expected, result)
-	}
-
-}
-
-func TestStrOps_TrimStringEnds_01(t *testing.T) {
-
-	tStr := "  Hello    World  "
-	expected := "Hello    World"
-	trimChar := ' '
-	result, err := StrOps{}.TrimStringEnds(tStr, trimChar)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.TrimStringEnds(tStr, trimChar). "+
+		t.Errorf("Error returned by StrOps{}.ReplaceStringChars(testStr, replaceRunes). "+
 			"Error='%v' ", err.Error())
 	}
 
-	if expected != result {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
-			expected, result)
+	if expected != actualStr {
+		t.Errorf("Error: Expected actual result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
 	}
+
 }
 
-func TestStrOps_TrimStringEnds_02(t *testing.T) {
+func TestStrOps_ReplaceStringChars_02(t *testing.T) {
 
-	tStr := "Hello X World"
-	expected := "Hello X World"
-	trimChar := 'X'
-	result, err := StrOps{}.TrimStringEnds(tStr, trimChar)
+	testStr := "1a2b3c4d5e6"
+
+	expected := "1A23C45E6"
+
+	replaceRunes := make([][]rune, 5, 10)
+
+	for i := 0; i < 5; i++ {
+		replaceRunes[i] = make([]rune, 2, 5)
+	}
+
+	replaceRunes[0][0] = 'a'
+	replaceRunes[0][1] = 'A'
+
+	replaceRunes[1][0] = 'b'
+	replaceRunes[1][1] = 0
+
+	replaceRunes[2][0] = 'c'
+	replaceRunes[2][1] = 'C'
+
+	replaceRunes[3][0] = 'd'
+	replaceRunes[3][1] = 0
+
+	replaceRunes[4][0] = 'e'
+	replaceRunes[4][1] = 'E'
+
+	actualStr, err := StrOps{}.ReplaceStringChars(testStr, replaceRunes)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.TrimStringEnds(tStr, trimChar). "+
+		t.Errorf("Error returned by StrOps{}.ReplaceStringChars(testStr, replaceRunes). "+
 			"Error='%v' ", err.Error())
 	}
 
-	if expected != result {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
-			expected, result)
+	if expected != actualStr {
+		t.Errorf("Error: Expected actual result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
 	}
+
 }
 
-func TestStrOps_TrimStringEnds_03(t *testing.T) {
+func TestStrOps_ReplaceStringChars_03(t *testing.T) {
 
-	tStr := "Hello WorlXd"
-	expected := "Hello WorlXd"
-	trimChar := 'X'
-	result, err := StrOps{}.TrimStringEnds(tStr, trimChar)
+	testStr := "1a2b3c4d5e6"
+
+	expected := "1a2b3c4d5e6"
+
+	replaceRunes := make([][]rune, 5, 10)
+
+	for i := 0; i < 5; i++ {
+		replaceRunes[i] = make([]rune, 2, 5)
+	}
+
+	replaceRunes[0][0] = 'z'
+	replaceRunes[0][1] = 'Z'
+
+	replaceRunes[1][0] = 'y'
+	replaceRunes[1][1] = 'Y'
+
+	replaceRunes[2][0] = 'x'
+	replaceRunes[2][1] = 'X'
+
+	replaceRunes[3][0] = 'w'
+	replaceRunes[3][1] = 'W'
+
+	replaceRunes[4][0] = 'v'
+	replaceRunes[4][1] = 'V'
+
+	actualStr, err := StrOps{}.ReplaceStringChars(testStr, replaceRunes)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.TrimStringEnds(tStr, trimChar). "+
+		t.Errorf("Error returned by StrOps{}.ReplaceStringChars(testStr, replaceRunes). "+
 			"Error='%v' ", err.Error())
 	}
 
-	if expected != result {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
-			expected, result)
+	if expected != actualStr {
+		t.Errorf("Error: Expected actual result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
 	}
 }
 
-func TestStrOps_TrimStringEnds_04(t *testing.T) {
+func TestStrOps_ReplaceStringChars_04(t *testing.T) {
 
-	tStr := "XXXHello WorlXdXXX"
-	expected := "Hello WorlXd"
-	trimChar := 'X'
-	result, err := StrOps{}.TrimStringEnds(tStr, trimChar)
+	testStr := "1a2b3c4d5e6"
+
+	expected := "3a4b5c6d7e6"
+
+	replaceRunes := make([][]rune, 5, 10)
+
+	for i := 0; i < 5; i++ {
+		replaceRunes[i] = make([]rune, 2, 5)
+	}
+
+	replaceRunes[0][0] = '1'
+	replaceRunes[0][1] = '3'
+
+	replaceRunes[1][0] = '2'
+	replaceRunes[1][1] = '4'
+
+	replaceRunes[2][0] = '3'
+	replaceRunes[2][1] = '5'
+
+	replaceRunes[3][0] = '4'
+	replaceRunes[3][1] = '6'
+
+	replaceRunes[4][0] = '5'
+	replaceRunes[4][1] = '7'
+
+	actualStr, err := StrOps{}.ReplaceStringChars(testStr, replaceRunes)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.TrimStringEnds(tStr, trimChar). "+
+		t.Errorf("Error returned by StrOps{}.ReplaceStringChars(testStr, replaceRunes). "+
 			"Error='%v' ", err.Error())
 	}
 
-	if expected != result {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
-			expected, result)
+	if expected != actualStr {
+		t.Errorf("Error: Expected actual result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
 	}
 }
 
-func TestStrOps_TrimStringEnds_05(t *testing.T) {
+func TestStrOps_ReplaceStringChars_05(t *testing.T) {
 
-	tStr := "XXXHello WorlXd"
-	expected := "Hello WorlXd"
-	trimChar := 'X'
-	result, err := StrOps{}.TrimStringEnds(tStr, trimChar)
+	testStr := "1a2b3c4d5e6"
+
+	expected := "1a23c4d5e6"
+
+	replaceRunes := make([][]rune, 5, 10)
+
+	for i := 0; i < 5; i++ {
+		replaceRunes[i] = make([]rune, 2, 5)
+	}
+
+	replaceRunes[0][0] = 'z'
+	replaceRunes[0][1] = 'Z'
+
+	replaceRunes[1][0] = 'y'
+	replaceRunes[1][1] = 'Y'
+
+	replaceRunes[2][0] = 'x'
+	replaceRunes[2][1] = 'X'
+
+	replaceRunes[3][0] = 'w'
+	replaceRunes[3][1] = 'W'
+
+	replaceRunes[4][0] = 'b'
+	replaceRunes[4][1] = 0
+
+	actualStr, err := StrOps{}.ReplaceStringChars(testStr, replaceRunes)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.TrimStringEnds(tStr, trimChar). "+
+		t.Errorf("Error returned by StrOps{}.ReplaceStringChars(testStr, replaceRunes). "+
 			"Error='%v' ", err.Error())
 	}
 
-	if expected != result {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
-			expected, result)
+	if expected != actualStr {
+		t.Errorf("Error: Expected actual result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
 	}
 }
 
-func TestStrOps_TrimStringEnds_06(t *testing.T) {
+func TestStrOps_ReplaceStringChars_06(t *testing.T) {
 
-	tStr := "Hello WorlXdXXXX"
-	expected := "Hello WorlXd"
-	trimChar := 'X'
-	result, err := StrOps{}.TrimStringEnds(tStr, trimChar)
+	testStr := "1a2b3c4d5e6"
+
+	expected := "123456"
+
+	replaceRunes := make([][]rune, 5, 10)
+
+	for i := 0; i < 5; i++ {
+		replaceRunes[i] = make([]rune, 2, 5)
+	}
+
+	replaceRunes[0][0] = 'a'
+	replaceRunes[0][1] = 0
+
+	replaceRunes[1][0] = 'b'
+	replaceRunes[1][1] = 0
+
+	replaceRunes[2][0] = 'c'
+	replaceRunes[2][1] = 0
+
+	replaceRunes[3][0] = 'd'
+	replaceRunes[3][1] = 0
+
+	replaceRunes[4][0] = 'e'
+	replaceRunes[4][1] = 0
+
+	actualStr, err := StrOps{}.ReplaceStringChars(testStr, replaceRunes)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.TrimStringEnds(tStr, trimChar). "+
+		t.Errorf("Error returned by StrOps{}.ReplaceStringChars(testStr, replaceRunes). "+
 			"Error='%v' ", err.Error())
 	}
 
-	if expected != result {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
-			expected, result)
+	if expected != actualStr {
+		t.Errorf("Error: Expected actual result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
 	}
 }
 
-func TestStrOps_TrimStringEnds_07(t *testing.T) {
+func TestStrOps_ReplaceStringChars_07(t *testing.T) {
 
-	tStr := "X"
-	expected := ""
-	trimChar := 'X'
-	result, err := StrOps{}.TrimStringEnds(tStr, trimChar)
+	testStr := ""
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.TrimStringEnds(tStr, trimChar). "+
-			"Error='%v' ", err.Error())
+	replaceRunes := make([][]rune, 5, 10)
+
+	for i := 0; i < 5; i++ {
+		replaceRunes[i] = make([]rune, 2, 5)
 	}
 
-	if expected != result {
-		t.Errorf("Error: Expected result='%v'. Instead, result='%v'. ",
-			expected, result)
-	}
-}
+	replaceRunes[0][0] = 'a'
+	replaceRunes[0][1] = 0
 
-func TestStrOps_TrimStringEnds_08(t *testing.T) {
+	replaceRunes[1][0] = 'b'
+	replaceRunes[1][1] = 0
 
-	tStr := ""
-	_, err := StrOps{}.TrimStringEnds(tStr, '!')
+	replaceRunes[2][0] = 'c'
+	replaceRunes[2][1] = 0
+
+	replaceRunes[3][0] = 'd'
+	replaceRunes[3][1] = 0
+
+	replaceRunes[4][0] = 'e'
+	replaceRunes[4][1] = 0
+
+	_, err := StrOps{}.ReplaceStringChars(testStr, replaceRunes)
 
 	if err == nil {
-		t.Error("Expected an error to be returned. NO ERROR RETURNED!")
+		t.Error("Error: Expected an error return. NO ERROR RETURNED!. ")
 	}
 }
 
-func TestStrOps_TrimStringEnds_09(t *testing.T) {
+func TestStrOps_ReplaceStringChars_08(t *testing.T) {
 
-	tStr := "Jay Ray"
-	trimChar := rune(0)
-	_, err := StrOps{}.TrimStringEnds(tStr, trimChar)
+	testStr := "1a2b3c4d5e6"
+
+	replaceRunes := make([][]rune, 0, 0)
+
+	_, err := StrOps{}.ReplaceStringChars(testStr, replaceRunes)
 
 	if err == nil {
-		t.Error("Expected an error to be returned. NO ERROR RETURNED!")
-	}
-}
-
-func TestStrOps_Write_01(t *testing.T) {
-
-	originalStr := "Original base string written to sops1"
-
-	sops1 := StrOps{}.NewPtr()
-
-	lenOriginalStr := len(originalStr)
-
-	p := []byte(originalStr)
-
-	n, err := sops1.Write(p)
-
-	if err != nil {
-		t.Errorf("Error returned by sops1.Write(p). Error='%v' \n",
-			err.Error())
-	}
-
-	actualStr := sops1.GetStringData()
-
-	if originalStr != actualStr {
-		t.Errorf("Error: Expected string='%v'. Instead, string='%v'. \n",
-			originalStr, actualStr)
-	}
-
-	if lenOriginalStr != n {
-		t.Errorf("Error: Expected Length='%v'. Instead, Bytes Written='%v'. \n",
-			lenOriginalStr, n)
+		t.Error("Error: Expected an error return. NO ERROR WAS RETURNED! ")
 	}
 
 }
 
-func TestStrOps_Write_02(t *testing.T) {
+func TestStrOps_ReplaceStringChars_09(t *testing.T) {
 
-	originalStr := "Hello World"
+	testStr := "1a2b3c4d5e6"
 
-	sops1 := StrOps{}.NewPtr()
+	replaceRunes := make([][]rune, 5, 10)
 
-	p := make([]byte, 3)
-
-	for i := 0; i < 4; i++ {
-
-		if i == 0 {
-			p[0] = 'H'
-			p[1] = 'e'
-			p[2] = 'l'
-		} else if i == 1 {
-			p[0] = 'l'
-			p[1] = 'o'
-			p[2] = ' '
-		} else if i == 2 {
-			p[0] = 'W'
-			p[1] = 'o'
-			p[2] = 'r'
-
-		} else if i == 3 {
-			p[0] = 'l'
-			p[1] = 'd'
-			p[2] = byte(0)
-
-		}
-
-		_, err := sops1.Write(p)
-
-		if err != nil {
-			t.Errorf("Error returned by sops1.Write(p). Error='%v' ", err.Error())
-			return
-		}
-	}
-
-	actualStr := sops1.GetStringData()
-
-	if originalStr != actualStr {
-		t.Errorf("Error: Expected final string='%v'. Instead, string='%v'. ",
-			originalStr, actualStr)
-	}
-
-	if 11 != len(actualStr) {
-		t.Errorf("Error: Expected Length='11'. Instead, Length='%v'. ",
-			len(actualStr))
-	}
-
-}
-
-func TestStrOps_Write_03(t *testing.T) {
-
-	originalStr := "Original base string written to sops1"
-
-	lenOriginalStr := len(originalStr)
-
-	sops1 := StrOps{}.NewPtr()
-
-	sops1.SetStringData(originalStr)
-
-	sops2 := StrOps{}.NewPtr()
-
-	n, err := io.Copy(sops2, sops1)
-
-	if err != nil {
-		t.Errorf("Error returned by io.Copy(sops2, sops1). Error='%v' \n", err.Error())
-		return
-	}
-
-	if int64(lenOriginalStr) != n {
-		t.Errorf("Error: Expected bytes copied='%v'. Instead, bytes copied='%v'. ",
-			lenOriginalStr, n)
-	}
-
-	actualStr := sops2.GetStringData()
-
-	if originalStr != actualStr {
-		t.Errorf("Error: Expected string='%v'. Instead, string='%v'. ",
-			originalStr, actualStr)
-	}
-}
-
-func TestStrOps_Write_04(t *testing.T) {
-
-	originalStr := "Original base string written to sops1"
-
-	sops1 := StrOps{}.NewPtr()
-	sops1.SetStringData(originalStr)
-
-	p := make([]byte, 0)
-
-	_, err := sops1.Write(p)
+	_, err := StrOps{}.ReplaceStringChars(testStr, replaceRunes)
 
 	if err == nil {
-		t.Error("Error: Expected Error Return. NO ERROR WAS RETURNED!")
+		t.Errorf("Error: Expected error return. NO ERROR WAS RETURNED!")
+	}
+}
+
+func TestStrOps_ReplaceRunes_01(t *testing.T) {
+
+	testStr := "1a2b3c4d5e6"
+	testRunes := []rune(testStr)
+
+	expected := "1A2B3C4D5E6"
+
+	replaceRunes := make([][]rune, 5, 10)
+
+	for i := 0; i < 5; i++ {
+		replaceRunes[i] = make([]rune, 2, 5)
+	}
+
+	replaceRunes[0][0] = 'a'
+	replaceRunes[0][1] = 'A'
+
+	replaceRunes[1][0] = 'b'
+	replaceRunes[1][1] = 'B'
+
+	replaceRunes[2][0] = 'c'
+	replaceRunes[2][1] = 'C'
+
+	replaceRunes[3][0] = 'd'
+	replaceRunes[3][1] = 'D'
+
+	replaceRunes[4][0] = 'e'
+	replaceRunes[4][1] = 'E'
+
+	actualRunes, err := StrOps{}.ReplaceRunes(testRunes, replaceRunes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ReplaceRunes(testRunes, replaceRunes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	actualStr := string(actualRunes)
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected actual result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+
+}
+
+func TestStrOps_ReplaceRunes_02(t *testing.T) {
+
+	testStr := "1a2b3c4d5e6"
+	testRunes := []rune(testStr)
+
+	expected := "1A23C45E6"
+
+	replaceRunes := make([][]rune, 5, 10)
+
+	for i := 0; i < 5; i++ {
+		replaceRunes[i] = make([]rune, 2, 5)
+	}
+
+	replaceRunes[0][0] = 'a'
+	replaceRunes[0][1] = 'A'
+
+	replaceRunes[1][0] = 'b'
+	replaceRunes[1][1] = 0
+
+	replaceRunes[2][0] = 'c'
+	replaceRunes[2][1] = 'C'
+
+	replaceRunes[3][0] = 'd'
+	replaceRunes[3][1] = 0
+
+	replaceRunes[4][0] = 'e'
+	replaceRunes[4][1] = 'E'
+
+	actualRunes, err := StrOps{}.ReplaceRunes(testRunes, replaceRunes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ReplaceRunes(testRunes, replaceRunes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	actualStr := string(actualRunes)
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected actual result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+
+}
+
+func TestStrOps_ReplaceRunes_03(t *testing.T) {
+
+	testStr := "1a2b3c4d5e6"
+	testRunes := []rune(testStr)
+
+	expected := "1a2b3c4d5e6"
+
+	replaceRunes := make([][]rune, 5, 10)
+
+	for i := 0; i < 5; i++ {
+		replaceRunes[i] = make([]rune, 2, 5)
+	}
+
+	replaceRunes[0][0] = 'z'
+	replaceRunes[0][1] = 'Z'
+
+	replaceRunes[1][0] = 'y'
+	replaceRunes[1][1] = 'Y'
+
+	replaceRunes[2][0] = 'x'
+	replaceRunes[2][1] = 'X'
+
+	replaceRunes[3][0] = 'w'
+	replaceRunes[3][1] = 'W'
+
+	replaceRunes[4][0] = 'v'
+	replaceRunes[4][1] = 'V'
+
+	actualRunes, err := StrOps{}.ReplaceRunes(testRunes, replaceRunes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ReplaceRunes(testRunes, replaceRunes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	actualStr := string(actualRunes)
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected actual result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+}
+
+func TestStrOps_ReplaceRunes_04(t *testing.T) {
+
+	testStr := "1a2b3c4d5e6"
+	testRunes := []rune(testStr)
+
+	expected := "3a4b5c6d7e6"
+
+	replaceRunes := make([][]rune, 5, 10)
+
+	for i := 0; i < 5; i++ {
+		replaceRunes[i] = make([]rune, 2, 5)
+	}
+
+	replaceRunes[0][0] = '1'
+	replaceRunes[0][1] = '3'
+
+	replaceRunes[1][0] = '2'
+	replaceRunes[1][1] = '4'
+
+	replaceRunes[2][0] = '3'
+	replaceRunes[2][1] = '5'
+
+	replaceRunes[3][0] = '4'
+	replaceRunes[3][1] = '6'
+
+	replaceRunes[4][0] = '5'
+	replaceRunes[4][1] = '7'
+
+	actualRunes, err := StrOps{}.ReplaceRunes(testRunes, replaceRunes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ReplaceRunes(testRunes, replaceRunes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	actualStr := string(actualRunes)
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected actual result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+}
+
+func TestStrOps_ReplaceRunes_05(t *testing.T) {
+
+	testStr := "1a2b3c4d5e6"
+	testRunes := []rune(testStr)
+
+	expected := "1a23c4d5e6"
+
+	replaceRunes := make([][]rune, 5, 10)
+
+	for i := 0; i < 5; i++ {
+		replaceRunes[i] = make([]rune, 2, 5)
+	}
+
+	replaceRunes[0][0] = 'z'
+	replaceRunes[0][1] = 'Z'
+
+	replaceRunes[1][0] = 'y'
+	replaceRunes[1][1] = 'Y'
+
+	replaceRunes[2][0] = 'x'
+	replaceRunes[2][1] = 'X'
+
+	replaceRunes[3][0] = 'w'
+	replaceRunes[3][1] = 'W'
+
+	replaceRunes[4][0] = 'b'
+	replaceRunes[4][1] = 0
+
+	actualRunes, err := StrOps{}.ReplaceRunes(testRunes, replaceRunes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ReplaceRunes(testRunes, replaceRunes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	actualStr := string(actualRunes)
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected actual result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+}
+
+func TestStrOps_ReplaceRunes_06(t *testing.T) {
+
+	testStr := "1a2b3c4d5e6"
+	testRunes := []rune(testStr)
+
+	expected := "123456"
+
+	replaceRunes := make([][]rune, 5, 10)
+
+	for i := 0; i < 5; i++ {
+		replaceRunes[i] = make([]rune, 2, 5)
+	}
+
+	replaceRunes[0][0] = 'a'
+	replaceRunes[0][1] = 0
+
+	replaceRunes[1][0] = 'b'
+	replaceRunes[1][1] = 0
+
+	replaceRunes[2][0] = 'c'
+	replaceRunes[2][1] = 0
+
+	replaceRunes[3][0] = 'd'
+	replaceRunes[3][1] = 0
+
+	replaceRunes[4][0] = 'e'
+	replaceRunes[4][1] = 0
+
+	actualRunes, err := StrOps{}.ReplaceRunes(testRunes, replaceRunes)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ReplaceRunes(testRunes, replaceRunes). "+
+			"Error='%v' ", err.Error())
+	}
+
+	actualStr := string(actualRunes)
+
+	if expected != actualStr {
+		t.Errorf("Error: Expected actual result='%v'. Instead, result='%v'. ",
+			expected, actualStr)
+	}
+}
+
+func TestStrOps_ReplaceRunes_07(t *testing.T) {
+
+	testRunes := make([]rune, 0, 0)
+
+	replaceRunes := make([][]rune, 5, 10)
+
+	for i := 0; i < 5; i++ {
+		replaceRunes[i] = make([]rune, 2, 5)
+	}
+
+	replaceRunes[0][0] = 'a'
+	replaceRunes[0][1] = 0
+
+	replaceRunes[1][0] = 'b'
+	replaceRunes[1][1] = 0
+
+	replaceRunes[2][0] = 'c'
+	replaceRunes[2][1] = 0
+
+	replaceRunes[3][0] = 'd'
+	replaceRunes[3][1] = 0
+
+	replaceRunes[4][0] = 'e'
+	replaceRunes[4][1] = 0
+
+	_, err := StrOps{}.ReplaceRunes(testRunes, replaceRunes)
+
+	if err == nil {
+		t.Error("Error: Expected an error return. NO ERROR RETURNED!. ")
+	}
+}
+
+func TestStrOps_ReplaceRunes_08(t *testing.T) {
+
+	testStr := "1a2b3c4d5e6"
+	testRunes := []rune(testStr)
+
+	replaceRunes := make([][]rune, 0, 0)
+
+	_, err := StrOps{}.ReplaceRunes(testRunes, replaceRunes)
+
+	if err == nil {
+		t.Error("Error: Expected an error return. NO ERROR WAS RETURNED! ")
+	}
+
+}
+
+func TestStrOps_ReplaceRunes_09(t *testing.T) {
+
+	testStr := "1a2b3c4d5e6"
+	testRunes := []rune(testStr)
+
+	replaceRunes := make([][]rune, 5, 10)
+
+	_, err := StrOps{}.ReplaceRunes(testRunes, replaceRunes)
+
+	if err == nil {
+		t.Errorf("Error: Expected error return. NO ERROR WAS RETURNED!")
 	}
 }
