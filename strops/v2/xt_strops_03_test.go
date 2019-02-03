@@ -194,6 +194,363 @@ func TestStrOps_Read_04(t *testing.T) {
 
 }
 
+func TestStrOps_ReadStringFromBytes_01(t *testing.T) {
+
+	bytes := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\r', '\n',
+		'H', 'o', 'w', ' ', 'a', 'r', 'e', ' ', 'y', 'o', 'u', '?', '\n',
+		'D', 'o', 'e', 's', ' ', 'y', 'o', 'u', 'r', ' ', 'p', 'r', 'o', 'g', 'r', 'a', 'm', ' ', 'r', 'u', 'n', '?', '\r'}
+
+	expectedStr := "Hello World"
+	expecteNextIdx := 13
+	result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+	if expectedStr != result {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+			expectedStr, result)
+	}
+
+	if expecteNextIdx != nextStartIdx {
+		t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+			expecteNextIdx, nextStartIdx)
+	}
+
+}
+
+func TestStrOps_ReadStringFromBytes_02(t *testing.T) {
+
+	bytes := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\r', '\n',
+		'H', 'o', 'w', ' ', 'a', 'r', 'e', ' ', 'y', 'o', 'u', '?', '\n',
+		'D', 'o', 'e', 's', ' ', 'y', 'o', 'u', 'r', ' ', 'p', 'r', 'o', 'g', 'r', 'a', 'm', ' ', 'r', 'u', 'n', '?', '\r'}
+
+	expectedStr := "Does your program run?"
+	expecteNextIdx := -1
+
+	result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+	result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
+
+	result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
+
+	if expectedStr != result {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+			expectedStr, result)
+	}
+
+	if expecteNextIdx != nextStartIdx {
+		t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+			expecteNextIdx, nextStartIdx)
+	}
+
+}
+
+func TestStrOps_ReadStringFromBytes_03(t *testing.T) {
+
+	//               0   1   2   3   4   5   6   7   8   9  10   11   12
+	bytes := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\r', '\n',
+		//
+		//13  14  15  16  17  18  19  20  21  22  23  24  25
+		'H', 'o', 'w', ' ', 'a', 'r', 'e', ' ', 'y', 'o', 'u', '?', '\n',
+		//26  27  28  29  30  31  32  33  34  35  36  37  38  39  40  41  42  43  44  45  46  47   48
+		'D', 'o', 'e', 's', ' ', 'y', 'o', 'u', 'r', ' ', 'p', 'r', 'o', 'g', 'r', 'a', 'm', ' ', 'r', 'u', 'n', '?', '\r'}
+
+	expectedStr := "How are you?"
+	expecteNextIdx := 26
+
+	result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+	result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
+
+	if expectedStr != result {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+			expectedStr, result)
+	}
+
+	if expecteNextIdx != nextStartIdx {
+		t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+			expecteNextIdx, nextStartIdx)
+	}
+
+}
+
+func TestStrOps_ReadStringFromBytes_04(t *testing.T) {
+
+	//               0   1   2   3   4   5   6   7   8   9  10   11
+	bytes := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\r',
+		//
+		//12  13  14  15  16  17  18  19  20  21  22  23  24
+		'H', 'o', 'w', ' ', 'a', 'r', 'e', ' ', 'y', 'o', 'u', '?', '\n',
+		//25  26  27  28  29  30  31  32  33  34  35  36  34  38  39  40  41  42  43  44  45  46   47
+		'D', 'o', 'e', 's', ' ', 'y', 'o', 'u', 'r', ' ', 'p', 'r', 'o', 'g', 'r', 'a', 'm', ' ', 'r', 'u', 'n', '?', '\r'}
+
+	expectedStr := "How are you?"
+	expecteNextIdx := 25
+
+	result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+	result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
+
+	if expectedStr != result {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+			expectedStr, result)
+	}
+
+	if expecteNextIdx != nextStartIdx {
+		t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+			expecteNextIdx, nextStartIdx)
+	}
+
+}
+
+func TestStrOps_ReadStringFromBytes_05(t *testing.T) {
+
+	//               0   1   2   3   4   5   6   7   8   9  10  11  12
+	bytes := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', ',', ' ',
+		//
+		//13  14  15  16  17  18  19  20  21  22  23  24
+		'h', 'o', 'w', ' ', 'a', 'r', 'e', ' ', 'y', 'o', 'u', '?'}
+
+	expectedStr := "Hello World, how are you?"
+	expecteNextIdx := -1
+
+	result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+	if expectedStr != result {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+			expectedStr, result)
+	}
+
+	if expecteNextIdx != nextStartIdx {
+		t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+			expecteNextIdx, nextStartIdx)
+	}
+
+}
+
+func TestStrOps_ReadStringFromBytes_06(t *testing.T) {
+
+	//               0   1   2   3   4   5   6   7   8   9  10  11  12
+	bytes := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', ',', ' ',
+		//
+		//13  14  15  16  17  18  19  20  21  22  23  24
+		'h', 'o', 'w', ' ', 'a', 'r', 'e', ' ', 'y', 'o', 'u', '?'}
+
+	expectedStr := ""
+	expecteNextIdx := -1
+
+	result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+	result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
+
+	if expectedStr != result {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+			expectedStr, result)
+	}
+
+	if expecteNextIdx != nextStartIdx {
+		t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+			expecteNextIdx, nextStartIdx)
+	}
+
+}
+
+func TestStrOps_ReadStringFromBytes_07(t *testing.T) {
+
+	bytes := []byte{}
+
+	expectedStr := ""
+	expecteNextIdx := -1
+
+	result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+	if expectedStr != result {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+			expectedStr, result)
+	}
+
+	if expecteNextIdx != nextStartIdx {
+		t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+			expecteNextIdx, nextStartIdx)
+	}
+
+}
+
+func TestStrOps_ReadStringFromBytes_08(t *testing.T) {
+
+	//               0   1   2   3   4   5   6   7   8   9  10   11   12
+	bytes := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\r', '\v',
+		//
+		//13  14  15  16  17  18  19  20  21  22  23  24   25   26
+		'H', 'o', 'w', ' ', 'a', 'r', 'e', ' ', 'y', 'o', 'u', '?', '\r', '\n',
+		//27  28  29  30  31  32  33  34  35  36  34  38  39  40  41  42  43  44  45  46   47 48   49   50
+		'D', 'o', 'e', 's', ' ', 'y', 'o', 'u', 'r', ' ', 'p', 'r', 'o', 'g', 'r', 'a', 'm', ' ', 'r', 'u', 'n', '?', '\r', '\n'}
+
+	expectedStr := "Does your program run?"
+	expecteNextIdx := -1
+
+	result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+	result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
+
+	result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
+
+	if expectedStr != result {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+			expectedStr, result)
+	}
+
+	if expecteNextIdx != nextStartIdx {
+		t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+			expecteNextIdx, nextStartIdx)
+	}
+
+}
+
+func TestStrOps_ReadStringFromBytes_09(t *testing.T) {
+
+	//               0   1   2   3   4   5   6   7   8   9  10   11   12   13
+	bytes := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\r', '\v', '\n',
+		//
+		//14  15  16  17  18  19  20  21  22  23  24   25   26  27   28
+		'H', 'o', 'w', ' ', 'a', 'r', 'e', ' ', 'y', 'o', 'u', '?', '\r', '\v', '\n',
+		//29  30  31  32  33  34  35  36  34  38  39  40  41  42  43  44  45  46  47  48  49  50   51   52
+		'D', 'o', 'e', 's', ' ', 'y', 'o', 'u', 'r', ' ', 'p', 'r', 'o', 'g', 'r', 'a', 'm', ' ', 'r', 'u', 'n', '?', '\r', '\n'}
+
+	expectedStr := "Does your program run?"
+	expecteNextIdx := -1
+
+	result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+	result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
+
+	result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
+
+	if expectedStr != result {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+			expectedStr, result)
+	}
+
+	if expecteNextIdx != nextStartIdx {
+		t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+			expecteNextIdx, nextStartIdx)
+	}
+
+}
+
+func TestStrOps_ReadStringFromBytes_10(t *testing.T) {
+
+	//               0   1   2   3   4   5   6   7   8   9  10   11   12   13
+	bytes := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\r', '\v', '\n',
+		//
+		//14  15  16  17  18  19  20  21  22  23  24   25
+		'H', 'o', 'w', ' ', 'a', 'r', 'e', ' ', 'y', 'o', 'u', '?'}
+
+	expectedStr := "How are you?"
+	expecteNextIdx := -1
+
+	result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+	result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
+
+	if expectedStr != result {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+			expectedStr, result)
+	}
+
+	if expecteNextIdx != nextStartIdx {
+		t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+			expecteNextIdx, nextStartIdx)
+	}
+
+}
+
+func TestStrOps_ReadStringFromBytes_11(t *testing.T) {
+
+	//               0   1   2   3   4   5   6   7   8   9  10  11
+	bytes := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!'}
+
+	expectedStr := "Hello World!"
+	expecteNextIdx := -1
+
+	result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+	if expectedStr != result {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+			expectedStr, result)
+	}
+
+	if expecteNextIdx != nextStartIdx {
+		t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+			expecteNextIdx, nextStartIdx)
+	}
+
+}
+
+func TestStrOps_ReadStringFromBytes_12(t *testing.T) {
+
+	//               0   1   2   3   4   5   6   7   8   9  10  11  12
+	bytes := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!', '\n'}
+
+	expectedStr := "Hello World!"
+	expecteNextIdx := -1
+
+	result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+	if expectedStr != result {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+			expectedStr, result)
+	}
+
+	if expecteNextIdx != nextStartIdx {
+		t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+			expecteNextIdx, nextStartIdx)
+	}
+
+}
+
+func TestStrOps_ReadStringFromBytes_13(t *testing.T) {
+
+	//               0   1   2   3   4   5   6   7   8   9  10  11  12
+	bytes := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!', '\r'}
+
+	expectedStr := "Hello World!"
+	expecteNextIdx := -1
+
+	result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+	if expectedStr != result {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+			expectedStr, result)
+	}
+
+	if expecteNextIdx != nextStartIdx {
+		t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+			expecteNextIdx, nextStartIdx)
+	}
+
+}
+
+func TestStrOps_ReadStringFromBytes_14(t *testing.T) {
+
+	//               0   1   2   3   4   5   6   7   8   9  10  11  12
+	bytes := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!', '\v'}
+
+	expectedStr := "Hello World!"
+	expecteNextIdx := -1
+
+	result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+	if expectedStr != result {
+		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+			expectedStr, result)
+	}
+
+	if expecteNextIdx != nextStartIdx {
+		t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+			expecteNextIdx, nextStartIdx)
+	}
+
+}
+
 func TestStrOps_ReplaceBytes_01(t *testing.T) {
 
 	testStr := "1a2b3c4d5e6"

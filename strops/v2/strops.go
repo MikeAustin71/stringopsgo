@@ -1186,6 +1186,102 @@ func (sops *StrOps) Read(p []byte) (n int, err error) {
 	return n, err
 }
 
+// ReadStringFromBytes - Receives a byte array and retrieves a string. The beginning of
+// the string is designated by input parameter 'startIdx'. The end of the string is determined
+// when a carriage return ('\r'), vertical tab ('\v') or a new line character ('\n') is encountered.
+//
+// The parsed string is returned to the caller along with 'nextStartIdx', which is the byte
+// array index of the beginning of the next string.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameters
+//
+//	bytes          []byte - An array of bytes from which a string will be extracted
+//	                        and returned.
+//
+//	startIdx          int - The starting index in input parameter 'bytes' where the string
+//	                        extraction will begin. The string extraction will cease when
+//	                        a carriage return ('\r'), a vertical tab ('\v') or a new line
+//	                        character ('\n') is encountered.
+//
+//
+//
+// ------------------------------------------------------------------------
+//
+// Return Values
+//
+//	extractedStr   string - The string extracted from input parameter 'bytes' beginning
+//	                        at the index in 'bytes' indicated by input parameter 'startIdx'.
+//
+//	nextStartIdx      int - The index of the beginning of the next string in the byte array
+//	                        'bytes' after 'extractedString'. If no more string exist in the
+//	                        the byte array, 'nextStartIdx' will be set to -1.
+//
+func (sops StrOps) ReadStringFromBytes(
+	bytes []byte,
+	startIdx int) (extractedStr string, nextStartIdx int) {
+
+	extractedStr = ""
+	nextStartIdx = -1
+
+	bLen := len(bytes)
+
+	if bLen == 0 {
+		return extractedStr, nextStartIdx
+	}
+
+	if startIdx >= bLen || startIdx < 0 {
+		return extractedStr, nextStartIdx
+	}
+
+	nextStartIdx = -1
+
+	runeAry := make([]rune, 0, bLen+5)
+
+	for i := startIdx; i < bLen; i++ {
+
+		if bytes[i] == '\r' ||
+			bytes[i] == '\n' ||
+			bytes[i] == '\v' {
+
+			if i+1 < bLen {
+
+				j := 0
+
+				for j = i + 1; j < bLen; j++ {
+					if bytes[j] == '\r' ||
+						bytes[j] == '\v' ||
+						bytes[j] == '\n' {
+						continue
+					} else {
+						break
+					}
+				}
+
+				if j >= bLen {
+					nextStartIdx = -1
+				} else {
+					nextStartIdx = j
+				}
+
+				break
+
+			} else {
+				nextStartIdx = -1
+			}
+
+			break
+		}
+
+		runeAry = append(runeAry, rune(bytes[i]))
+	}
+
+	extractedStr = string(runeAry)
+
+	return extractedStr, nextStartIdx
+}
+
 // ReplaceBytes	- Replaces characters in a target array of bytes ([]bytes) with those specified in
 // a two dimensional slice of bytes.
 //
