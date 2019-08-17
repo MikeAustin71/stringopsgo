@@ -1,4 +1,4 @@
-# StrOps Version 2.0.1
+# StrOps Version 2.0.2
 
 Copyright 2019 Mike Rapp. All rights reserved.
 
