@@ -1,4 +1,4 @@
-package strops
+package main
 
 import (
   "fmt" )

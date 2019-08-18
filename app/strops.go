@@ -11,7 +11,7 @@ Currently, the package consists of one type, 'StrOps' which is
 documented below.
 */
 
-package strops
+package main
 
 import (
   "errors"
