@@ -1,28 +1,53 @@
-# StrOps Version 2.0.2
+# StrOps Version 2.0.3
 
-Copyright 2019 Mike Rapp. All rights reserved.
+*strops* is a software library or in *Go* parlance, a software *package*.
 
-Use of this source code is governed by the
-MIT-style license which can be found in the
-LICENSE file.
+This package is written in the *Go* programming language, a.k.a 'golang'.
 
-------------------------------------------------------------------------------------------
-
-Send questions or comments to:
-
-    mike.go@paladinacs.net
-
-------------------------------------------------------------------------------------------
-
-
-Package 'strops', or string operations, is a collection of string
+Package *strops*, or string operations, is a collection of string
 management utilities written in the Go Programming Language. 
 
 Type 'StrOps' provides simple string management routines which perform operations
 like string centering, justification and trimming.
 
-The latest version is version 2.0.1 which supports Go modules and requires 
+The latest version is version 2.0.3 which supports Go modules and requires 
 Go Version 1.12 or later. 
+
+[Click To View Source Documentation](http://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v2)    
+
+# Table of Contents
++ [Supported Platforms](#supported-platforms)
++ [Getting Started](#getting-started)
+    - [Installation](#installation)
+    - [Source Code Import](#source-code-import)
++ [Source Code Documentation](#source-code-documentation)
++ [Production File Location](#production-file-location)
++ [License](#license)
++ [Comments](#comments-and-questions) 
+
+## Supported Platforms
+This package was developed and tested on Windows, although the package
+was designed to operate on multiple operating systems including 
+Mac-OS, Linux and Windows.
+
+__`To date, the source code has only been tested on Windows.`__
+
+## Getting Started
+
+### Installation
+Use this command to down load and install the *pathfileops* package
+locally. Note: Version 2+ supports *Go* modules.
+
+    go get github.com/MikeAustin71/stringopsgo/strops/v2
+
+To update the package run:
+    
+    go get -u github.com/MikeAustin71/stringopsgo/strops/v2
+
+
+### Source Code Import        
+You will need to import and reference this package in your source code
+files.
 
 To import version 2 or later use the following import statement:
 
@@ -36,9 +61,28 @@ import statement:
 
     import "github.com/MikeAustin71/stringopsgo/strops"
 
-
-------------------------------------------------------------------------------------------
-
+## Source Code Documentation
     
 [Click To View Source Documentation](http://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v2)    
+
+
+## Production File Location
+All of the active production files are located in directory path:
+
+    github.com/MikeAustin71/stringopsgo/strops/v2
+
+## License
+Copyright 2019 Mike Rapp. All rights reserved.
+
+Use of this source code is governed by the (open-source)
+MIT-style license which can be found in the LICENSE file
+found in this directory.
+
+## Comments And Questions
+
+Send questions or comments to:
+
+    mike.go@paladinacs.net
+
+
 

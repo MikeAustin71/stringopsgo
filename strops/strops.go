@@ -9,7 +9,7 @@ import (
 )
 
 /*
-	'strops.go' is located in source code repository:
+	'xStrops.go' is located in source code repository:
 
 			https://github.com/MikeAustin71/stringopsgo.git
 

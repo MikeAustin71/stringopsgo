@@ -13,7 +13,7 @@ import (
 			https://github.com/MikeAustin71/stringopsgo.git
 
 	It contains tests related to type, 'StrOps' located
-	in source file, 'strops.go'.
+	in source file, 'xStrops.go'.
 
 */
 

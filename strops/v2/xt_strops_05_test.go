@@ -3,9 +3,81 @@ package strops
 import (
 	"fmt"
 	"io"
+	"sort"
 	"strings"
 	"testing"
 )
+
+func TestSortStrLengthHighestToLowest_Len_01(t *testing.T) {
+	badChars := []string {
+		"aaaaa",
+		"bbbbb",
+		"cccccccccc",
+		"ddddddddd",
+		"eeeeeeeeeee",
+		"fffffffffff" }
+
+	sort.Sort(SortStrLengthHighestToLowest(badChars))
+
+	goodChars := []string {
+		"fffffffffff",
+		"eeeeeeeeeee",
+		"cccccccccc",
+		"ddddddddd",
+		"bbbbb",
+		"aaaaa"	}
+
+	for i:=0; i < len(badChars); i++ {
+		if goodChars[i] != badChars[i] {
+			errStr := "badChars mismatch!\nbadCharsArray=\n"
+			for j:=0; j<len(badChars); j++ {
+				errStr += fmt.Sprintf("%v\n", badChars[j])
+			}
+
+			t.Errorf("%v", errStr)
+		}
+	}
+
+}
+
+func TestSortStrLengthLowestToHighest01(t *testing.T) {
+
+}
+
+func TestStrOps_StripLeadingChars_001(t *testing.T) {
+
+	badChars := []string {
+		" ",
+		"/",
+		"//",
+		"../",
+		".",
+		"..\\",
+		"\\\\\\",
+		"..",
+		"./",
+		"///",
+		"..."}
+	expectedStr := "SomeString"
+	expectedStrLen := len(expectedStr)
+	testString := "..........      ./../.\\.\\..\\////   " + expectedStr
+
+	actualString, actualStrLen := StrOps{}.StripLeadingChars(testString, badChars)
+
+	if expectedStr != actualString {
+		t.Errorf("ERROR: Expected result string='%v'\n" +
+			"Instead, result string='%v'\n",
+			expectedStr, actualString)
+	}
+
+	if expectedStrLen != actualStrLen {
+		t.Errorf("ERROR: Expected result string length='%v'\n" +
+			"Instead, result string length='%v'\n",
+			expectedStrLen, actualStrLen)
+	}
+
+
+}
 
 func TestStrOps_StrCenterInStr_001(t *testing.T) {
 	strToCntr := "1234567"

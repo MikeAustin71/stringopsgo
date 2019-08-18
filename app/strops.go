@@ -10,6 +10,7 @@ Source file, 'xStrops.go', is located in source code repository:
 Currently, the package consists of one type, 'StrOps' which is
 documented below.
 */
+
 package strops
 
 import (
