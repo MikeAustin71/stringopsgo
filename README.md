@@ -7,7 +7,7 @@ This package is written in the *Go* programming language, a.k.a 'golang'.
 Package *strops*, or string operations, is a collection of string
 management utilities written in the Go Programming Language. 
 
-Type 'StrOps' provides simple string management routines which perform operations
+Type *StrOps* provides simple string management routines which perform operations
 like string centering, justification and trimming.
 
 The latest version is version 2.0.3 which supports Go modules and requires 
@@ -22,6 +22,7 @@ Go Version 1.12 or later.
     - [Source Code Import](#source-code-import)
 + [Source Code Documentation](#source-code-documentation)
 + [Production File Location](#production-file-location)
++ [Tests](#tests)
 + [License](#license)
 + [Comments](#comments-and-questions) 
 
@@ -70,6 +71,10 @@ import statement:
 All of the active production files are located in directory path:
 
     github.com/MikeAustin71/stringopsgo/strops/v2
+
+## Tests
+Currently the *strops* package has 206 unit tests with a code coverage
+of 87%. 
 
 ## License
 Copyright 2019 Mike Rapp. All rights reserved.

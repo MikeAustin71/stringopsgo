@@ -23,16 +23,65 @@ import (
   "unicode/utf8"
 )
 
+// SortStrLengthHighestToLowest - Uses to perform two level sort
+// on string arrays. The strings are first sorted by string length
+// (greatest length to Lowest length) and then by alphabetic sort.
+//
+// This type is designed to be used in conjunction with 'sort.Sort()'
+// Reference the Go Sort Package:
+//      https://golang.org/pkg/sort/#Sort
+//
+// Example Usage:
+//   badChars := []string {
+//    "aaaaa",
+//    "bbbbb",
+//    "cccccccccc",
+//    "z",
+//    "fffffffffff",
+//    "xx",
+//    "ddddddddd",
+//    "eeeeeeeeeee" }
+//
+//     SortStrLengthLowestToHighest(badChars)
+//
+//     Output:
+//
+//        ================================
+//        Sort by Length Highest To Lowest
+//        Ordered List
+//        ================================
+//
+//        1. fffffffffff
+//        2. eeeeeeeeeee
+//        3. cccccccccc
+//        4. ddddddddd
+//        5. bbbbb
+//        6. aaaaa
+//        7. xx
+//        8. z
+//
 type SortStrLengthHighestToLowest []string
 
+// Len - This is part of the sort.Interface. Reference the 'sort' package:
+//   https://golang.org/pkg/sort/#Interface
+//   https://golang.org/pkg/sort/#Sort
+//
 func (sortStrLenHigh SortStrLengthHighestToLowest) Len() int {
   return len(sortStrLenHigh)
 }
 
+// Swap - This is part of the sort.Interface. Reference the 'sort' package:
+//   https://golang.org/pkg/sort/#Interface
+//   https://golang.org/pkg/sort/#Sort
+//
 func (sortStrLenHigh SortStrLengthHighestToLowest) Swap(i, j int) {
   sortStrLenHigh[i], sortStrLenHigh[j] = sortStrLenHigh[j], sortStrLenHigh[i]
 }
 
+// Less - This is part of the sort.Interface. Reference the 'sort' package:
+//   https://golang.org/pkg/sort/#Interface
+//   https://golang.org/pkg/sort/#Sort
+//
 func (sortStrLenHigh SortStrLengthHighestToLowest) Less(i, j int) bool {
 
   lenI := len(sortStrLenHigh[i])
@@ -44,16 +93,65 @@ func (sortStrLenHigh SortStrLengthHighestToLowest) Less(i, j int) bool {
   return lenI > lenJ
 }
 
+// SortStrLengthLowestToHighest - Uses to perform two level sort
+// on string arrays. The strings are first sorted by string length
+// (smallest length to greatest length) and then by alphabetic sort.
+//
+// This type is designed to be used in conjunction with 'sort.Sort()'
+// Reference the Go Sort Package:
+//      https://golang.org/pkg/sort/#Sort
+//
+// Example Usage:
+//      badChars := []string {
+//    "aaaaa",
+//    "bbbbb",
+//    "cccccccccc",
+//    "z",
+//    "fffffffffff",
+//    "xx",
+//    "ddddddddd",
+//    "eeeeeeeeeee" }
+//
+//     SortStrLengthLowestToHighest(badChars)
+//
+//     Output:
+//
+//       ================================
+//       Sort by Length Lowest To Highest
+//       Ordered List
+//       ================================
+//       1. z
+//       2. xx
+//       3. aaaaa
+//       4. bbbbb
+//       5. ddddddddd
+//       6. cccccccccc
+//       7. eeeeeeeeeee
+//       8. fffffffffff
+//
 type SortStrLengthLowestToHighest []string
 
+
+// Len - This is part of the sort.Interface. Reference the 'sort' package:
+//   https://golang.org/pkg/sort/#Interface
+//   https://golang.org/pkg/sort/#Sort
+//
 func (sortStrLenLow SortStrLengthLowestToHighest) Len() int {
   return len(sortStrLenLow)
 }
 
+// Swap - This is part of the sort.Interface. Reference the 'sort' package:
+//   https://golang.org/pkg/sort/#Interface
+//   https://golang.org/pkg/sort/#Sort
+//
 func (sortStrLenLow SortStrLengthLowestToHighest) Swap(i, j int) {
   sortStrLenLow[i], sortStrLenLow[j] = sortStrLenLow[j], sortStrLenLow[i]
 }
 
+// Less - This is part of the sort.Interface. Reference the 'sort' package:
+//   https://golang.org/pkg/sort/#Interface
+//   https://golang.org/pkg/sort/#Sort
+//
 func (sortStrLenLow SortStrLengthLowestToHighest) Less(i, j int) bool {
 
   lenI := len(sortStrLenLow[i])
@@ -1759,25 +1857,39 @@ func (sops StrOps) StripLeadingChars(
 
   sort.Sort(SortStrLengthHighestToLowest(badChars))
 
-  maxLoop := strLen * 5
+  cycleWhereStringRemoved := 10000000
+  k := -1
 
-  for i:=0; i < len(badChars); i++ {
+  for {
 
-    for j:=0; j < maxLoop; j++ {
+    k++
 
-      if !strings.HasPrefix(cleanStr, badChars[i]) {
-        break
+    for i:=0; i < lenBadChars; i++ {
+
+      for {
+
+        if !strings.HasPrefix(cleanStr, badChars[i]) {
+          break
+        }
+
+        cleanStr = cleanStr[len(badChars[i]):]
+
+        cycleWhereStringRemoved = k
       }
 
-      cleanStr = cleanStr[len(badChars[i]):]
+      strLen = len(cleanStr)
+
+      if strLen == 0 {
+        goto Done
+      }
     }
 
-    strLen = len(cleanStr)
-
-    if len(cleanStr) == 0 {
-      break
+    if k - cycleWhereStringRemoved > 5 || k > 1000000 {
+      goto Done
     }
   }
+
+Done:
 
   return cleanStr, strLen
 }
@@ -1808,25 +1920,47 @@ func (sops StrOps) StripTrailingChars(
     return cleanStr, strLen
   }
 
-  maxLoop := strLen * 5
+  k:= -1
+  cycleWhereStringRemoved := 10000000
 
-  for i:=0; i < len(badChars); i++ {
+  for {
 
-    for j:=0; j < maxLoop; j++ {
+    k++
 
-      if !strings.HasSuffix(cleanStr, badChars[i]) {
-        break
+    for i:=0; i < lenBadChars; i++ {
+
+      for {
+
+        if !strings.HasSuffix(cleanStr, badChars[i]) {
+          break
+        }
+
+        strLen = len(cleanStr) - len(badChars[i])
+
+        cleanStr = cleanStr[0:strLen]
+
+        cycleWhereStringRemoved = k
+
       }
 
-      strLen = len(cleanStr) - len(badChars[i])
-
-      cleanStr = cleanStr[0:strLen]
+      if len(cleanStr) == 0 {
+        goto Done
+      }
     }
 
-    if len(cleanStr) == 0 {
-      break
+    strLen = len(cleanStr)
+
+    if strLen == 0 {
+      goto Done
     }
+
+    if k - cycleWhereStringRemoved > 5 || k > 1000000 {
+      goto Done
+    }
+
   }
+
+  Done:
 
   return cleanStr, strLen
 }

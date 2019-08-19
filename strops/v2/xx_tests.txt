@@ -324,12 +324,20 @@
 --- PASS: TestStrOps_ReplaceRunes_09 (0.00s)
 === RUN   TestSortStrLengthHighestToLowest_Len_01
 --- PASS: TestSortStrLengthHighestToLowest_Len_01 (0.00s)
+=== RUN   TestSortStrLengthLowestToHighest01
+--- PASS: TestSortStrLengthLowestToHighest01 (0.00s)
 === RUN   TestStrOps_StripLeadingChars_001
---- FAIL: TestStrOps_StripLeadingChars_001 (0.00s)
-    xt_strops_05_test.go:64: ERROR: Expected result string='SomeString'
-        Instead, result string='./../.\.\..\////   SomeString'
-    xt_strops_05_test.go:70: ERROR: Expected result string length='10'
-        Instead, result string length='29'
+--- PASS: TestStrOps_StripLeadingChars_001 (0.00s)
+=== RUN   TestStrOps_StripLeadingChars_002
+--- PASS: TestStrOps_StripLeadingChars_002 (0.00s)
+=== RUN   TestStrOps_StripLeadingChars_003
+--- PASS: TestStrOps_StripLeadingChars_003 (0.00s)
+=== RUN   TestStrOps_StripTrailingChars_001
+--- PASS: TestStrOps_StripTrailingChars_001 (0.00s)
+=== RUN   TestStrOps_StripTrailingChars_002
+--- PASS: TestStrOps_StripTrailingChars_002 (0.00s)
+=== RUN   TestStrOps_StripTrailingChars_003
+--- PASS: TestStrOps_StripTrailingChars_003 (0.00s)
 === RUN   TestStrOps_StrCenterInStr_001
 --- PASS: TestStrOps_StrCenterInStr_001 (0.00s)
 === RUN   TestStrOps_StrLeftJustify_001
@@ -402,6 +410,6 @@
 --- PASS: TestStrOps_Write_03 (0.00s)
 === RUN   TestStrOps_Write_04
 --- PASS: TestStrOps_Write_04 (0.00s)
-FAIL
-exit status 1
-FAIL	MikeAustin71/stringopsgo/strops/v2	3.464s
+PASS
+coverage: 87.2% of statements
+ok  	MikeAustin71/stringopsgo/strops/v2	3.665s
