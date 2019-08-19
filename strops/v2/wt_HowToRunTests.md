@@ -1,10 +1,12 @@
 # Running Tests
-##### Open a command prompt in this directory (*strops/v2*) and run the following command:
+
+Open a command prompt in this directory (*stringopsgo/strops/v2*) and run the
+following command:
 
 ### `go test -v > xx_tests.txt`
 
-This will generate test results in the "strops/v2" directory.  The tests utilize
-some library routines stored in the "appLibs" directory.
+This will generate test results in the *stringopsgo/strops/v2* 
+directory which are stored in the text file, `xx_tests.txt`. 
 
 ## Running Tests with code coverage
 
@@ -22,15 +24,14 @@ Run this in *strops/v2* directory:
 
 ## Cover Profile
 
-Generate the code coverage detail.
-Run this in *strops/v2* directory:
-
+Generate the code coverage detail. Run this command
+in the *stringopsgo/strops/v2* directory:
 
 `go test -coverprofile=xx_coverage.out`
 
 
 The following provides for code coverage display in your
 browser. Run this on the terminal command line and run it
-in the *strops/v2* directory:
+in the *stringopsgo/strops/v2* directory:
 
 `go tool cover -html=xx_coverage.out`
