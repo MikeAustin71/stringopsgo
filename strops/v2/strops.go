@@ -1831,6 +1831,82 @@ func (sops StrOps) StrGetCharCnt(targetStr string) int {
   return len([]rune(targetStr))
 }
 
+// StripBadChars - Removes/deletes specified characters from a string.
+// The characters to remove are contained in a string array passed as
+// input parameter, 'badChars'.
+//
+// All instances of a 'badChars' character are deleted from the target
+// string. The target string is passed through input parameter, 'targetStr'.
+//
+func (sops StrOps) StripBadChars(
+  targetStr string,
+  badChars []string) (cleanStr string, strLen int) {
+
+  cleanStr = targetStr
+  strLen = len(cleanStr)
+
+  if strLen==0 {
+    return cleanStr, strLen
+  }
+
+  lenBadChars := len(badChars)
+
+  if lenBadChars == 0 {
+    return cleanStr, strLen
+  }
+
+  sort.Sort(SortStrLengthHighestToLowest(badChars))
+
+  cycleWhereStringRemoved := 0
+  k := -1
+  badCharIdx := -1
+
+  for {
+
+    k++
+
+    for i:=0; i < lenBadChars; i++ {
+
+      for {
+
+        badCharIdx = strings.Index(cleanStr, badChars[i])
+
+        if badCharIdx == -1 {
+          break
+        }
+
+        lastCleanStrIdx := strLen - 1
+        lChar := len(badChars[i])
+        nextIdx := badCharIdx + lChar
+
+        if nextIdx > lastCleanStrIdx {
+          cleanStr = cleanStr[0:badCharIdx]
+
+        } else {
+
+          cleanStr = cleanStr[0:badCharIdx] + cleanStr[nextIdx:]
+        }
+
+        cycleWhereStringRemoved = k
+      }
+
+      strLen = len(cleanStr)
+
+      if strLen == 0 {
+        goto Done
+      }
+    }
+
+    if k - cycleWhereStringRemoved > 3 || k > 1000000 {
+      goto Done
+    }
+  }
+
+Done:
+
+  return cleanStr, strLen
+}
+
 // StripLeadingChars - Strips or deletes characters specified by
 // input parameter 'badChars' from the front of 'targetStr'.
 //
@@ -1857,7 +1933,7 @@ func (sops StrOps) StripLeadingChars(
 
   sort.Sort(SortStrLengthHighestToLowest(badChars))
 
-  cycleWhereStringRemoved := 10000000
+  cycleWhereStringRemoved := 0
   k := -1
 
   for {
@@ -1884,7 +1960,7 @@ func (sops StrOps) StripLeadingChars(
       }
     }
 
-    if k - cycleWhereStringRemoved > 5 || k > 1000000 {
+    if k - cycleWhereStringRemoved > 3 || k > 1000000 {
       goto Done
     }
   }
@@ -1921,7 +1997,7 @@ func (sops StrOps) StripTrailingChars(
   }
 
   k:= -1
-  cycleWhereStringRemoved := 10000000
+  cycleWhereStringRemoved := 0
 
   for {
 
@@ -1954,7 +2030,7 @@ func (sops StrOps) StripTrailingChars(
       goto Done
     }
 
-    if k - cycleWhereStringRemoved > 5 || k > 1000000 {
+    if k - cycleWhereStringRemoved > 3 || k > 1000000 {
       goto Done
     }
 

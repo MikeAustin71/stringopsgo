@@ -52,13 +52,11 @@ files.
 
 To import version 2 or later use the following import statement:
 
-
     import "github.com/MikeAustin71/stringopsgo/strops/v2"  
 
 
 To import version 1, which does NOT support Go modules, use the following
 import statement:
-
 
     import "github.com/MikeAustin71/stringopsgo/strops"
 
@@ -75,6 +73,13 @@ All of the active production files are located in directory path:
 ## Tests
 Currently the *strops* package has 206 unit tests with a code coverage
 of 87%. 
+
+Test coverage and outcomes are documented in:
+ 
+    github.com/MikeAustin71/stringopsgo/strops/v2/xx_tests.txt
+
+[How To Run Tests Documentation](https://github.com/MikeAustin71/stringopsgo/strops/v2/wt_HowToRunTests.md)
+   
 
 ## License
 Copyright 2019 Mike Rapp. All rights reserved.

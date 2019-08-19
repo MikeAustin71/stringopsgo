@@ -12,16 +12,78 @@ import (
   "os"
   "sort"
   "strings"
+  "time"
 )
 
 func main() {
 
-  mainTest{}.ExampleStripTrailingChars01()
+  mainTest{}.ExampleStripBadChars01()
 
 }
 
 type mainTest struct {
   input string
+}
+
+func (mt mainTest) ExampleStripBadChars01() {
+  badChars := []string {
+    " ",
+    "/",
+    "//",
+    "\\\\",
+    "\\",
+    ".\\",
+    "../",
+    ".",
+    "..\\",
+    "\\\\\\",
+    "..",
+    "./",
+    "//",
+    "///",
+    "////",
+    "..."}
+  expectedStr := "SomeString"
+  expectedStrLen := len(expectedStr)
+  testString :=  "..........      ./../.\\.\\..\\////   " + expectedStr +
+    "..........      ./../.\\.\\..\\////   "
+
+  var startTime time.Time
+  var endTime time.Time
+
+  startTime = time.Now()
+  actualString, actualStrLen := strOps.StrOps{}.StripBadChars(testString, badChars)
+  endTime = time.Now()
+
+  if expectedStr != actualString {
+    fmt.Printf("ERROR: Expected result string='%v'\n" +
+      "Instead, result string='%v'\n",
+      expectedStr, actualString)
+    return
+  }
+
+  if expectedStrLen != actualStrLen {
+    fmt.Printf("ERROR: Expected result string length='%v'\n" +
+      "Instead, result string length='%v'\n",
+      expectedStrLen, actualStrLen)
+    return
+  }
+
+  elapsedTime := mt.timer(startTime, endTime)
+
+  fmt.Println("mainTest.ExampleStripBadChars01()")
+  fmt.Println("-------------------------------------")
+  fmt.Println("          SUCCESS!!!")
+  fmt.Println("-------------------------------------")
+  fmt.Println("            Test String: ", testString)
+  fmt.Println("     Test String Length: ", len(testString))
+  fmt.Println("        Expected String: ", expectedStr)
+  fmt.Println(" Expected String Length: ", expectedStrLen)
+  fmt.Println("           Clean String: ", actualString)
+  fmt.Println("    Clean String Length: ", actualStrLen)
+  fmt.Println("Actual Clean Str Length: ", len(actualString))
+  fmt.Println("           Elapsed Time: ", elapsedTime)
+
 }
 
 func (mt mainTest) ExampleStripTrailingChars01() {
@@ -470,4 +532,103 @@ func (mt mainTest) ExampleIoCopy02() {
 
   fmt.Println()
   fmt.Println("New value of n: ", n)
+}
+
+
+func (mt mainTest) timer(starTime, endTime time.Time) string {
+
+  // MicroSecondNanoseconds - Number of Nanoseconds in a Microsecond
+  // 	A MicroSecond is 1/1,000,000 or 1 one-millionth of a second
+  MicroSecondNanoseconds := int64(time.Microsecond)
+
+  // MilliSecondNanoseconds - Number of Nanoseconds in a MilliSecond
+  //	 A millisecond is 1/1,000 or 1 one-thousandth of a second
+  MilliSecondNanoseconds := int64(time.Millisecond)
+
+  // SecondNanoseconds - Number of Nanoseconds in a Second
+  SecondNanoseconds := int64(time.Second)
+
+  // MinuteNanoseconds - Number of Nanoseconds in a minute
+  MinuteNanoseconds := int64(time.Minute)
+
+  // HourNanoseconds - Number of Nanoseconds in an hour
+  HourNanoseconds := int64(time.Hour)
+
+  t2Dur := endTime.Sub(starTime)
+
+  str := ""
+
+  totalNanoseconds := t2Dur.Nanoseconds()
+  numOfHours := int64(0)
+  numOfMinutes := int64(0)
+  numOfSeconds := int64(0)
+  numOfMillisecionds := int64(0)
+  numOfMicroseconds := int64(0)
+  numOfNanoseconds := int64(0)
+
+  if totalNanoseconds >= HourNanoseconds {
+    numOfHours = totalNanoseconds / HourNanoseconds
+    totalNanoseconds = totalNanoseconds - (numOfHours * HourNanoseconds)
+  }
+
+  if totalNanoseconds >= MinuteNanoseconds {
+    numOfMinutes = totalNanoseconds / MinuteNanoseconds
+    totalNanoseconds = totalNanoseconds - (numOfMinutes * MinuteNanoseconds)
+  }
+
+  if totalNanoseconds >= SecondNanoseconds {
+    numOfSeconds = totalNanoseconds / SecondNanoseconds
+    totalNanoseconds = totalNanoseconds - (numOfSeconds * SecondNanoseconds)
+  }
+
+  if totalNanoseconds >= SecondNanoseconds {
+    numOfSeconds = totalNanoseconds / SecondNanoseconds
+    totalNanoseconds = totalNanoseconds - (numOfSeconds * SecondNanoseconds)
+  }
+
+  if totalNanoseconds >= MilliSecondNanoseconds {
+    numOfMillisecionds = totalNanoseconds / MilliSecondNanoseconds
+    totalNanoseconds = totalNanoseconds - (numOfMillisecionds * MilliSecondNanoseconds)
+  }
+
+  if totalNanoseconds >= MicroSecondNanoseconds {
+    numOfMicroseconds = totalNanoseconds / MicroSecondNanoseconds
+    totalNanoseconds = totalNanoseconds - (numOfMicroseconds * MicroSecondNanoseconds)
+  }
+
+  numOfNanoseconds = totalNanoseconds
+
+  if numOfHours > 0 {
+
+    str += fmt.Sprintf("%v-Hours ", numOfHours)
+
+  }
+
+  if numOfMinutes > 0 {
+
+    str += fmt.Sprintf("%v-Minutes ", numOfMinutes)
+
+  }
+
+  if numOfSeconds > 0 || str != "" {
+
+    str += fmt.Sprintf("%v-Seconds ", numOfSeconds)
+
+  }
+
+  if numOfMillisecionds > 0 || str != "" {
+
+    str += fmt.Sprintf("%v-Milliseconds ", numOfMillisecionds)
+
+  }
+
+  if numOfMicroseconds > 0 || str != "" {
+
+    str += fmt.Sprintf("%v-Microseconds ", numOfMicroseconds)
+
+  }
+
+  str += fmt.Sprintf("%v-Nanoseconds", numOfNanoseconds)
+
+  return str
 }

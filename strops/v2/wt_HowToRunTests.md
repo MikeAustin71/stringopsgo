@@ -1,5 +1,5 @@
 # Running Tests
-##### Open a command prompt in this directory (strops/v2) and run the following command:
+##### Open a command prompt in this directory (*strops/v2*) and run the following command:
 
 ### `go test -v > xx_tests.txt`
 
@@ -15,7 +15,7 @@ First pull down and install the `cover` package.
 Next, follow the test execution protocol.  
   
 ## Test Execution with Code Coverage
-Run this in *strops/v2* directory
+Run this in *strops/v2* directory:
 
  `go test -cover -v > xx_tests.txt`  
      
