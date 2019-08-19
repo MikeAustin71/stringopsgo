@@ -93,6 +93,8 @@ Use of this source code is governed by the (open-source)
 MIT-style license which can be found in the LICENSE file
 found in this directory.
 
+[MIT License](./LICENSE)
+
 ## Comments And Questions
 
 Send questions or comments to:
