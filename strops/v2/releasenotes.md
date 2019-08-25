@@ -11,7 +11,7 @@ Added more tests. The *strops/v2* package now includes 210 unit
 tests with a code coverage of 87%. 
 
 ## Module Requirements
-All Version 2+ release support *Go* modules.
-With this relese, *go.mod* now requires *Go*
+All Version 2+ releases support *Go* modules.
+With this release, *go.mod* now requires *Go*
 version 1.12 or greater. 
   
