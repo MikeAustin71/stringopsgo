@@ -885,6 +885,249 @@ func (sops StrOps) FindLastWord(
     err
 }
 
+
+// FindNumericDigitsString - Examines an input 'targetStr' to identify the first instance
+// of a number string. The number string will be comprised of one or more consecutive numeric
+// digits (0-9) and may include a leading plus or minus sign character ('+' or '-' ).
+//
+// The search for this number string will be started at the index in 'targetStr' specified
+// by input parameter 'startIdx'.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameters
+//
+//  targetStr    string     - The target string to be searched for the first
+//                            instance of a number string. A number string is
+//                            defined as a string comprised of one or more numeric
+//                            digits and may also include a leading plus or minus
+//                            sign ('+' or '-') character.
+//
+//  startIdx        int     - The starting index in input parameter 'targetStr'
+//                            from which the search for a number string will be
+//                            started. This useful in extracting multiple number
+//                            strings form a single targetStr.
+//
+//
+//  keepNonNumChars string  - This string contains non-numeric characters which should
+//                            be retained in the number string. This might include commas
+//                            periods (a.k.a. decimal points) or currency symbols.
+//
+//                            For example, if the target string is '123,456,789' and a
+//                            comma is included in 'keepNonNumChars', the returned number
+//                            string would be '123,456,789'.  If no commas was included in
+//                            'keepNonNumChars', the returned number would be '123' because
+//                            number string parsing would break on the non-numeric comma
+//                            character.
+//
+//                            Note that 'keepNonNumChars' have priority over 'discardChars'.
+//
+//
+//  discardChars  string    - This strings contains all non-numeric characters which
+//                            should be discarded from the number string. Examples
+//                            might include commas, currency symbols and periods
+//                            (a.k.a. decimal points).
+//
+//                            For example if a comma is included in 'discardChars' and
+//                            the target string is '123,456,789', the returned number
+//                            string would be '123456789'.  If the comma character was
+//                            NOT included in the discardChars string, the returned number
+//                            string would be '123', since the number string extraction
+//                            would therefore break on the comma. Note that the 'keepNonNumChars'
+//                            parameter has priority over 'discardChars'.
+//
+// ------------------------------------------------------------------------
+//
+// Return Value
+//
+//  numIndex          int   - If a number string is located, this returned integer
+//                            value will contain the index of the first digit in the
+//                            in the number string. If return value 'hasLeadingSign'
+//                            is 'true', this index will point to the sigh character.
+//                            Otherwise, this index will point to the first numeric
+//                            digit in the number string.
+//
+//                            If the target string does NOT contain a number string, this
+//                            'numIndex' value is set to '-1'.
+//
+//  numLen            int   - If a number string is located, this return value holds the total
+//                            number of characters in the number string. Remember, that if the
+//                            number string includes a leading sign character ('+' or '-'), this
+//                            leading sign character will be included in the number string length.
+//                            If a number string is NOT found in the target string, this return value
+//                            is zero.
+//
+//  leadingSignChar string  - If the found number string contains a leading sign character ('+' or '-'),
+//                            this returned string value will contain that sign character. If no leading
+//                            plus or minus sign is found the returned string value is an empty string.
+//
+//  numStr          string  - If the target string contains a number string, that number string is returned
+//                            this value.
+//
+//  err             error   - If 'startIndex' is less than zero or if 'startIndex' exceeds the last character
+//                            index in 'targetStr', an error will be returned. If no errors are encountered,
+//                            this value is set to 'nil'.
+//
+func (sops StrOps) FindNumericDigitsString(
+  targetStr string,
+  startIndex int,
+  keepNonNumChars string,
+  discardChars string) ( numIndex,
+                      numLen int,
+                      leadingSignChar,
+                      numStr string,
+                      err error) {
+
+  numIndex = -1
+  numLen = 0
+  leadingSignChar = ""
+  numStr = ""
+  err = nil
+  ePrefix := "StrOps.FindNumericDigitsString() "
+
+  lenTargetStr := len(targetStr)
+
+  if lenTargetStr == 0 {
+    return numIndex, numLen, leadingSignChar, numStr, err
+  }
+
+  if startIndex < 0 {
+    err = fmt.Errorf(ePrefix +
+      "ERROR: Input parameter 'startIndex' is less than zero!\n" +
+      "startIndex='%v'", startIndex)
+
+    return numIndex, numLen, leadingSignChar, numStr, err
+  }
+
+  if startIndex >= lenTargetStr {
+    err = fmt.Errorf(ePrefix +
+      "ERROR: Input parameter 'startIndex' is INVALID!\n" +
+      "'startIndex' exceeds the last character index in 'targetStr'\n" +
+      "startIndex='%v'\tlast character index='%v'\n" +
+      "targetStr='%v'", startIndex, lenTargetStr-1, targetStr)
+
+    return numIndex, numLen, leadingSignChar, numStr, err
+  }
+
+  idx := strings.Index(keepNonNumChars, "+")
+
+  if idx > -1 {
+    keepNonNumChars = keepNonNumChars[0:idx] + keepNonNumChars[idx+1:]
+  }
+
+  idx = strings.Index(keepNonNumChars, "-")
+
+  if idx > -1 {
+    keepNonNumChars = keepNonNumChars[0:idx] + keepNonNumChars[idx+1:]
+  }
+
+  idx = strings.Index(discardChars, "+")
+
+  if idx > -1 {
+    discardChars = discardChars[0:idx] + discardChars[idx+1:]
+  }
+
+  idx = strings.Index(discardChars, "-")
+
+  if idx > -1 {
+    discardChars = discardChars[0:idx] + discardChars[idx+1:]
+  }
+
+
+  targetRunes := []rune(targetStr)
+
+  keepNonNumRunes := make([]rune, 0)
+  lenKeepNonNumRunes := 0
+
+  discardRunes := make([]rune, 0)
+  lenDiscardRunes := 0
+
+
+  if len(keepNonNumChars) > 0 {
+    keepNonNumRunes = []rune(keepNonNumChars)
+    lenKeepNonNumRunes = len(keepNonNumRunes)
+  }
+
+  if len(discardChars) > 0 {
+    discardRunes = []rune(discardChars)
+    lenDiscardRunes = len(discardRunes)
+  }
+
+  lenTargetStr = len(targetRunes)
+  numberRunes := make([]rune, 0, 20)
+
+  firstSignCharIdx := -1
+  firstNumericDigitIdx := -1
+
+  for i:=startIndex; i < lenTargetStr; i++ {
+
+    if firstNumericDigitIdx==-1 &&
+      (targetRunes[i] == '+' || targetRunes[i] == '-') {
+      firstSignCharIdx = i
+
+      continue
+    }
+
+    if targetRunes[i] >= '0' && targetRunes[i] <= '9' {
+
+      if firstNumericDigitIdx == -1 {
+
+        firstNumericDigitIdx = i
+
+        if firstSignCharIdx > -1  &&
+          firstNumericDigitIdx - firstSignCharIdx == 1 {
+          firstNumericDigitIdx = firstSignCharIdx
+          numberRunes = append(numberRunes, targetRunes[firstSignCharIdx])
+        }
+
+      }
+
+      numberRunes = append(numberRunes, targetRunes[i])
+
+      continue
+    }
+
+    for j:=0; j < lenKeepNonNumRunes; j++ {
+
+      if targetRunes[i] == keepNonNumRunes[j] {
+
+        numberRunes = append(numberRunes, targetRunes[i])
+
+        goto loop
+      }
+
+    }
+
+    for k:=0; k < lenDiscardRunes; k++ {
+
+      if targetRunes[i] == discardRunes[k] {
+        goto loop
+      }
+
+    }
+
+    // Non Numeric Digit
+    if firstNumericDigitIdx > -1 {
+      break
+    }
+
+    loop:
+  }
+
+  if len(numberRunes) > 0 {
+    numStr = string(numberRunes)
+    numIndex = firstNumericDigitIdx
+    numLen = len(numStr)
+    if firstSignCharIdx == firstNumericDigitIdx &&
+      firstSignCharIdx > -1 {
+      leadingSignChar = string(numberRunes[0])
+    }
+  }
+
+  err = nil
+  return numIndex, numLen, leadingSignChar, numStr, err
+}
+
 // FindRegExIndex - returns a two-element slice of integers defining the location
 // of the leftmost match in targetStr of the regular expression (regex).
 //

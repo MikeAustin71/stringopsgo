@@ -6,24 +6,101 @@ package main
 // turn off warning.
 //
 import (
-  strOps "../strops/v2"
+ "../strops/v2"
   "fmt"
-  "io"
-  "os"
-  "sort"
   "strings"
 )
 
 func main() {
 
-  mainTest{}.ExampleStripLeadingChars01()
-
+  mainTest{}.ExampleExtractNumStr01()
 }
 
 type mainTest struct {
   input string
 }
 
+func (mt mainTest) ExampleExtractNumStr01() {
+
+  targetStr := "-123.5"
+
+  expectedNumStr := "-123.5"
+  expectedLeadingSignChar := "-"
+  expectedNumStrLen := len(expectedNumStr)
+  expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+  startIdx := 0
+
+  numIndex,
+  numLen,
+  leadingSignChar,
+  numStr,
+  err := strops.StrOps{}.FindNumericDigitsString(targetStr, startIdx,".","")
+
+  if err != nil {
+    fmt.Printf("Error returned by StrOps{}.FindNumericDigitsString(targetStr, 0)\n" +
+      "targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+    return
+  }
+
+  isError := false
+
+  if expectedNumIdx != numIndex {
+    fmt.Printf("Expected starting numeric index='%v'\n" +
+      "Instead, staring numeric index='%v'\n",
+      expectedNumIdx, numIndex)
+    isError = true
+  }
+
+  if expectedNumStr != numStr {
+    fmt.Printf("Expected number string ='%v'\n" +
+      "Instead, number string ='%v'\n",
+      expectedNumStr, numStr)
+    isError = true
+  }
+
+  if expectedNumStrLen != numLen {
+    fmt.Printf("Expected number string length ='%v'\n" +
+      "Instead, number string length ='%v'\n",
+      expectedNumStrLen, numLen)
+    isError = true
+  }
+
+  if expectedLeadingSignChar != leadingSignChar {
+    fmt.Printf("Expected leading sign char ='%v'\n" +
+      "Instead, leading sign char ='%v'\n",
+      expectedLeadingSignChar, leadingSignChar)
+    isError = true
+  }
+
+
+  fmt.Println("  mainTest.ExampleExtractNumStr01()  ")
+  fmt.Println("-------------------------------------")
+  if isError {
+    fmt.Println("     @@@@@  FAILURE @@@@@@           ")
+  } else {
+    fmt.Println("          SUCCESS!!!")
+  }
+
+  fmt.Println("-------------------------------------")
+  fmt.Println("          TargetStr: ", targetStr)
+  fmt.Println("           startIdx: ", startIdx)
+  fmt.Println("-------------------------------------")
+  fmt.Println("           Expected                  ")
+  fmt.Println("-------------------------------------")
+  fmt.Println("       Number Index: ", expectedNumIdx)
+  fmt.Println("         Num Length: ", expectedNumStrLen)
+  fmt.Println("  Leading Sign Char: ", expectedLeadingSignChar)
+  fmt.Println("      Number String: ", expectedNumStr)
+  fmt.Println("-------------------------------------")
+  fmt.Println("            Results                  ")
+  fmt.Println("-------------------------------------")
+  fmt.Println("        NumberIndex: ", numIndex)
+  fmt.Println("         Num Length: ", numLen)
+  fmt.Println("  Leading Sign Char: ", leadingSignChar)
+  fmt.Println("      Number String: ", numStr)
+}
+
+/*
 func (mt mainTest) ExampleStripLeadingChars01() {
 
   badChars := []string {
@@ -42,7 +119,7 @@ func (mt mainTest) ExampleStripLeadingChars01() {
   expectedStrLen := len(expectedStr)
   testString := "..........      ./../.\\.\\..\\////   " + expectedStr
 
-  actualString, actualStrLen := strOps.StrOps{}.StripLeadingChars(testString, badChars)
+  actualString, actualStrLen := StrOps{}.StripLeadingChars(testString, badChars)
 
   if expectedStr != actualString {
     fmt.Printf("ERROR: Expected result string='%v'\n" +
@@ -401,3 +478,5 @@ func (mt mainTest) ExampleIoCopy02() {
   fmt.Println()
   fmt.Println("New value of n: ", n)
 }
+
+*/

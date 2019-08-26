@@ -35,6 +35,52 @@ func TestStrOps_FindLastWord_14(t *testing.T) {
 
 }
 
+func TestStrOps_FindNumericDigitsString(t *testing.T) {
+
+	targetStr := "November 12, 2016 1:6:3pm +0000 UTC"
+
+	expectedNumStr := "12"
+	expectedNumStrLen := 2
+	expectedLeadingSignChar := ""
+	expectedNumIdx := 9
+
+	numIndex,
+	numLen,
+	leadingSignChar,
+	numStr,
+	err := StrOps{}.FindNumericDigitsString(targetStr, 0)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.FindNumericDigitsString(targetStr, 0)\n" +
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+		return
+	}
+
+	if expectedNumIdx != numIndex {
+		t.Errorf("Expected starting numeric index='%v'\n" +
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, numIndex)
+	}
+
+	if expectedNumStr != numStr {
+		t.Errorf("Expected number string ='%v'\n" +
+			"Instead, number string ='%v'\n",
+			expectedNumStr, numStr)
+	}
+
+	if expectedNumStrLen != numLen {
+		t.Errorf("Expected number string length ='%v'\n" +
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, numLen)
+	}
+
+	if expectedLeadingSignChar != leadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n" +
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, leadingSignChar)
+	}
+}
+
 func TestStrOps_FindRegExIndex_01(t *testing.T) {
 
 	regex := "\\d:\\d:\\d"
@@ -47,9 +93,10 @@ func TestStrOps_FindRegExIndex_01(t *testing.T) {
 	if idx == nil {
 		t.Errorf("Error: Did not locate Regular Expression,'%v', in 'targetStr', '%v'.",
 			regex, targetStr)
+		return
 	}
 
-	sExtract := string(targetStr[idx[0]:idx[1]])
+	sExtract := targetStr[idx[0]:idx[1]]
 
 	if expected != sExtract {
 		t.Errorf("Error: Expected regular expression match on string='%v'. "+
