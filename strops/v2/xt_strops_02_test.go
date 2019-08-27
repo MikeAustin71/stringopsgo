@@ -2,6 +2,7 @@ package strops
 
 import (
 	"io"
+	"strings"
 	"testing"
 )
 
@@ -35,49 +36,267 @@ func TestStrOps_FindLastWord_14(t *testing.T) {
 
 }
 
-func TestStrOps_FindNumericDigitsString(t *testing.T) {
+func TestStrOps_ExtractNumericDigitsString_01(t *testing.T) {
 
 	targetStr := "November 12, 2016 1:6:3pm +0000 UTC"
+	startIndex := 0
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
 
 	expectedNumStr := "12"
-	expectedNumStrLen := 2
+	expectedNumStrLen := len(expectedNumStr)
 	expectedLeadingSignChar := ""
-	expectedNumIdx := 9
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+  expectedLeadingSignCharIndex := -1
+  expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
 
-	numIndex,
-	numLen,
-	leadingSignChar,
-	numStr,
-	err := StrOps{}.FindNumericDigitsString(targetStr, 0)
+	nStrDto,
+	err := StrOps{}.ExtractNumericDigitsString(
+		targetStr,
+		startIndex,
+    keepLeadingChars,
+    keepInteriorChars,
+    keepTrailingChars)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindNumericDigitsString(targetStr, 0)\n" +
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigitsString(targetStr, 0)\n" +
 			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
 		return
 	}
 
-	if expectedNumIdx != numIndex {
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
 		t.Errorf("Expected starting numeric index='%v'\n" +
 			"Instead, staring numeric index='%v'\n",
-			expectedNumIdx, numIndex)
+			expectedNumIdx, nStrDto.FirstNumCharInde)
 	}
 
-	if expectedNumStr != numStr {
+	if expectedNumStr != nStrDto.NumStr {
 		t.Errorf("Expected number string ='%v'\n" +
 			"Instead, number string ='%v'\n",
-			expectedNumStr, numStr)
+			expectedNumStr, nStrDto.NumStr)
 	}
 
-	if expectedNumStrLen != numLen {
+	if expectedNumStrLen != nStrDto.NumStrLen {
 		t.Errorf("Expected number string length ='%v'\n" +
 			"Instead, number string length ='%v'\n",
-			expectedNumStrLen, numLen)
+			expectedNumStrLen, nStrDto.NumStrLen)
 	}
 
-	if expectedLeadingSignChar != leadingSignChar {
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
 		t.Errorf("Expected leading sign char ='%v'\n" +
 			"Instead, leading sign char ='%v'\n",
-			expectedLeadingSignChar, leadingSignChar)
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+	}
+
+  if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+    t.Errorf("Expected leading sign char index ='%v'\n" +
+      "Instead, leading sign char index ='%v'\n",
+      expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
+  }
+
+  if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+    t.Errorf("Expected next target index after number string ='%v'\n" +
+      "Instead, next target string index ='%v'\n",
+      expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
+  }
+}
+
+func TestStrOps_ExtractNumericDigitsString_02(t *testing.T) {
+
+	targetStr := "Etc/GMT+11"
+	startIndex := 0
+	keepLeadingChars := "+"
+	keepInteriorChars := ""
+	keepTrailingChars := ""
+
+	expectedNumStr := "+11"
+	expectedNumStrLen := len(expectedNumStr)
+	expectedLeadingSignChar := "+"
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedLeadingSignCharIndex := 0
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
+
+	nStrDto,
+	err := StrOps{}.ExtractNumericDigitsString(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigitsString(targetStr, 0)\n" +
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+		return
+	}
+
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n" +
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharInde)
+	}
+
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n" +
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
+	}
+
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n" +
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
+	}
+
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n" +
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+	}
+
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n" +
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
+	}
+
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n" +
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
+	}
+}
+
+func TestStrOps_ExtractNumericDigitsString_03(t *testing.T) {
+
+	targetStr := "November 12, 2016 1:6:3pm +0000 UTC"
+	startIndex := 23
+	keepLeadingChars := "+"
+	keepInteriorChars := ""
+	keepTrailingChars := ""
+
+	expectedNumStr := "+0000"
+	expectedNumStrLen := len(expectedNumStr)
+	expectedLeadingSignChar := "+"
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedLeadingSignCharIndex := -1
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
+
+	nStrDto,
+	err := StrOps{}.ExtractNumericDigitsString(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigitsString(targetStr, 0)\n" +
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+		return
+	}
+
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n" +
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharInde)
+	}
+
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n" +
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
+	}
+
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n" +
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
+	}
+
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n" +
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+	}
+
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n" +
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
+	}
+
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n" +
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
+	}
+}
+
+func TestStrOps_ExtractNumericDigitsString_04(t *testing.T) {
+
+	targetStr := "2016 1:6:3pm +0000 UTC"
+	startIndex := 0
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
+
+	expectedNumStr := "2016"
+	expectedNumStrLen := len(expectedNumStr)
+	expectedLeadingSignChar := ""
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedLeadingSignCharIndex := -1
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
+
+	nStrDto,
+	err := StrOps{}.ExtractNumericDigitsString(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigitsString(targetStr, 0)\n" +
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+		return
+	}
+
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n" +
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharInde)
+	}
+
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n" +
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
+	}
+
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n" +
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
+	}
+
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n" +
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+	}
+
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n" +
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
+	}
+
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n" +
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
 	}
 }
 

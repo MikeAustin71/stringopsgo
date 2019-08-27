@@ -1,14 +1,23 @@
 package main
 
-// This Works
-// strOps "./strops/v2"
-// Sometimes GoLand will declare this invalid. If so, just
-// turn off warning.
-//
+/* This Works
 import (
- "../strops/v2"
+  "MikeAustin71/stringopsgo/strops/v2"
   "fmt"
   "strings"
+
+)
+
+Reference format:
+ strops.StrOps{}.ExtractNumericDigitsString(..)
+
+*/
+
+import (
+  "MikeAustin71/stringopsgo/strops/v2"
+  "fmt"
+  "strings"
+
 )
 
 func main() {
@@ -22,53 +31,58 @@ type mainTest struct {
 
 func (mt mainTest) ExampleExtractNumStr01() {
 
-  targetStr := "-123.5"
+  targetStr := "Hello world, USA GDP growth is projected at 1.8%."
 
-  expectedNumStr := "-123.5"
-  expectedLeadingSignChar := "-"
+  expectedNumStr := "1.8%"
+  expectedLeadingSignChar := ""
   expectedNumStrLen := len(expectedNumStr)
   expectedNumIdx := strings.Index(targetStr, expectedNumStr)
-  startIdx := 0
+  startIndex := 0
+  keepLeadingChars := ""
+  keepInteriorChars := "."
+  keepTrailingChars := "%"
 
-  numIndex,
-  numLen,
-  leadingSignChar,
-  numStr,
-  err := strops.StrOps{}.FindNumericDigitsString(targetStr, startIdx,".","")
+  nStrDto,
+  err :=  strops.StrOps{}.ExtractNumericDigitsString(
+    targetStr,
+    startIndex,
+    keepLeadingChars,
+    keepInteriorChars,
+    keepTrailingChars)
 
   if err != nil {
-    fmt.Printf("Error returned by StrOps{}.FindNumericDigitsString(targetStr, 0)\n" +
+    fmt.Printf("Error returned by StrOps{}.ExtractNumericDigitsString(targetStr, 0)\n" +
       "targetStr='%v'\nError='%v'\n", targetStr, err.Error())
     return
   }
 
   isError := false
 
-  if expectedNumIdx != numIndex {
+  if expectedNumIdx != nStrDto.FirstNumCharIndex {
     fmt.Printf("Expected starting numeric index='%v'\n" +
       "Instead, staring numeric index='%v'\n",
-      expectedNumIdx, numIndex)
+      expectedNumIdx, nStrDto.FirstNumCharIndex)
     isError = true
   }
 
-  if expectedNumStr != numStr {
+  if expectedNumStr != nStrDto.NumStr {
     fmt.Printf("Expected number string ='%v'\n" +
       "Instead, number string ='%v'\n",
-      expectedNumStr, numStr)
+      expectedNumStr, nStrDto.NumStr)
     isError = true
   }
 
-  if expectedNumStrLen != numLen {
+  if expectedNumStrLen != nStrDto.NumStrLen {
     fmt.Printf("Expected number string length ='%v'\n" +
       "Instead, number string length ='%v'\n",
-      expectedNumStrLen, numLen)
+      expectedNumStrLen, nStrDto.NumStrLen)
     isError = true
   }
 
-  if expectedLeadingSignChar != leadingSignChar {
+  if expectedLeadingSignChar != nStrDto.LeadingSignChar {
     fmt.Printf("Expected leading sign char ='%v'\n" +
       "Instead, leading sign char ='%v'\n",
-      expectedLeadingSignChar, leadingSignChar)
+      expectedLeadingSignChar, nStrDto.LeadingSignChar)
     isError = true
   }
 
@@ -83,7 +97,7 @@ func (mt mainTest) ExampleExtractNumStr01() {
 
   fmt.Println("-------------------------------------")
   fmt.Println("          TargetStr: ", targetStr)
-  fmt.Println("           startIdx: ", startIdx)
+  fmt.Println("           startIdx: ", startIndex)
   fmt.Println("-------------------------------------")
   fmt.Println("           Expected                  ")
   fmt.Println("-------------------------------------")
@@ -91,13 +105,16 @@ func (mt mainTest) ExampleExtractNumStr01() {
   fmt.Println("         Num Length: ", expectedNumStrLen)
   fmt.Println("  Leading Sign Char: ", expectedLeadingSignChar)
   fmt.Println("      Number String: ", expectedNumStr)
+  fmt.Println(" Next TargetStr Idx: ", expectedNumIdx + expectedNumStrLen)
   fmt.Println("-------------------------------------")
   fmt.Println("            Results                  ")
   fmt.Println("-------------------------------------")
-  fmt.Println("        NumberIndex: ", numIndex)
-  fmt.Println("         Num Length: ", numLen)
-  fmt.Println("  Leading Sign Char: ", leadingSignChar)
-  fmt.Println("      Number String: ", numStr)
+  fmt.Println("        NumberIndex: ", nStrDto.FirstNumCharIndex)
+  fmt.Println("         Num Length: ", nStrDto.NumStrLen)
+  fmt.Println("  Leading Sign Char: ", nStrDto.LeadingSignChar)
+  fmt.Println(" Leading Sign Index: ", nStrDto.LeadingSignIndex)
+  fmt.Println("      Number String: ", nStrDto.NumStr)
+  fmt.Println("Target Str Next Idx: ", nStrDto.NextTargetStrIndex)
 }
 
 /*
