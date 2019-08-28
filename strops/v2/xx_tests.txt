@@ -128,6 +128,40 @@
 --- PASS: TestStrOps_FindLastWord_13 (0.00s)
 === RUN   TestStrOps_FindLastWord_14
 --- PASS: TestStrOps_FindLastWord_14 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_01
+--- PASS: TestStrOps_ExtractNumericDigits_01 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_02
+--- PASS: TestStrOps_ExtractNumericDigits_02 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_03
+--- PASS: TestStrOps_ExtractNumericDigits_03 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_04
+--- PASS: TestStrOps_ExtractNumericDigits_04 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_05
+--- PASS: TestStrOps_ExtractNumericDigits_05 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_06
+--- PASS: TestStrOps_ExtractNumericDigits_06 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_07
+--- PASS: TestStrOps_ExtractNumericDigits_07 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_08
+--- PASS: TestStrOps_ExtractNumericDigits_08 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_09
+--- PASS: TestStrOps_ExtractNumericDigits_09 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_10
+--- PASS: TestStrOps_ExtractNumericDigits_10 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_11
+--- PASS: TestStrOps_ExtractNumericDigits_11 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_12
+--- PASS: TestStrOps_ExtractNumericDigits_12 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_13
+--- PASS: TestStrOps_ExtractNumericDigits_13 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_14
+--- PASS: TestStrOps_ExtractNumericDigits_14 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_15
+--- PASS: TestStrOps_ExtractNumericDigits_15 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_16
+--- PASS: TestStrOps_ExtractNumericDigits_16 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_17
+--- PASS: TestStrOps_ExtractNumericDigits_17 (0.00s)
 === RUN   TestStrOps_FindRegExIndex_01
 --- PASS: TestStrOps_FindRegExIndex_01 (0.00s)
 === RUN   TestStrOps_GetReader_01
@@ -419,5 +453,5 @@
 === RUN   TestStrOps_Write_04
 --- PASS: TestStrOps_Write_04 (0.00s)
 PASS
-coverage: 87.4% of statements
-ok  	MikeAustin71/stringopsgo/strops/v2	2.872s
+coverage: 88.6% of statements
+ok  	MikeAustin71/stringopsgo/strops/v2	0.494s

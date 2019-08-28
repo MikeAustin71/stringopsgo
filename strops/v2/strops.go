@@ -131,7 +131,6 @@ func (sortStrLenHigh SortStrLengthHighestToLowest) Less(i, j int) bool {
 //
 type SortStrLengthLowestToHighest []string
 
-
 // Len - This is part of the sort.Interface. Reference the 'sort' package:
 //   https://golang.org/pkg/sort/#Interface
 //   https://golang.org/pkg/sort/#Sort
@@ -163,26 +162,32 @@ func (sortStrLenLow SortStrLengthLowestToHighest) Less(i, j int) bool {
   return lenI < lenJ
 }
 
-// ExtractedNumStrDto - This type is used to return information
+// NumStrProfileDto - This type is used to return information
 // on strings of numeric digits which are extracted from larger
 // strings.
 //
-type ExtractedNumStrDto struct {
-  TargetStr string
-  StartIndex int
-  LeadingSignIndex int
-  LeadingSignChar string
-  FirstNumCharIndex int
-  NextTargetStrIndex int
-  NumStrLen int
-  NumStr string
+type NumStrProfileDto struct {
+  TargetStr  string // The original target string which is scanned for a number string
+  StartIndex int    // The starting index in 'TargetStr' from which the number string
+  //    search was initiated.
+  LeadingSignIndex int //  The string index of a leading sign in 'NumStr' below. If a
+  //    leading sign character is NOT present in 'NumStr' this value
+  //    is set to -1
+  LeadingSignChar string //  If a leading sign character (plus '+' or minus '-') exists in
+  //    data field 'NumStr' (below), it is stored in this string.
+  FirstNumCharIndex int //  The index in 'TargetStr' (above) where the first character
+  //    of the extracted number string is located.
+  NextTargetStrIndex int //  The index of the next character in 'TargetStr' immediately
+  //    following the extracted number string.
+  NumStrLen int    //  The length of the extracted number string.
+  NumStr    string //  The number string extracted from 'TargetStr'.
 }
 
-// New - Creates and returns a new instance of ExtractedNumStrDto
+// New - Creates and returns a new instance of NumStrProfileDto
 // which is properly initialized.
-func (exNumDto ExtractedNumStrDto) New() ExtractedNumStrDto {
+func (exNumDto NumStrProfileDto) New() NumStrProfileDto {
 
-  newDto := ExtractedNumStrDto{}
+  newDto := NumStrProfileDto{}
   newDto.TargetStr = ""
   newDto.StartIndex = -1
   newDto.LeadingSignIndex = -1
@@ -477,126 +482,143 @@ func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
   return false
 }
 
-
-// ExtractNumericDigitsString - Examines an input 'targetStr' to identify the first instance
-// of a number string. The number string will be comprised of one or more consecutive numeric
-// digits (0-9) and may include a leading plus or minus sign character ('+' or '-' ).
+// ExtractNumericDigits - Examines an input parameter 'targetStr' to identify and extract the
+// first instance of a number string. The number string will be comprised of one or more
+// consecutive numeric digits (0-9) and may include leading, trailing or interior non-numeric
+// characters as specified by input parameters.
 //
-// The search for this number string will be started at the index in 'targetStr' specified
-// by input parameter 'startIdx'.
+// The search for this number string will be started at the index specified by input parameter
+// 'startIdx'. Beginning at 'startIdx' the 'targetStr' will be searched to identify and extract
+// the first instance of a number string.
+//
+// A number string is usually defined a string of consecutive numeric digits. However, this
+// method allows the caller to include additional non-numeric characters as identified by
+// input parameters	'keepLeadingChars', 'keepInteriorChars' and 'keepTrailingChars'.
+//
+// 'keepLeadingChars' is a string of characters which will be prefixed to the number string
+// if those characters exist in 'targetStr' and immediately precede the number string.
+//
+// 'keepInteriorChars' is a string of characters which, if they exist within the number string,
+// will be retained and presented in the final extracted number string.
+//
+// 'keepTrailingChars' is a string of characters which will be suffixed to the end of the
+// final extracted number string.  To qualify, the designated 'keepTrailingChars' must immediately
+// follow the number string contained in 'targetStr'.
+//
+// If successfully located within 'targetStr' the first instance of a number string along with
+// characteristics describing that number string are returned in a Type 'NumStrProfileDto'.
 //
 // ------------------------------------------------------------------------
 //
 // Input Parameters
 //
-//  targetStr         string     -  The target string to be searched for the first
-//                                  instance of a number string. A number string is
-//                                  defined as a string comprised of one or more numeric
-//                                  digits and may also include a leading plus or minus
-//                                  sign ('+' or '-') character.
+//  targetStr         string     -  The target string to be searched for the first instance of
+//                                  a number string. A number string is usually defined as a
+//                                  string comprised of one or more consecutive numeric digits.
+//                                  Additional parameters provided by this method will allow
+//                                  the caller to insert specified non-numeric characters at
+//                                  the beginning, end or interior of a number string.
 //
 //  startIdx              int     - The starting index in input parameter 'targetStr'
 //                                  from which the search for a number string will be
-//                                  started. This useful in extracting multiple number
-//                                  strings form a single targetStr.
+//                                  initiated. This useful in extracting multiple number
+//                                  strings form a single 'targetStr'.
 //
-//  keepNonNumChars       string  - This string contains non-numeric characters which should
-//                                  be retained in the number string. This might include commas
-//                                  periods (a.k.a. decimal points) or currency symbols.
+//  keepLeadingChars    string    - This string contains non-numeric characters which will be
+//                                  retained as a prefix to the final number string extracted
+//                                  from the 'targetStr' parameter. To be included, these characters
+//                                  must exist in 'targetStr' and must immediately precede the
+//                                  first instance of a number string.
 //
-//                                  For example, if the target string is '123,456,789' and a
-//                                  comma is included in 'keepNonNumChars', the returned number
-//                                  string would be '123,456,789'.  If no commas was included in
-//                                  'keepNonNumChars', the returned number would be '123' because
-//                                  number string parsing would break on the non-numeric comma
-//                                  character.
+//                                  For example, if the target string is "Hello $123789 world" and
+//                                  parameter 'keepLeadingChars' includes the USA currency character,
+//                                  '$', the returned number string would be '$123789'.  If no currency
+//                                  character was included in 'keepLeadingChars', the returned number
+//                                  string would be '123789'. It is worth noting that if the target
+//                                  string was '$ 123789' and a currency symbol, '$', was included
+//                                  in 'keepLeadingChars', the returned number string would still be
+//                                  '123789' because 'keepLeadingChars' characters must immediately
+//                                  precede the string of numeric digits in 'targetStr'.
 //
-//                                  Note that 'keepNonNumChars' have priority over 'discardChars'.
+//  keepInteriorChars   string    - This string contains non-numeric characters which will be retained
+//                                  as valid characters within the final extracted number string. Such
+//                                  characters might include thousands separators (commas) or decimal
+//                                  points (periods).
 //
-//  discardInteriorChars  string  - This string contains all non-numeric characters which
-//                                  should be discarded from the interior of a number string.
-//                                  Examples might include commas, currency symbols and periods
-//                                  (a.k.a. decimal points).
+//                                  For example if a comma and a period are included in 'keepInteriorChars'
+//                                  and the target string is 'Hello word 123,456,789.25 !', the returned
+//                                  number string would be '123,456,789.25'.  If the comma character was
+//                                  NOT included in the 'keepInteriorChars' string, the returned number
+//                                  string would be '123', since the number string extraction parser
+//                                  would break on the comma, a non-numeric digit.
 //
-//                                  For example if a comma is included in 'discardInteriorChars'
-//                                  and the target string is '123,456,789', the returned number
-//                                  string would be '123456789'.  If the comma character was
-//                                  NOT included in the discardChars string, the returned number
-//                                  string would be '123', since the number string extraction
-//                                  would therefore break on the comma.
+//  keepTrailingChars   string    - This string contains non-numeric characters which should be retained
+//                                  at the end of the final number string. By default, a non-numeric
+//                                  character will mark the end of a number string. However, if the caller
+//                                  elects to use parameter 'keepTrailingChars' to retain non-numeric
+//                                  characters such as a trailing right-parenthesis, then those non-numeric
+//                                  characters will be retained in the final extracted number string.
 //
-//                                  Note that the 'keepNonNumChars' parameter has priority over
-//                                  'discardInteriorChars'. That said, the caller is responsible
-//                                  for coordinating 'keepNonNumChars' and 'discardInteriorChars'
-//                                  values.
-//
-//  discardTrailingChars  string -  This string contains all non-numeric characters which should be
-//                                  discarded from the end of the final number string. By default, a
-//                                  non-numeric character will mark the end of a number string. However,
-//                                  if the caller decided to use parameter 'keepNonNumChars' to retain
-//                                  non-numeric characters such as commas or periods (a.k.a decimal points),
-//                                  those non-numeric commas and periods might show up at the end of
-//                                  the number string. This parameter, 'discardTrailingChars' can be
-//                                  used to control trailing non-numeric characters.
+//                                  It should be emphasized that 'keepTrailingChars' must immediately
+//                                  follow the first instance of a number string in parameter, 'targetStr'.
 //
 //                                  Example #1:
-//                                    Target String = "Hello world, 1,234,567,890.12. Today is new day."
-//                                    keepNonNumChars = ",."
-//                                    discardTrailingChars= "."
-//                                    Extracted Number String = "1,234,567,890.12"
+//                                    Target String = "Hello world, (1234). Today is new day."
+//                                    keepLeadingChars = "("
+//                                    keepInteriorChars = ""
+//                                    keepTrailingChars= ")"
+//                                    Extracted Number String = "(1234)"
 //
 //                                  Example #2:
 //                                    Target String = "Hello world, USA GDP growth is projected at 1.8%."
-//                                    keepNonNumChars = ".%"
-//                                    discardTrailingChars= "."
+//                                    keepLeadingChars = ""
+//                                    keepInteriorChars = "."
+//                                    keepTrailingChars= "%"
 //                                    Extracted Number String = "1.8%"
 // ------------------------------------------------------------------------
 //
 // Return Value
 //
-//  numIndex          int   - If a number string is located, this returned integer
-//                            value will contain the index of the first digit in the
-//                            in the number string. If return value 'hasLeadingSign'
-//                            is 'true', this index will point to the sigh character.
-//                            Otherwise, this index will point to the first numeric
-//                            digit in the number string.
+//  NumStrProfileDto    - If successful, this method will return a type 'NumStrProfileDto'
+//                        populated with the extracted number string and additional profile
+//                        information related to the extracted number string.
 //
-//                            If the target string does NOT contain a number string, this
-//                            'numIndex' value is set to '-1'.
+//					type NumStrProfileDto struct {
+//								TargetStr        string   // The original target string which is scanned for a number string
+//								StartIndex          int   // The starting index in 'TargetStr' from which the number string
+//																			    //    search was initiated.
+//								LeadingSignIndex    int   //  The string index of a leading sign in 'NumStr' below. If a
+//																			    //    leading sign character is NOT present in 'NumStr' this value
+//                                          //    is set to -1
+//                LeadingSignChar  string   //  If a leading sign character (plus '+' or minus '-') exists in
+//                                          //    data field 'NumStr' (below), it is stored in this string.
+//                FirstNumCharIndex   int   //  The index in 'TargetStr' (above) where the first character
+//                                          //    of the extracted number string is located.
+//                NextTargetStrIndex  int   //  The index of the next character in 'TargetStr' immediately
+//                                          //    following the extracted number string.
+//                NumStrLen           int   //  The length of the extracted number string.
+//                NumStr           string   //  The number string extracted from 'TargetStr'.
+//          }
 //
-//  numLen            int   - If a number string is located, this return value holds the total
-//                            number of characters in the number string. Remember, that if the
-//                            number string includes a leading sign character ('+' or '-'), this
-//                            leading sign character will be included in the number string length.
-//                            If a number string is NOT found in the target string, this return value
-//                            is zero.
 //
-//  leadingSignChar string  - If the found number string contains a leading sign character ('+' or '-'),
-//                            this returned string value will contain that sign character. If no leading
-//                            plus or minus sign is found the returned string value is an empty string.
+//  error               - If 'startIndex' is less than zero or if 'startIndex' exceeds the last character
+//                        index in 'targetStr', an error will be returned. If no errors are encountered,
+//                        this value is set to 'nil'.
 //
-//  numStr          string  - If the target string contains a number string, that number string is returned
-//                            this value.
-//
-//  err             error   - If 'startIndex' is less than zero or if 'startIndex' exceeds the last character
-//                            index in 'targetStr', an error will be returned. If no errors are encountered,
-//                            this value is set to 'nil'.
-//
-func (sops StrOps) ExtractNumericDigitsString(
+func (sops StrOps) ExtractNumericDigits(
   targetStr string,
   startIndex int,
   keepLeadingChars string,
   keepInteriorChars string,
-  keepTrailingChars string) ( ExtractedNumStrDto,
-                              error) {
+  keepTrailingChars string) (NumStrProfileDto,	error) {
 
-  nStrDto := ExtractedNumStrDto{}.New()
+  nStrDto := NumStrProfileDto{}.New()
   nStrDto.TargetStr = targetStr
   nStrDto.StartIndex = startIndex
 
   var err error = nil
 
-  ePrefix := "StrOps.ExtractNumericDigitsString() "
+  ePrefix := "StrOps.ExtractNumericDigits() "
 
   lenTargetStr := len(targetStr)
 
@@ -605,30 +627,28 @@ func (sops StrOps) ExtractNumericDigitsString(
   }
 
   if startIndex < 0 {
-    err = fmt.Errorf(ePrefix +
-      "ERROR: Input parameter 'startIndex' is less than zero!\n" +
+    err = fmt.Errorf(ePrefix+
+      "ERROR: Input parameter 'startIndex' is less than zero!\n"+
       "startIndex='%v'", startIndex)
 
     return nStrDto, err
   }
 
   if startIndex >= lenTargetStr {
-    err = fmt.Errorf(ePrefix +
-      "ERROR: Input parameter 'startIndex' is INVALID!\n" +
-      "'startIndex' exceeds the last character index in 'targetStr'\n" +
-      "startIndex='%v'\tlast character index='%v'\n" +
+    err = fmt.Errorf(ePrefix+
+      "ERROR: Input parameter 'startIndex' is INVALID!\n"+
+      "'startIndex' exceeds the last character index in 'targetStr'\n"+
+      "startIndex='%v'\tlast character index='%v'\n"+
       "targetStr='%v'", startIndex, lenTargetStr-1, targetStr)
 
     return nStrDto, err
   }
-
 
   targetRunes := []rune(targetStr)
   lenTargetStr = len(targetRunes)
 
   keepLeadingRunes := make([]rune, 0)
   lenKeepLeadingRunes := 0
-
 
   keepInteriorRunes := make([]rune, 0)
   lenKeepInteriorRunes := 0
@@ -637,17 +657,53 @@ func (sops StrOps) ExtractNumericDigitsString(
   lenKeepTrailingRunes := 0
 
   if len(keepLeadingChars) > 0 {
-    keepLeadingRunes = []rune(keepLeadingChars)
+
+    // Remove any numeric characters
+    for a := 0; a < len(keepLeadingChars); a++ {
+
+      if keepLeadingChars[a] >= '0' &&
+        keepLeadingChars[a] <= '9' {
+        continue
+      }
+
+      keepLeadingRunes = append(keepLeadingRunes, rune(keepLeadingChars[a]))
+
+    }
+
     lenKeepLeadingRunes = len(keepLeadingRunes)
   }
 
   if len(keepInteriorChars) > 0 {
-    keepInteriorRunes = []rune(keepInteriorChars)
+
+    // Remove any numeric characters
+    for a := 0; a < len(keepInteriorChars); a++ {
+
+      if keepInteriorChars[a] >= '0' &&
+        keepInteriorChars[a] <= '9' {
+        continue
+      }
+
+      keepInteriorRunes = append(keepInteriorRunes, rune(keepInteriorChars[a]))
+
+    }
+
     lenKeepInteriorRunes = len(keepInteriorRunes)
   }
 
   if len(keepTrailingChars) > 0 {
-    keepTrailingRunes = []rune(keepTrailingChars)
+
+    // Remove any numeric characters
+    for a := 0; a < len(keepTrailingChars); a++ {
+
+      if keepTrailingChars[a] >= '0' &&
+        keepTrailingChars[a] <= '9' {
+        continue
+      }
+
+      keepTrailingRunes = append(keepTrailingRunes, rune(keepTrailingChars[a]))
+
+    }
+
     lenKeepTrailingRunes = len(keepTrailingRunes)
   }
 
@@ -659,18 +715,18 @@ func (sops StrOps) ExtractNumericDigitsString(
 
   firstNumericDigitIdx := -1
 
-  for e:=startIndex; e < lenTargetStr; e++ {
+  for e := startIndex; e < lenTargetStr; e++ {
 
     if targetRunes[e] >= '0' &&
-        targetRunes[e] <= '9' &&
-          firstNumericDigitIdx == -1 {
+      targetRunes[e] <= '9' &&
+      firstNumericDigitIdx == -1 {
       // Target has at least one numeric
       // digit - and we found it.
       firstNumericDigitIdx = e
       break
     }
   }
-  
+
   if firstNumericDigitIdx == -1 {
     // There are no numeric digits
     // in this target string.
@@ -678,23 +734,68 @@ func (sops StrOps) ExtractNumericDigitsString(
     return nStrDto, err
   }
 
+  firstNumStrCharIdx := -1
+  leadingSignChar := ""
+
   // Check for leading non-numeric characters that
   // need to be retained at the front of the number
   // string.
   if lenKeepLeadingRunes > 0 &&
-      startIndex < firstNumericDigitIdx {
+    startIndex < firstNumericDigitIdx {
 
-    for f :=firstNumericDigitIdx-1; f >= startIndex ; f-- {
+    for f := firstNumericDigitIdx - 1; f >= startIndex; f-- {
 
-      for g := 0; g< lenKeepLeadingRunes; g++{
+      for g := 0; g < lenKeepLeadingRunes; g++ {
 
         if keepLeadingRunes[g] == targetRunes[f] {
-          leadingCharRunesCaptured = append(leadingCharRunesCaptured, targetRunes[f])
-          // Delete Leading Rune character. It will not be repeated in
-          // future searches
-          keepLeadingRunes = append(keepLeadingRunes[0:g],keepLeadingRunes[g+1:]...)
-          lenKeepLeadingRunes--
-          break
+
+          if keepLeadingRunes[g] == '+' ||
+            keepLeadingRunes[g] == '-' {
+
+            // This is a leading sign char
+            leadingSignChar = string(targetRunes[f])
+
+            leadingCharRunesCaptured = append(leadingCharRunesCaptured, targetRunes[f])
+            // Delete Leading Sign character. It will not be repeated in
+            // future searches. Only one leading sign char per number string.
+
+            keepLeadingRunes = append(keepLeadingRunes[0:g], keepLeadingRunes[g+1:]...)
+            lenKeepLeadingRunes--
+
+            firstNumStrCharIdx = f
+
+            // Now delete the alternative leading sign character.
+            // There are only two - plus or minus
+            nextSignChar := '-'
+
+            if leadingSignChar == "-" {
+              nextSignChar = '+'
+            }
+
+            // Leading sign char has been found. Now delete the
+            // alternative lead sign char to avoid duplications
+            for m := 0; m < lenKeepLeadingRunes; m++ {
+              if keepLeadingRunes[m] == nextSignChar {
+                keepLeadingRunes = append(keepLeadingRunes[0:m], keepLeadingRunes[m+1:]...)
+                lenKeepLeadingRunes--
+              }
+            }
+
+            break
+
+          } else {
+
+            // Standard Keep Leading Rune character found
+            leadingCharRunesCaptured = append(leadingCharRunesCaptured, targetRunes[f])
+            // Delete Leading Rune character. It will not be repeated in
+            // future searches
+
+            firstNumStrCharIdx = f
+
+            keepLeadingRunes = append(keepLeadingRunes[0:g], keepLeadingRunes[g+1:]...)
+            lenKeepLeadingRunes--
+            break
+          }
         }
       }
 
@@ -709,27 +810,19 @@ func (sops StrOps) ExtractNumericDigitsString(
     }
   }
 
-  leadingSignChar := ""
   leadingSignIndex := -1
 
   if lenLeadingCharRunesCaptured > 0 {
 
-    for h:=lenLeadingCharRunesCaptured-1; h >= 0; h-- {
+    for h := lenLeadingCharRunesCaptured - 1; h >= 0; h-- {
 
-      if leadingSignChar == "" &&
-          leadingCharRunesCaptured[h] == '+' ||
-            leadingCharRunesCaptured[h] == '-' {
+      if leadingCharRunesCaptured[h] == '+' ||
+        leadingCharRunesCaptured[h] == '-' {
 
-        leadingSignChar = string(leadingCharRunesCaptured[h])
         numberRunesCaptured = append(numberRunesCaptured, leadingCharRunesCaptured[h])
         leadingSignIndex = lenNumberRunesCaptured
         lenNumberRunesCaptured++
 
-      } else if leadingSignChar != "" &&
-        (leadingCharRunesCaptured[h] == '+' ||
-        leadingCharRunesCaptured[h] == '-') {
-          // ONLY One Sign Char Allowed!
-          continue
       } else {
         numberRunesCaptured = append(numberRunesCaptured, leadingCharRunesCaptured[h])
         lenNumberRunesCaptured++
@@ -737,9 +830,10 @@ func (sops StrOps) ExtractNumericDigitsString(
     }
   }
 
+  // Main Number String Extraction Loop
   isEndOfNumStr := false
 
-  for i:=firstNumericDigitIdx; i < lenTargetStr; i++ {
+  for i := firstNumericDigitIdx; i < lenTargetStr; i++ {
 
     if !isEndOfNumStr {
 
@@ -749,27 +843,36 @@ func (sops StrOps) ExtractNumericDigitsString(
         continue
       }
 
-      for j:=0; j < lenKeepInteriorRunes; j++ {
+      for j := 0; j < lenKeepInteriorRunes; j++ {
 
         if targetRunes[i] == keepInteriorRunes[j] {
+
+          if i+1 >= lenTargetStr ||
+            (targetRunes[i+1] < '0' || targetRunes[i+1] > '9'){
+            // We are either at the end of string or the next char
+            // is NOT a numeric character.
+            goto trailChar
+          }
+
 
           numberRunesCaptured = append(numberRunesCaptured, targetRunes[i])
 
           goto numDigitLoop
         }
-
       }
+
     }
 
+    trailChar:
     isEndOfNumStr = true
 
-    for k:=0; k < lenKeepTrailingRunes; k++ {
+    for k := 0; k < lenKeepTrailingRunes; k++ {
 
       if targetRunes[i] == keepTrailingRunes[k] {
         numberRunesCaptured = append(numberRunesCaptured, targetRunes[i])
         // Only one instance of a keep trailing rune character is captured.
         // Delete the keep trailing rune character to prevent repeat captures.
-        keepTrailingRunes = append(keepLeadingRunes[0:k], keepTrailingRunes[k+1:] ...)
+        keepTrailingRunes = append(keepLeadingRunes[0:k], keepTrailingRunes[k+1:]...)
         lenKeepTrailingRunes--
         goto numDigitLoop
       }
@@ -782,15 +885,21 @@ func (sops StrOps) ExtractNumericDigitsString(
   numDigitLoop:
   }
 
-
   if len(numberRunesCaptured) > 0 {
     nStrDto.NumStr = string(numberRunesCaptured)
-    nStrDto.FirstNumCharIndex = firstNumericDigitIdx
+
+    if firstNumStrCharIdx > -1 {
+      nStrDto.FirstNumCharIndex = firstNumStrCharIdx
+    } else {
+      nStrDto.FirstNumCharIndex = firstNumericDigitIdx
+    }
+
     nStrDto.NumStrLen = len(nStrDto.NumStr)
     nStrDto.LeadingSignChar = leadingSignChar
     nStrDto.LeadingSignIndex = leadingSignIndex
     nStrDto.NextTargetStrIndex =
       nStrDto.FirstNumCharIndex + nStrDto.NumStrLen
+
     if nStrDto.NextTargetStrIndex >= len(targetStr) {
       nStrDto.NextTargetStrIndex = -1
     }
@@ -1239,7 +1348,6 @@ func (sops StrOps) FindLastWord(
     err
 }
 
-
 // FindRegExIndex - returns a two-element slice of integers defining the location
 // of the leftmost match in targetStr of the regular expression (regex).
 //
@@ -1300,9 +1408,9 @@ func (sops *StrOps) GetReader() io.Reader {
   return strings.NewReader(stringData)
 }
 
-// GetSoftwareVersion - Returns the software version for type 'StrOps'.
+// GetSoftwareVersion - Returns the software version for package 'strops'.
 func (sops StrOps) GetSoftwareVersion() string {
-  return "2.0.3"
+  return "2.0.4"
 }
 
 // GetStringData - Returns the current value of internal
@@ -2200,7 +2308,7 @@ func (sops StrOps) StripBadChars(
   cleanStr = targetStr
   strLen = len(cleanStr)
 
-  if strLen==0 {
+  if strLen == 0 {
     return cleanStr, strLen
   }
 
@@ -2220,7 +2328,7 @@ func (sops StrOps) StripBadChars(
 
     k++
 
-    for i:=0; i < lenBadChars; i++ {
+    for i := 0; i < lenBadChars; i++ {
 
       for {
 
@@ -2252,7 +2360,7 @@ func (sops StrOps) StripBadChars(
       }
     }
 
-    if k - cycleWhereStringRemoved > 3 || k > 1000000 {
+    if k-cycleWhereStringRemoved > 3 || k > 1000000 {
       goto Done
     }
   }
@@ -2295,7 +2403,7 @@ func (sops StrOps) StripLeadingChars(
 
     k++
 
-    for i:=0; i < lenBadChars; i++ {
+    for i := 0; i < lenBadChars; i++ {
 
       for {
 
@@ -2315,7 +2423,7 @@ func (sops StrOps) StripLeadingChars(
       }
     }
 
-    if k - cycleWhereStringRemoved > 3 || k > 1000000 {
+    if k-cycleWhereStringRemoved > 3 || k > 1000000 {
       goto Done
     }
   }
@@ -2351,14 +2459,14 @@ func (sops StrOps) StripTrailingChars(
     return cleanStr, strLen
   }
 
-  k:= -1
+  k := -1
   cycleWhereStringRemoved := 0
 
   for {
 
     k++
 
-    for i:=0; i < lenBadChars; i++ {
+    for i := 0; i < lenBadChars; i++ {
 
       for {
 
@@ -2385,13 +2493,13 @@ func (sops StrOps) StripTrailingChars(
       goto Done
     }
 
-    if k - cycleWhereStringRemoved > 3 || k > 1000000 {
+    if k-cycleWhereStringRemoved > 3 || k > 1000000 {
       goto Done
     }
 
   }
 
-  Done:
+Done:
 
   return cleanStr, strLen
 }

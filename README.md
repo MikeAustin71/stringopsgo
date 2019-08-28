@@ -72,8 +72,8 @@ All of the active production files are located in directory path:
     github.com/MikeAustin71/stringopsgo/strops/v2
 
 ## Tests
-Currently the *strops/v2* package has 210 unit tests with a code coverage
-of 87%. 
+Currently the *strops/v2* package has 220 unit tests with a code coverage
+of 88%. 
 
 Test coverage and outcomes are documented in:
  

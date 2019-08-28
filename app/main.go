@@ -9,7 +9,7 @@ import (
 )
 
 Reference format:
- strops.StrOps{}.ExtractNumericDigitsString(..)
+ strops.StrOps{}.ExtractNumericDigits(..)
 
 */
 
@@ -30,20 +30,34 @@ type mainTest struct {
 }
 
 func (mt mainTest) ExampleExtractNumStr01() {
+  // Etc/GMT-4
+  // "Etc/GMT+11"
+  // "November 12, 2016 1:6:3pm -(+0000) UTC"
+  // "Hello World! Your bank account =$(1,250,364.33).44 What do you think?"
+  targetStr := "Hello World! Your bank account =$(1,250,364.33).44 What do you think?"
 
-  targetStr := "Hello world, USA GDP growth is projected at 1.8%."
-
-  expectedNumStr := "1.8%"
+  expectedNumStr := "$(1,250,364.33)"
   expectedLeadingSignChar := ""
+  startIndex := 0
+  keepLeadingChars := "$(+-"
+  keepInteriorChars := ",."
+  keepTrailingChars := ")"
+
+  expectedLeadingSignIndex := -1
+
+
+
   expectedNumStrLen := len(expectedNumStr)
   expectedNumIdx := strings.Index(targetStr, expectedNumStr)
-  startIndex := 0
-  keepLeadingChars := ""
-  keepInteriorChars := "."
-  keepTrailingChars := "%"
+  expectedNextTargetStrIdx := expectedNumIdx + expectedNumStrLen
+
+  if expectedNextTargetStrIdx >= len(targetStr) {
+    expectedNextTargetStrIdx = -1
+  }
+
 
   nStrDto,
-  err :=  strops.StrOps{}.ExtractNumericDigitsString(
+  err :=  strops.StrOps{}.ExtractNumericDigits(
     targetStr,
     startIndex,
     keepLeadingChars,
@@ -51,7 +65,7 @@ func (mt mainTest) ExampleExtractNumStr01() {
     keepTrailingChars)
 
   if err != nil {
-    fmt.Printf("Error returned by StrOps{}.ExtractNumericDigitsString(targetStr, 0)\n" +
+    fmt.Printf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n" +
       "targetStr='%v'\nError='%v'\n", targetStr, err.Error())
     return
   }
@@ -86,6 +100,19 @@ func (mt mainTest) ExampleExtractNumStr01() {
     isError = true
   }
 
+  if expectedLeadingSignIndex != nStrDto.LeadingSignIndex {
+    fmt.Printf("Expected leading sign index ='%v'\n" +
+      "Instead, leading sign index ='%v'\n",
+      expectedLeadingSignIndex, nStrDto.LeadingSignIndex)
+    isError = true
+  }
+
+  if expectedNextTargetStrIdx != nStrDto.NextTargetStrIndex {
+    fmt.Printf("Expected Next TargetStr Char Index ='%v'\n" +
+      "Instead, Next TargetStr Char Index ='%v'\n",
+      expectedNextTargetStrIdx, nStrDto.NextTargetStrIndex)
+    isError = true
+  }
 
   fmt.Println("  mainTest.ExampleExtractNumStr01()  ")
   fmt.Println("-------------------------------------")
@@ -104,8 +131,9 @@ func (mt mainTest) ExampleExtractNumStr01() {
   fmt.Println("       Number Index: ", expectedNumIdx)
   fmt.Println("         Num Length: ", expectedNumStrLen)
   fmt.Println("  Leading Sign Char: ", expectedLeadingSignChar)
+  fmt.Println(" Leading Sign Index: ", expectedLeadingSignIndex)
   fmt.Println("      Number String: ", expectedNumStr)
-  fmt.Println(" Next TargetStr Idx: ", expectedNumIdx + expectedNumStrLen)
+  fmt.Println(" Next TargetStr Idx: ", expectedNextTargetStrIdx)
   fmt.Println("-------------------------------------")
   fmt.Println("            Results                  ")
   fmt.Println("-------------------------------------")
