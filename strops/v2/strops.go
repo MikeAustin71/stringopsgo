@@ -162,7 +162,7 @@ func (sortStrLenLow SortStrLengthLowestToHighest) Less(i, j int) bool {
   return lenI < lenJ
 }
 
-// NumStrProfileDto - This type is used to return information
+// NumStrProfileDto - This type is used to encapsulate information
 // on strings of numeric digits which are extracted from larger
 // strings.
 //
@@ -197,6 +197,37 @@ func (exNumDto NumStrProfileDto) New() NumStrProfileDto {
   newDto.NumStrLen = 0
   newDto.NumStr = ""
   return newDto
+}
+
+// DataFieldProfileDto - This type is used to encapsulate information
+// related to an extracted data field string.
+//
+type DataFieldProfileDto struct {
+  TargetStr               string    //  The string from which the data field
+                                    //    is extracted.
+  TargetStrLength         int       //  Length of 'TargetStr'
+  StartIndex              int       //  The index with in 'TargetStr' from which
+                                    //    the search for a data field was initiated.
+  LeadingKeyWordDelimiter string    //  The Leading Key Word Delimiter which is used
+                                    //    identify the beginning of the field search
+  DataFieldStr            string    //  The extracted data field string
+  DataFieldIndex          int       //  The index in 'TargetStr' where the data field
+                                    //    begins.
+  DataFieldLength         int       //  The length of the extracted data field string.
+  NextTargetStrIndex      int       //  The index in 'TargetStr' immediately following
+                                    //    the extracted data field.
+}
+
+func (dfProfile DataFieldProfileDto) New() DataFieldProfileDto {
+  newDataDto := DataFieldProfileDto{}
+  newDataDto.TargetStr = ""
+  newDataDto.StartIndex = -1
+  newDataDto.LeadingKeyWordDelimiter = ""
+  newDataDto.DataFieldStr = ""
+  newDataDto.DataFieldIndex = -1
+  newDataDto.DataFieldLength = 0
+  newDataDto.NextTargetStrIndex = -1
+  return newDataDto
 }
 
 // StrOps - encapsulates a collection of methods used to manage string
@@ -482,6 +513,138 @@ func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
   return false
 }
 
+// ExtractDataField - Extracts a data field string from a larger target string ('TargetStr').
+//
+func (sops StrOps) ExtractDataField(
+  targetStr string,
+  leadingKeyWordDelimiter string,
+  startIdx int,
+  leadingFieldSeparators []rune,
+  trailingFieldSeparators []rune,
+  endOfStringDelimiters []rune) (DataFieldProfileDto, error) {
+
+  ePrefix := "StrOps.ExtractDataField() "
+  newDataDto := DataFieldProfileDto{}.New()
+
+  lenTargetStr := len(targetStr)
+
+  if lenTargetStr == 0 {
+
+    return newDataDto,
+      errors.New(ePrefix +
+        "ERROR: Input Parameter 'targetStr' is an EMPTY string!\n")
+  }
+
+  if startIdx >= lenTargetStr {
+    return newDataDto,
+      fmt.Errorf("ERROR: Input Parameter 'startIdx' is out-of-bounds!\n" +
+        "startIdx='%v'\t\tLast TargetStr Index='%v'\n" +
+        "Length Of TargetStr='%v'\n",
+        startIdx, lenTargetStr -1, lenTargetStr)
+  }
+
+  newDataDto.TargetStr = targetStr
+  newDataDto.StartIndex = startIdx
+  newDataDto.TargetStrLength = lenTargetStr
+  newDataDto.LeadingKeyWordDelimiter = leadingKeyWordDelimiter
+
+  targetStrRunes := []rune(targetStr)
+  lenTargetStr = len(targetStrRunes)
+  endTargetStrIdx := lenTargetStr - 1
+
+  lenOfEndOfStringDelimiters := len(endOfStringDelimiters)
+
+  if lenOfEndOfStringDelimiters > 0 {
+
+    for a:=startIdx; a < lenTargetStr; a++ {
+
+      for b:=0; b < lenOfEndOfStringDelimiters; b++ {
+        if endOfStringDelimiters[b] == targetStrRunes[a] {
+          endTargetStrIdx = a
+          goto endOfStringDelimiter
+        }
+      }
+    }
+  }
+
+ endOfStringDelimiter:
+
+  if startIdx == endTargetStrIdx {
+    return newDataDto, nil
+  }
+
+  lenLeadingKeyWordDelimiter := len(leadingKeyWordDelimiter)
+
+  if lenLeadingKeyWordDelimiter > 0 {
+
+    keyWordIdx := strings.Index(targetStr[startIdx:], leadingKeyWordDelimiter)
+
+    if keyWordIdx== -1 ||
+      keyWordIdx >= endTargetStrIdx {
+      return newDataDto, nil
+    }
+
+    startIdx =  lenLeadingKeyWordDelimiter + keyWordIdx
+  }
+
+  lenTrailingFieldSepartors := len(trailingFieldSeparators)
+  fieldDataRunes := make([]rune, 0, 20)
+  firstDataFieldIdx := -1
+
+  for i:= startIdx; i <= endTargetStrIdx; i++ {
+
+    for m:=0; m < lenOfEndOfStringDelimiters; m++ {
+      if targetStrRunes[i] == endOfStringDelimiters[m] {
+        goto exitMainTargetLoop
+      }
+    }
+
+    if firstDataFieldIdx == -1 {
+
+      for j:= 0; j < len(leadingFieldSeparators); j++ {
+
+        if targetStrRunes[i] == leadingFieldSeparators[j]  {
+          goto mainTargetLoop
+        }
+
+      }
+    }
+
+    for k:=0; k < lenTrailingFieldSepartors; k++ {
+      if targetStrRunes[i] == trailingFieldSeparators[k] {
+        goto exitMainTargetLoop
+      }
+    }
+
+    if firstDataFieldIdx == -1 {
+      firstDataFieldIdx = i
+    }
+
+    fieldDataRunes = append(fieldDataRunes, targetStrRunes[i])
+
+  mainTargetLoop:
+  }
+
+  exitMainTargetLoop:
+
+  if len(fieldDataRunes) == 0 {
+    return newDataDto, nil
+  }
+
+  newDataDto.DataFieldStr = string(fieldDataRunes)
+  newDataDto.DataFieldLength = len(newDataDto.DataFieldStr)
+  newDataDto.DataFieldIndex = firstDataFieldIdx
+  nextIdx := newDataDto.DataFieldIndex + newDataDto.DataFieldLength
+
+  if nextIdx >= endTargetStrIdx {
+    newDataDto.NextTargetStrIndex = -1
+  } else {
+    newDataDto.NextTargetStrIndex = nextIdx
+  }
+
+  return newDataDto, nil
+}
+
 // ExtractNumericDigits - Examines an input parameter 'targetStr' to identify and extract the
 // first instance of a number string. The number string will be comprised of one or more
 // consecutive numeric digits (0-9) and may include leading, trailing or interior non-numeric
@@ -512,14 +675,14 @@ func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
 //
 // Input Parameters
 //
-//  targetStr         string     -  The target string to be searched for the first instance of
+//  targetStr           string    - The target string to be searched for the first instance of
 //                                  a number string. A number string is usually defined as a
 //                                  string comprised of one or more consecutive numeric digits.
 //                                  Additional parameters provided by this method will allow
 //                                  the caller to insert specified non-numeric characters at
 //                                  the beginning, end or interior of a number string.
 //
-//  startIdx              int     - The starting index in input parameter 'targetStr'
+//  startIdx               int    - The starting index in input parameter 'targetStr'
 //                                  from which the search for a number string will be
 //                                  initiated. This useful in extracting multiple number
 //                                  strings form a single 'targetStr'.
@@ -541,16 +704,21 @@ func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
 //                                  precede the string of numeric digits in 'targetStr'.
 //
 //  keepInteriorChars   string    - This string contains non-numeric characters which will be retained
-//                                  as valid characters within the final extracted number string. Such
-//                                  characters might include thousands separators (commas) or decimal
-//                                  points (periods).
+//                                  as valid characters within the final extracted number string. The
+//                                  characters must exist withing the first instance of a number string
+//                                  located in 'targetStr'. Such interior characters might include
+//                                  thousands separators (commas) or decimal points (periods).
 //
-//                                  For example if a comma and a period are included in 'keepInteriorChars'
-//                                  and the target string is 'Hello word 123,456,789.25 !', the returned
-//                                  number string would be '123,456,789.25'.  If the comma character was
+//                                  For example, if a comma and a period are included in 'keepInteriorChars'
+//                                  and the target string is "Hello word 123,456,789.25 !", the returned
+//                                  number string would be "123,456,789.25".  If the comma character was
 //                                  NOT included in the 'keepInteriorChars' string, the returned number
 //                                  string would be '123', since the number string extraction parser
 //                                  would break on the comma, a non-numeric digit.
+//
+//                                  'keepInteriorChars' will NOT allow multiple non-numeric characters
+//                                  to exist within the interior of the final extracted number string.
+//                                  Only single non-numeric characters are allowed within a number string.
 //
 //  keepTrailingChars   string    - This string contains non-numeric characters which should be retained
 //                                  at the end of the final number string. By default, a non-numeric
@@ -1723,6 +1891,7 @@ func (sops StrOps) NewPtr() *StrOps {
 //
 // 'StrOps.stringData' can be accessed through Getter an Setter methods,
 // GetStringData() and SetStringData()
+//
 func (sops *StrOps) Read(p []byte) (n int, err error) {
 
   ePrefix := "StrOps.Read() "

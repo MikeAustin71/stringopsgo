@@ -22,11 +22,137 @@ import (
 
 func main() {
 
-  mainTest{}.ExampleExtractNumStr01()
+  mainTest{}.ExampleExtractDataField01()
 }
 
 type mainTest struct {
   input string
+}
+
+func (mt mainTest) ExampleExtractDataField01() {
+
+  endOfLineRunes := []rune("\n#")
+  leadingRunes := []rune("\t \r\f\n\v")
+  trailingRunes := []rune ("\t \r\f\n\v")
+  targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
+  lenTargetStr := len(targetStr)
+  startIdx := 0
+  leadingKeyWordDelimiter := "Zone:"
+  expectedFieldStr := "America/Chicago"
+  expectedFieldIdx := strings.Index(targetStr, expectedFieldStr)
+  expectedFieldLength := len(expectedFieldStr)
+  expectedNextTargetIdx := expectedFieldIdx + expectedFieldLength
+
+  if expectedNextTargetIdx >= len(targetStr) {
+    expectedNextTargetIdx = -1
+  }
+
+  datDto,
+  err := strops.StrOps{}.ExtractDataField(
+    targetStr,
+    leadingKeyWordDelimiter,
+    startIdx,
+    leadingRunes,
+    trailingRunes,
+    endOfLineRunes)
+
+  if err != nil {
+    fmt.Printf("Error returned by strops.StrOps{}.ExtractDataField()\n" +
+      "targetStr='%v'\tstartIdx='%v'\n" +
+      "Error='%v'\n", targetStr, startIdx, err.Error() )
+    return
+  }
+
+  isError := false
+
+  if datDto.TargetStr != targetStr {
+    fmt.Printf("ERROR: Expected datDto.TargetStr='%v'.\n" +
+      "Instead, datDto.TargetStr='%v'.\n",
+      datDto.TargetStr, targetStr)
+    isError = true
+  }
+
+  if datDto.TargetStrLength != lenTargetStr {
+    fmt.Printf("ERROR: Expected datDto.TargetStrLength='%v'.\n" +
+      "Instead, datDto.TargetStrLength='%v'.\n",
+      datDto.TargetStrLength, lenTargetStr)
+    isError = true
+  }
+
+  if datDto.StartIndex != startIdx {
+    fmt.Printf("ERROR: Expected datDto.StartIndex='%v'.\n" +
+      "Instead, datDto.StartIndex='%v'.\n",
+      datDto.StartIndex, startIdx)
+    isError = true
+  }
+
+  if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+    fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n" +
+      "Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+      leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+    isError = true
+  }
+
+  if datDto.DataFieldStr != expectedFieldStr {
+    fmt.Printf("ERROR: Expected datDto.DataFieldStr='%v'.\n" +
+      "Instead, datDto.DataFieldStr='%v'.\n",
+      datDto.DataFieldStr, expectedFieldStr)
+    isError = true
+  }
+
+  if datDto.DataFieldLength != expectedFieldLength {
+    fmt.Printf("ERROR: Expected datDto.DataFieldLength='%v'.\n" +
+      "Instead, datDto.DataFieldLength='%v'.\n",
+      datDto.DataFieldLength, expectedFieldLength)
+    isError = true
+  }
+
+  if datDto.DataFieldIndex != expectedFieldIdx {
+    fmt.Printf("ERROR: Expected datDto.DataFieldIndex='%v'.\n" +
+      "Instead, datDto.DataFieldIndex='%v'.\n",
+      datDto.DataFieldIndex, expectedFieldIdx)
+    isError = true
+  }
+
+  if datDto.NextTargetStrIndex != expectedNextTargetIdx {
+    fmt.Printf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n" +
+      "Instead, datDto.NextTargetStrIndex='%v'.\n",
+      datDto.NextTargetStrIndex, expectedNextTargetIdx)
+    isError = true
+  }
+
+  fmt.Println("================================================")
+  fmt.Println("           ExampleExtractDataField01            ")
+  fmt.Println("================================================")
+  if isError {
+    fmt.Println("              @@@@ FAILURE @@@@                 ")
+  } else {
+    fmt.Println("                   SUCCESS!                     ")
+  }
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                    Base Data                   ")
+  fmt.Println("------------------------------------------------")
+  fmt.Printf("         TargetStr: %v", targetStr)
+  fmt.Println("  TargetStr Length: ", lenTargetStr)
+  fmt.Println("       Start Index: ", startIdx)
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                 Expected Results               ")
+  fmt.Println("------------------------------------------------")
+  fmt.Println("      Field String: ", expectedFieldStr)
+  fmt.Println("  Field Str Length: ", expectedFieldLength)
+  fmt.Println("       Field Index: ", expectedFieldIdx)
+  fmt.Println(" Next Target Index: ", expectedNextTargetIdx)
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                  Actual Results                ")
+  fmt.Println("------------------------------------------------")
+  fmt.Println("      Field String: ", datDto.DataFieldStr)
+  fmt.Println("  Field Str Length: ", datDto.DataFieldLength)
+  fmt.Println("       Field Index: ", datDto.DataFieldIndex)
+  fmt.Println(" Next Target Index: ", datDto.NextTargetStrIndex)
+  fmt.Println("     Target String: ", datDto.TargetStr)
+  fmt.Println(" Target Str Length: ", datDto.TargetStrLength)
+  fmt.Println("   Target StartIdx: ", datDto.StartIndex)
+
 }
 
 func (mt mainTest) ExampleExtractNumStr01() {
