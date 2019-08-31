@@ -513,7 +513,52 @@ func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
   return false
 }
 
-// ExtractDataField - Extracts a data field string from a larger target string ('TargetStr').
+// ExtractDataField - Extracts a data field string from a larger target string ('targetStr').
+// The target string is searched for a data field. If the 'leadingKeyWordDelimiter' parameter
+// is populated, the data field MUST contain this leading key word. The search for the data
+// field begins at a string index in target string which is designated by input parameter,
+// 'startIdx'.
+//
+// The extracted data field MUST be preceded by one of the characters specified in input
+// parameter, 'leadingFieldSeparators'. In addition, the data field must be immediately
+// followed by one of the characters in input parameter 'trailingFieldSeparators'.
+//
+//
+// ------------------------------------------------------------------------
+//
+// Input Values
+//
+// ------------------------------------------------------------------------
+//
+// Return Values
+//
+//  DataFieldProfileDto - If successful, this method returns a structure containing
+//                        characteristics describing the extracted data field.
+//
+//          type DataFieldProfileDto struct {
+//             TargetStr               string    //  The string from which the data field
+//                                               //    is extracted.
+//             TargetStrLength         int       //  Length of 'TargetStr'
+//             StartIndex              int       //  The index with in 'TargetStr' from which
+//                                               //    the search for a data field was initiated.
+//             LeadingKeyWordDelimiter string    //  The Leading Key Word Delimiter which is used
+//                                               //    identify the beginning of the field search
+//             DataFieldStr            string    //  The extracted data field string
+//             DataFieldIndex          int       //  The index in 'TargetStr' where the data field
+//                                               //    begins.
+//             DataFieldLength         int       //  The length of the extracted data field string.
+//             NextTargetStrIndex      int       //  The index in 'TargetStr' immediately following
+//                                               //    the extracted data field.
+//           }
+//
+//  error               - If the method completes successfully and no errors are encountered
+//                        this return value is set to 'nil'. Otherwise, if errors are encountered
+//                        this return value will contain an appropriate error message.
+//
+//                        The most likely source of errors are invalid input parameters.
+//                        Input parameters 'targetStr', 'startIdx', 'leadingFieldSeparators',
+//                        'trailingFieldSeparators' and 'endOfStringDelimiters' are required input
+//                        parameters and must be populated with valid data.
 //
 func (sops StrOps) ExtractDataField(
   targetStr string,
@@ -593,12 +638,6 @@ func (sops StrOps) ExtractDataField(
 
   for i:= startIdx; i <= endTargetStrIdx; i++ {
 
-    for m:=0; m < lenOfEndOfStringDelimiters; m++ {
-      if targetStrRunes[i] == endOfStringDelimiters[m] {
-        goto exitMainTargetLoop
-      }
-    }
-
     if firstDataFieldIdx == -1 {
 
       for j:= 0; j < len(leadingFieldSeparators); j++ {
@@ -608,12 +647,15 @@ func (sops StrOps) ExtractDataField(
         }
 
       }
-    }
 
-    for k:=0; k < lenTrailingFieldSepartors; k++ {
-      if targetStrRunes[i] == trailingFieldSeparators[k] {
-        goto exitMainTargetLoop
+    } else {
+
+      for k:=0; k < lenTrailingFieldSepartors; k++ {
+        if targetStrRunes[i] == trailingFieldSeparators[k] {
+          goto exitMainTargetLoop
+        }
       }
+
     }
 
     if firstDataFieldIdx == -1 {
@@ -743,9 +785,10 @@ func (sops StrOps) ExtractDataField(
 //                                    keepInteriorChars = "."
 //                                    keepTrailingChars= "%"
 //                                    Extracted Number String = "1.8%"
+//
 // ------------------------------------------------------------------------
 //
-// Return Value
+// Return Values
 //
 //  NumStrProfileDto    - If successful, this method will return a type 'NumStrProfileDto'
 //                        populated with the extracted number string and additional profile

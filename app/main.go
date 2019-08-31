@@ -152,6 +152,7 @@ func (mt mainTest) ExampleExtractDataField01() {
   fmt.Println("     Target String: ", datDto.TargetStr)
   fmt.Println(" Target Str Length: ", datDto.TargetStrLength)
   fmt.Println("   Target StartIdx: ", datDto.StartIndex)
+  fmt.Println("  Leading Key Word: ", datDto.LeadingKeyWordDelimiter)
 
 }
 
