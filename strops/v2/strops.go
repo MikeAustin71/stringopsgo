@@ -2729,6 +2729,7 @@ Done:
 //	strToJustify 	= "Hello World"
 //	Returned String = "Hello World    "
 //	String Index    =  012345648901234
+//
 func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, error) {
 
   ePrefix := "StrOps.StrLeftJustify() "
@@ -2770,6 +2771,7 @@ func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, er
 //	70-character field, 30-space characters would need to be positioned on each side
 //	of the string to center. This method only returns the left segment, or a string
 //	consisting of 30-spaces.
+//
 func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string, error) {
 
   ePrefix := "StrOps.StrPadLeftToCenter() "
@@ -2807,6 +2809,7 @@ func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string,
 //	If the total field length ('fieldLen') is specified as 50-characters and the
 //	length of string to justify ('strToJustify') is 20-characters, then this method
 //	would return a string consisting of 30-space characters plus the 'strToJustify'.
+//
 func (sops StrOps) StrRightJustify(strToJustify string, fieldLen int) (string, error) {
 
   ePrefix := "StrOps.StrRightJustify() "
@@ -2841,6 +2844,7 @@ func (sops StrOps) StrRightJustify(strToJustify string, fieldLen int) (string, e
 
 // SwapRune - Swaps all instances of 'oldRune' character with 'newRune'
 // character in input parameter target string ('targetStr').
+//
 func (sops StrOps) SwapRune(targetStr string, oldRune rune, newRune rune) (string, error) {
 
   if targetStr == "" {
@@ -2871,6 +2875,7 @@ func (sops StrOps) SwapRune(targetStr string, oldRune rune, newRune rune) (strin
 //	targetStr = "       Hello          World        "
 //	trimChar  = ' ' (One Space)
 //	returned string (rStr) = "Hello World"
+//
 func (sops StrOps) TrimMultipleChars(
   targetStr string,
   trimChar rune) (rStr string, err error) {
@@ -2933,6 +2938,7 @@ func (sops StrOps) TrimMultipleChars(
 // TrimStringEnds - Removes all instances of input
 // parameter 'trimChar' from the beginning and end
 // of input parameter string 'targetStr'.
+//
 func (sops StrOps) TrimStringEnds(
   targetStr string,
   trimChar rune) (rStr string, err error) {
@@ -3002,6 +3008,7 @@ func (sops StrOps) TrimStringEnds(
 
 // UpperCaseFirstLetter - Finds the first alphabetic character in a string
 // (a-z A-Z) and converts it to upper case.
+//
 func (sops StrOps) UpperCaseFirstLetter(str string) string {
 
   if len(str) == 0 {
@@ -3043,6 +3050,7 @@ func (sops StrOps) UpperCaseFirstLetter(str string) string {
 //
 // 'StrOps.stringData' can be accessed through 'Getter' and
 // 'Setter' methods, 'GetStringData()' and 'SetStringData()'.
+//
 func (sops *StrOps) Write(p []byte) (n int, err error) {
 
   ePrefix := "StrOps.Write() "
