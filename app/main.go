@@ -11,265 +11,264 @@ import (
 Reference format:
  strops.StrOps{}.ExtractNumericDigits(..)
 
+Check-Out
+https://goreportcard.com
+
 */
 
 import (
-  "MikeAustin71/stringopsgo/strops/v2"
-  "fmt"
-  "strings"
-
+	"MikeAustin71/stringopsgo/strops/v2"
+	"fmt"
+	"strings"
 )
 
 func main() {
 
-  mainTest{}.ExampleExtractDataField01()
+	mainTest{}.ExampleExtractDataField01()
 }
 
 type mainTest struct {
-  input string
+	input string
 }
 
 func (mt mainTest) ExampleExtractDataField01() {
 
-  endOfLineRunes := []rune("\n#")
-  leadingRunes := []rune("\t \r\f\n\v")
-  trailingRunes := []rune ("\t \r\f\n\v")
-  targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
-  lenTargetStr := len(targetStr)
-  startIdx := 0
-  leadingKeyWordDelimiter := "Zone:"
-  expectedFieldStr := "America/Chicago"
-  expectedFieldIdx := strings.Index(targetStr, expectedFieldStr)
-  expectedFieldLength := len(expectedFieldStr)
-  expectedNextTargetIdx := expectedFieldIdx + expectedFieldLength
+	endOfLineRunes := []rune("\n#")
+	leadingRunes := []rune("\t \r\f\n\v")
+	trailingRunes := []rune("\t \r\f\n\v")
+	targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
+	lenTargetStr := len(targetStr)
+	startIdx := 0
+	leadingKeyWordDelimiter := "Zone:"
+	expectedFieldStr := "America/Chicago"
+	expectedFieldIdx := strings.Index(targetStr, expectedFieldStr)
+	expectedFieldLength := len(expectedFieldStr)
+	expectedNextTargetIdx := expectedFieldIdx + expectedFieldLength
 
-  if expectedNextTargetIdx >= len(targetStr) {
-    expectedNextTargetIdx = -1
-  }
+	if expectedNextTargetIdx >= len(targetStr) {
+		expectedNextTargetIdx = -1
+	}
 
-  datDto,
-  err := strops.StrOps{}.ExtractDataField(
-    targetStr,
-    leadingKeyWordDelimiter,
-    startIdx,
-    leadingRunes,
-    trailingRunes,
-    endOfLineRunes)
+	datDto,
+		err := strops.StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiter,
+		startIdx,
+		leadingRunes,
+		trailingRunes,
+		endOfLineRunes)
 
-  if err != nil {
-    fmt.Printf("Error returned by strops.StrOps{}.ExtractDataField()\n" +
-      "targetStr='%v'\tstartIdx='%v'\n" +
-      "Error='%v'\n", targetStr, startIdx, err.Error() )
-    return
-  }
+	if err != nil {
+		fmt.Printf("Error returned by strops.StrOps{}.ExtractDataField()\n"+
+			"targetStr='%v'\tstartIdx='%v'\n"+
+			"Error='%v'\n", targetStr, startIdx, err.Error())
+		return
+	}
 
-  isError := false
+	isError := false
 
-  if datDto.TargetStr != targetStr {
-    fmt.Printf("ERROR: Expected datDto.TargetStr='%v'.\n" +
-      "Instead, datDto.TargetStr='%v'.\n",
-      datDto.TargetStr, targetStr)
-    isError = true
-  }
+	if datDto.TargetStr != targetStr {
+		fmt.Printf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+			"Instead, datDto.TargetStr='%v'.\n",
+			datDto.TargetStr, targetStr)
+		isError = true
+	}
 
-  if datDto.TargetStrLength != lenTargetStr {
-    fmt.Printf("ERROR: Expected datDto.TargetStrLength='%v'.\n" +
-      "Instead, datDto.TargetStrLength='%v'.\n",
-      datDto.TargetStrLength, lenTargetStr)
-    isError = true
-  }
+	if datDto.TargetStrLength != lenTargetStr {
+		fmt.Printf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+			"Instead, datDto.TargetStrLength='%v'.\n",
+			datDto.TargetStrLength, lenTargetStr)
+		isError = true
+	}
 
-  if datDto.StartIndex != startIdx {
-    fmt.Printf("ERROR: Expected datDto.StartIndex='%v'.\n" +
-      "Instead, datDto.StartIndex='%v'.\n",
-      datDto.StartIndex, startIdx)
-    isError = true
-  }
+	if datDto.StartIndex != startIdx {
+		fmt.Printf("ERROR: Expected datDto.StartIndex='%v'.\n"+
+			"Instead, datDto.StartIndex='%v'.\n",
+			datDto.StartIndex, startIdx)
+		isError = true
+	}
 
-  if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
-    fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n" +
-      "Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-      leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
-    isError = true
-  }
+	if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+		fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+			leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+		isError = true
+	}
 
-  if datDto.DataFieldStr != expectedFieldStr {
-    fmt.Printf("ERROR: Expected datDto.DataFieldStr='%v'.\n" +
-      "Instead, datDto.DataFieldStr='%v'.\n",
-      datDto.DataFieldStr, expectedFieldStr)
-    isError = true
-  }
+	if datDto.DataFieldStr != expectedFieldStr {
+		fmt.Printf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+			"Instead, datDto.DataFieldStr='%v'.\n",
+			datDto.DataFieldStr, expectedFieldStr)
+		isError = true
+	}
 
-  if datDto.DataFieldLength != expectedFieldLength {
-    fmt.Printf("ERROR: Expected datDto.DataFieldLength='%v'.\n" +
-      "Instead, datDto.DataFieldLength='%v'.\n",
-      datDto.DataFieldLength, expectedFieldLength)
-    isError = true
-  }
+	if datDto.DataFieldLength != expectedFieldLength {
+		fmt.Printf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+			"Instead, datDto.DataFieldLength='%v'.\n",
+			datDto.DataFieldLength, expectedFieldLength)
+		isError = true
+	}
 
-  if datDto.DataFieldIndex != expectedFieldIdx {
-    fmt.Printf("ERROR: Expected datDto.DataFieldIndex='%v'.\n" +
-      "Instead, datDto.DataFieldIndex='%v'.\n",
-      datDto.DataFieldIndex, expectedFieldIdx)
-    isError = true
-  }
+	if datDto.DataFieldIndex != expectedFieldIdx {
+		fmt.Printf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+			"Instead, datDto.DataFieldIndex='%v'.\n",
+			datDto.DataFieldIndex, expectedFieldIdx)
+		isError = true
+	}
 
-  if datDto.NextTargetStrIndex != expectedNextTargetIdx {
-    fmt.Printf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n" +
-      "Instead, datDto.NextTargetStrIndex='%v'.\n",
-      datDto.NextTargetStrIndex, expectedNextTargetIdx)
-    isError = true
-  }
+	if datDto.NextTargetStrIndex != expectedNextTargetIdx {
+		fmt.Printf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+			"Instead, datDto.NextTargetStrIndex='%v'.\n",
+			datDto.NextTargetStrIndex, expectedNextTargetIdx)
+		isError = true
+	}
 
-  fmt.Println("================================================")
-  fmt.Println("           ExampleExtractDataField01            ")
-  fmt.Println("================================================")
-  if isError {
-    fmt.Println("              @@@@ FAILURE @@@@                 ")
-  } else {
-    fmt.Println("                   SUCCESS!                     ")
-  }
-  fmt.Println("------------------------------------------------")
-  fmt.Println("                    Base Data                   ")
-  fmt.Println("------------------------------------------------")
-  fmt.Printf("         TargetStr: %v", targetStr)
-  fmt.Println("  TargetStr Length: ", lenTargetStr)
-  fmt.Println("       Start Index: ", startIdx)
-  fmt.Println("------------------------------------------------")
-  fmt.Println("                 Expected Results               ")
-  fmt.Println("------------------------------------------------")
-  fmt.Println("      Field String: ", expectedFieldStr)
-  fmt.Println("  Field Str Length: ", expectedFieldLength)
-  fmt.Println("       Field Index: ", expectedFieldIdx)
-  fmt.Println(" Next Target Index: ", expectedNextTargetIdx)
-  fmt.Println("------------------------------------------------")
-  fmt.Println("                  Actual Results                ")
-  fmt.Println("------------------------------------------------")
-  fmt.Println("      Field String: ", datDto.DataFieldStr)
-  fmt.Println("  Field Str Length: ", datDto.DataFieldLength)
-  fmt.Println("       Field Index: ", datDto.DataFieldIndex)
-  fmt.Println(" Next Target Index: ", datDto.NextTargetStrIndex)
-  fmt.Println("     Target String: ", datDto.TargetStr)
-  fmt.Println(" Target Str Length: ", datDto.TargetStrLength)
-  fmt.Println("   Target StartIdx: ", datDto.StartIndex)
-  fmt.Println("  Leading Key Word: ", datDto.LeadingKeyWordDelimiter)
+	fmt.Println("================================================")
+	fmt.Println("           ExampleExtractDataField01            ")
+	fmt.Println("================================================")
+	if isError {
+		fmt.Println("              @@@@ FAILURE @@@@                 ")
+	} else {
+		fmt.Println("                   SUCCESS!                     ")
+	}
+	fmt.Println("------------------------------------------------")
+	fmt.Println("                    Base Data                   ")
+	fmt.Println("------------------------------------------------")
+	fmt.Printf("         TargetStr: %v", targetStr)
+	fmt.Println("  TargetStr Length: ", lenTargetStr)
+	fmt.Println("       Start Index: ", startIdx)
+	fmt.Println("------------------------------------------------")
+	fmt.Println("                 Expected Results               ")
+	fmt.Println("------------------------------------------------")
+	fmt.Println("      Field String: ", expectedFieldStr)
+	fmt.Println("  Field Str Length: ", expectedFieldLength)
+	fmt.Println("       Field Index: ", expectedFieldIdx)
+	fmt.Println(" Next Target Index: ", expectedNextTargetIdx)
+	fmt.Println("------------------------------------------------")
+	fmt.Println("                  Actual Results                ")
+	fmt.Println("------------------------------------------------")
+	fmt.Println("      Field String: ", datDto.DataFieldStr)
+	fmt.Println("  Field Str Length: ", datDto.DataFieldLength)
+	fmt.Println("       Field Index: ", datDto.DataFieldIndex)
+	fmt.Println(" Next Target Index: ", datDto.NextTargetStrIndex)
+	fmt.Println("     Target String: ", datDto.TargetStr)
+	fmt.Println(" Target Str Length: ", datDto.TargetStrLength)
+	fmt.Println("   Target StartIdx: ", datDto.StartIndex)
+	fmt.Println("  Leading Key Word: ", datDto.LeadingKeyWordDelimiter)
 
 }
 
 func (mt mainTest) ExampleExtractNumStr01() {
-  // Etc/GMT-4
-  // "Etc/GMT+11"
-  // "November 12, 2016 1:6:3pm -(+0000) UTC"
-  // "Hello World! Your bank account =$(1,250,364.33).44 What do you think?"
-  targetStr := "Hello World! Your bank account =$(1,250,364.33).44 What do you think?"
+	// Etc/GMT-4
+	// "Etc/GMT+11"
+	// "November 12, 2016 1:6:3pm -(+0000) UTC"
+	// "Hello World! Your bank account =$(1,250,364.33).44 What do you think?"
+	targetStr := "Hello World! Your bank account =$(1,250,364.33).44 What do you think?"
 
-  expectedNumStr := "$(1,250,364.33)"
-  expectedLeadingSignChar := ""
-  startIndex := 0
-  keepLeadingChars := "$(+-"
-  keepInteriorChars := ",."
-  keepTrailingChars := ")"
+	expectedNumStr := "$(1,250,364.33)"
+	expectedLeadingSignChar := ""
+	startIndex := 0
+	keepLeadingChars := "$(+-"
+	keepInteriorChars := ",."
+	keepTrailingChars := ")"
 
-  expectedLeadingSignIndex := -1
+	expectedLeadingSignIndex := -1
 
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedNextTargetStrIdx := expectedNumIdx + expectedNumStrLen
 
+	if expectedNextTargetStrIdx >= len(targetStr) {
+		expectedNextTargetStrIdx = -1
+	}
 
-  expectedNumStrLen := len(expectedNumStr)
-  expectedNumIdx := strings.Index(targetStr, expectedNumStr)
-  expectedNextTargetStrIdx := expectedNumIdx + expectedNumStrLen
+	nStrDto,
+		err := strops.StrOps{}.ExtractNumericDigits(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
 
-  if expectedNextTargetStrIdx >= len(targetStr) {
-    expectedNextTargetStrIdx = -1
-  }
+	if err != nil {
+		fmt.Printf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+		return
+	}
 
+	isError := false
 
-  nStrDto,
-  err :=  strops.StrOps{}.ExtractNumericDigits(
-    targetStr,
-    startIndex,
-    keepLeadingChars,
-    keepInteriorChars,
-    keepTrailingChars)
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		fmt.Printf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
+		isError = true
+	}
 
-  if err != nil {
-    fmt.Printf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n" +
-      "targetStr='%v'\nError='%v'\n", targetStr, err.Error())
-    return
-  }
+	if expectedNumStr != nStrDto.NumStr {
+		fmt.Printf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
+		isError = true
+	}
 
-  isError := false
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		fmt.Printf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
+		isError = true
+	}
 
-  if expectedNumIdx != nStrDto.FirstNumCharIndex {
-    fmt.Printf("Expected starting numeric index='%v'\n" +
-      "Instead, staring numeric index='%v'\n",
-      expectedNumIdx, nStrDto.FirstNumCharIndex)
-    isError = true
-  }
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		fmt.Printf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+		isError = true
+	}
 
-  if expectedNumStr != nStrDto.NumStr {
-    fmt.Printf("Expected number string ='%v'\n" +
-      "Instead, number string ='%v'\n",
-      expectedNumStr, nStrDto.NumStr)
-    isError = true
-  }
+	if expectedLeadingSignIndex != nStrDto.LeadingSignIndex {
+		fmt.Printf("Expected leading sign index ='%v'\n"+
+			"Instead, leading sign index ='%v'\n",
+			expectedLeadingSignIndex, nStrDto.LeadingSignIndex)
+		isError = true
+	}
 
-  if expectedNumStrLen != nStrDto.NumStrLen {
-    fmt.Printf("Expected number string length ='%v'\n" +
-      "Instead, number string length ='%v'\n",
-      expectedNumStrLen, nStrDto.NumStrLen)
-    isError = true
-  }
+	if expectedNextTargetStrIdx != nStrDto.NextTargetStrIndex {
+		fmt.Printf("Expected Next TargetStr Char Index ='%v'\n"+
+			"Instead, Next TargetStr Char Index ='%v'\n",
+			expectedNextTargetStrIdx, nStrDto.NextTargetStrIndex)
+		isError = true
+	}
 
-  if expectedLeadingSignChar != nStrDto.LeadingSignChar {
-    fmt.Printf("Expected leading sign char ='%v'\n" +
-      "Instead, leading sign char ='%v'\n",
-      expectedLeadingSignChar, nStrDto.LeadingSignChar)
-    isError = true
-  }
+	fmt.Println("  mainTest.ExampleExtractNumStr01()  ")
+	fmt.Println("-------------------------------------")
+	if isError {
+		fmt.Println("     @@@@@  FAILURE @@@@@@           ")
+	} else {
+		fmt.Println("          SUCCESS!!!")
+	}
 
-  if expectedLeadingSignIndex != nStrDto.LeadingSignIndex {
-    fmt.Printf("Expected leading sign index ='%v'\n" +
-      "Instead, leading sign index ='%v'\n",
-      expectedLeadingSignIndex, nStrDto.LeadingSignIndex)
-    isError = true
-  }
-
-  if expectedNextTargetStrIdx != nStrDto.NextTargetStrIndex {
-    fmt.Printf("Expected Next TargetStr Char Index ='%v'\n" +
-      "Instead, Next TargetStr Char Index ='%v'\n",
-      expectedNextTargetStrIdx, nStrDto.NextTargetStrIndex)
-    isError = true
-  }
-
-  fmt.Println("  mainTest.ExampleExtractNumStr01()  ")
-  fmt.Println("-------------------------------------")
-  if isError {
-    fmt.Println("     @@@@@  FAILURE @@@@@@           ")
-  } else {
-    fmt.Println("          SUCCESS!!!")
-  }
-
-  fmt.Println("-------------------------------------")
-  fmt.Println("          TargetStr: ", targetStr)
-  fmt.Println("           startIdx: ", startIndex)
-  fmt.Println("-------------------------------------")
-  fmt.Println("           Expected                  ")
-  fmt.Println("-------------------------------------")
-  fmt.Println("       Number Index: ", expectedNumIdx)
-  fmt.Println("         Num Length: ", expectedNumStrLen)
-  fmt.Println("  Leading Sign Char: ", expectedLeadingSignChar)
-  fmt.Println(" Leading Sign Index: ", expectedLeadingSignIndex)
-  fmt.Println("      Number String: ", expectedNumStr)
-  fmt.Println(" Next TargetStr Idx: ", expectedNextTargetStrIdx)
-  fmt.Println("-------------------------------------")
-  fmt.Println("            Results                  ")
-  fmt.Println("-------------------------------------")
-  fmt.Println("        NumberIndex: ", nStrDto.FirstNumCharIndex)
-  fmt.Println("         Num Length: ", nStrDto.NumStrLen)
-  fmt.Println("  Leading Sign Char: ", nStrDto.LeadingSignChar)
-  fmt.Println(" Leading Sign Index: ", nStrDto.LeadingSignIndex)
-  fmt.Println("      Number String: ", nStrDto.NumStr)
-  fmt.Println("Target Str Next Idx: ", nStrDto.NextTargetStrIndex)
+	fmt.Println("-------------------------------------")
+	fmt.Println("          TargetStr: ", targetStr)
+	fmt.Println("           startIdx: ", startIndex)
+	fmt.Println("-------------------------------------")
+	fmt.Println("           Expected                  ")
+	fmt.Println("-------------------------------------")
+	fmt.Println("       Number Index: ", expectedNumIdx)
+	fmt.Println("         Num Length: ", expectedNumStrLen)
+	fmt.Println("  Leading Sign Char: ", expectedLeadingSignChar)
+	fmt.Println(" Leading Sign Index: ", expectedLeadingSignIndex)
+	fmt.Println("      Number String: ", expectedNumStr)
+	fmt.Println(" Next TargetStr Idx: ", expectedNextTargetStrIdx)
+	fmt.Println("-------------------------------------")
+	fmt.Println("            Results                  ")
+	fmt.Println("-------------------------------------")
+	fmt.Println("        NumberIndex: ", nStrDto.FirstNumCharIndex)
+	fmt.Println("         Num Length: ", nStrDto.NumStrLen)
+	fmt.Println("  Leading Sign Char: ", nStrDto.LeadingSignChar)
+	fmt.Println(" Leading Sign Index: ", nStrDto.LeadingSignIndex)
+	fmt.Println("      Number String: ", nStrDto.NumStr)
+	fmt.Println("Target Str Next Idx: ", nStrDto.NextTargetStrIndex)
 }
 
 /*

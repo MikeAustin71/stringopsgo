@@ -1,7 +1,7 @@
 package strops
 
 import (
-	"testing"
+  "testing"
 )
 
 /*
@@ -17,1252 +17,1252 @@ import (
 
 func TestStrOps_BreakTextAtLineLength_01(t *testing.T) {
 
-	//         0         1         2         3         4         5
-	//         012345678901234567890123456789012345678901234567890
-	tstStr := "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  //         0         1         2         3         4         5
+  //         012345678901234567890123456789012345678901234567890
+  tstStr := "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 
-	//         0         1         2         3         4         5
-	//         012345678901234567890123456789012345678901234567890
-	expected := "Lorem ipsum dolor sit amet, consectetur%adipiscing elit.%"
+  //         0         1         2         3         4         5
+  //         012345678901234567890123456789012345678901234567890
+  expected := "Lorem ipsum dolor sit amet, consectetur%adipiscing elit.%"
 
-	actualTxt, err := StrOps{}.BreakTextAtLineLength(tstStr, 40, '\n')
+  actualTxt, err := StrOps{}.BreakTextAtLineLength(tstStr, 40, '\n')
 
-	if err != nil {
-		t.Errorf("Error returned from StrOps{}.BreakTextAtLineLength("+
-			"tstStr, 40, '\n' ). Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from StrOps{}.BreakTextAtLineLength("+
+      "tstStr, 40, '\n' ). Error='%v' ", err.Error())
+  }
 
-	actualTxt = StrOps{}.ReplaceNewLines(actualTxt, "%")
+  actualTxt = StrOps{}.ReplaceNewLines(actualTxt, "%")
 
-	if expected != actualTxt {
-		t.Errorf("Error: Expected string='%v'. Instead, string='%v'.",
-			expected, actualTxt)
-	}
+  if expected != actualTxt {
+    t.Errorf("Error: Expected string='%v'. Instead, string='%v'.",
+      expected, actualTxt)
+  }
 
 }
 
 func TestStrOps_BreakTextAtLineLength_02(t *testing.T) {
 
-	//         0         1         2         3         4         5
-	//         012345678901234567890123456789012345678901234567890
-	tstStr := "Did you know? The Cow Jumped Over The Moon!"
+  //         0         1         2         3         4         5
+  //         012345678901234567890123456789012345678901234567890
+  tstStr := "Did you know? The Cow Jumped Over The Moon!"
 
-	//         0         1         2         3         4         5
-	//         012345678901234567890123456789012345678901234567890
-	expected := "Did you know? The%" +
-		"Cow Jumped Over The%Moon!%"
+  //         0         1         2         3         4         5
+  //         012345678901234567890123456789012345678901234567890
+  expected := "Did you know? The%" +
+    "Cow Jumped Over The%Moon!%"
 
-	actualTxt, err := StrOps{}.BreakTextAtLineLength(tstStr, 20, '\n')
+  actualTxt, err := StrOps{}.BreakTextAtLineLength(tstStr, 20, '\n')
 
-	if err != nil {
-		t.Errorf("Error returned from StrOps{}.BreakTextAtLineLength("+
-			"tstStr, 40, '\n' ). Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from StrOps{}.BreakTextAtLineLength("+
+      "tstStr, 40, '\n' ). Error='%v' ", err.Error())
+  }
 
-	actualTxt = StrOps{}.ReplaceNewLines(actualTxt, "%")
+  actualTxt = StrOps{}.ReplaceNewLines(actualTxt, "%")
 
-	if expected != actualTxt {
-		t.Errorf("Error: Expected text='%v'. Instead, text='%v' ",
-			expected, actualTxt)
-	}
+  if expected != actualTxt {
+    t.Errorf("Error: Expected text='%v'. Instead, text='%v' ",
+      expected, actualTxt)
+  }
 }
 
 func TestStrOps_BreakTextAtLineLength_03(t *testing.T) {
 
-	//         0         1         2         3         4         5
-	//         012345678901234567890123456789012345678901234567890
-	tstStr := "Did you know? XX The Cow Jumped Over The Moon!"
+  //         0         1         2         3         4         5
+  //         012345678901234567890123456789012345678901234567890
+  tstStr := "Did you know? XX The Cow Jumped Over The Moon!"
 
-	//         0         1         2         3         4         5
-	//         012345678901234567890123456789012345678901234567890
-	expected := "Did you know? XX The%" +
-		"Cow Jumped Over The%Moon!%"
+  //         0         1         2         3         4         5
+  //         012345678901234567890123456789012345678901234567890
+  expected := "Did you know? XX The%" +
+    "Cow Jumped Over The%Moon!%"
 
-	actualTxt, err := StrOps{}.BreakTextAtLineLength(tstStr, 20, '\n')
+  actualTxt, err := StrOps{}.BreakTextAtLineLength(tstStr, 20, '\n')
 
-	if err != nil {
-		t.Errorf("Error returned from StrOps{}.BreakTextAtLineLength("+
-			"tstStr, 40, '\n' ). Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from StrOps{}.BreakTextAtLineLength("+
+      "tstStr, 40, '\n' ). Error='%v' ", err.Error())
+  }
 
-	actualTxt = StrOps{}.ReplaceNewLines(actualTxt, "%")
+  actualTxt = StrOps{}.ReplaceNewLines(actualTxt, "%")
 
-	if expected != actualTxt {
-		t.Errorf("Error: Expected text='%v'. Instead, text='%v' ",
-			expected, actualTxt)
-	}
+  if expected != actualTxt {
+    t.Errorf("Error: Expected text='%v'. Instead, text='%v' ",
+      expected, actualTxt)
+  }
 }
 
 func TestStrOps_BreakTextAtLineLength_04(t *testing.T) {
 
-	//         0         1         2         3         4         5
-	//         012345678901234567890123456789012345678901234567890
-	tstStr := "       Did you know? The Cow Jumped Over The Moon!"
+  //         0         1         2         3         4         5
+  //         012345678901234567890123456789012345678901234567890
+  tstStr := "       Did you know? The Cow Jumped Over The Moon!"
 
-	//         0         1         2         3         4         5
-	//         012345678901234567890123456789012345678901234567890
-	expected := "Did you know? The%" +
-		"Cow Jumped Over The%Moon!%"
+  //         0         1         2         3         4         5
+  //         012345678901234567890123456789012345678901234567890
+  expected := "Did you know? The%" +
+    "Cow Jumped Over The%Moon!%"
 
-	actualTxt, err := StrOps{}.BreakTextAtLineLength(tstStr, 20, '\n')
+  actualTxt, err := StrOps{}.BreakTextAtLineLength(tstStr, 20, '\n')
 
-	if err != nil {
-		t.Errorf("Error returned from StrOps{}.BreakTextAtLineLength("+
-			"tstStr, 40, '\n' ). Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from StrOps{}.BreakTextAtLineLength("+
+      "tstStr, 40, '\n' ). Error='%v' ", err.Error())
+  }
 
-	actualTxt = StrOps{}.ReplaceNewLines(actualTxt, "%")
+  actualTxt = StrOps{}.ReplaceNewLines(actualTxt, "%")
 
-	if expected != actualTxt {
-		t.Errorf("Error: Expected text='%v'. Instead, text='%v' ",
-			expected, actualTxt)
-	}
+  if expected != actualTxt {
+    t.Errorf("Error: Expected text='%v'. Instead, text='%v' ",
+      expected, actualTxt)
+  }
 }
 
 func TestStrOps_BreakTextAtLineLength_05(t *testing.T) {
 
-	tstStr := "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eu ex sit amet " +
-		"sapien consectetur faucibus eget eu arcu. Lorem ipsum dolor sit amet, consectetur adipiscing " +
-		"elit. Curabitur vel aliquet massa. Integer id vehicula mi. Cras elementum, nisi in ultrices " +
-		"mollis, dui tellus tristique neque, sed egestas nunc nibh sit amet quam. Suspendisse at maximus " +
-		"odio, non ultricies felis. Nam maximus tortor condimentum egestas ultrices. Donec ac vehicula " +
-		"nulla, at viverra neque. Etiam lobortis quis tellus ut ornare." +
-		"Suspendisse eros metus, mattis at viverra sit amet, hendrerit non eros. Aenean nec sagittis " +
-		"ligula. Sed a nisi ultrices, efficitur libero pellentesque, porta nibh. Orci varius natoque " +
-		"penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras dictum, odio nec blandit " +
-		"fermentum, arcu justo commodo orci, a varius massa erat ut est. Pellentesque venenatis placerat " +
-		"efficitur. Donec dapibus ornare eleifend. Curabitur finibus convallis mauris eget posuere." +
-		"Morbi ultricies rutrum nulla ut condimentum. Aliquam vulputate iaculis nisl at lacinia. Donec " +
-		"ac ligula consequat, tempor elit ut, congue neque. Donec lobortis massa lorem, vitae mattis " +
-		"neque mollis dignissim. Nulla facilisi. Donec viverra purus a accumsan pellentesque. Proin " +
-		"vestibulum accumsan erat vel commodo. Maecenas sapien mauris, faucibus nec consectetur eu, " +
-		"ultricies sit amet elit. Suspendisse. "
+  tstStr := "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eu ex sit amet " +
+    "sapien consectetur faucibus eget eu arcu. Lorem ipsum dolor sit amet, consectetur adipiscing " +
+    "elit. Curabitur vel aliquet massa. Integer id vehicula mi. Cras elementum, nisi in ultrices " +
+    "mollis, dui tellus tristique neque, sed egestas nunc nibh sit amet quam. Suspendisse at maximus " +
+    "odio, non ultricies felis. Nam maximus tortor condimentum egestas ultrices. Donec ac vehicula " +
+    "nulla, at viverra neque. Etiam lobortis quis tellus ut ornare." +
+    "Suspendisse eros metus, mattis at viverra sit amet, hendrerit non eros. Aenean nec sagittis " +
+    "ligula. Sed a nisi ultrices, efficitur libero pellentesque, porta nibh. Orci varius natoque " +
+    "penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras dictum, odio nec blandit " +
+    "fermentum, arcu justo commodo orci, a varius massa erat ut est. Pellentesque venenatis placerat " +
+    "efficitur. Donec dapibus ornare eleifend. Curabitur finibus convallis mauris eget posuere." +
+    "Morbi ultricies rutrum nulla ut condimentum. Aliquam vulputate iaculis nisl at lacinia. Donec " +
+    "ac ligula consequat, tempor elit ut, congue neque. Donec lobortis massa lorem, vitae mattis " +
+    "neque mollis dignissim. Nulla facilisi. Donec viverra purus a accumsan pellentesque. Proin " +
+    "vestibulum accumsan erat vel commodo. Maecenas sapien mauris, faucibus nec consectetur eu, " +
+    "ultricies sit amet elit. Suspendisse. "
 
-	expected := "Lorem ipsum dolor sit amet, consectetur%adipiscing elit. Phasellus eu ex sit%" +
-		"amet sapien consectetur faucibus eget eu%arcu. Lorem ipsum dolor sit amet,%consectetur " +
-		"adipiscing elit. Curabitur%vel aliquet massa. Integer id vehicula%mi. Cras elementum, " +
-		"nisi in ultrices%mollis, dui tellus tristique neque, sed%egestas nunc nibh sit amet " +
-		"quam.%Suspendisse at maximus odio, non%ultricies felis. Nam maximus tortor%condimentum " +
-		"egestas ultrices. Donec ac%vehicula nulla, at viverra neque. Etiam%lobortis quis tellus " +
-		"ut%ornare.Suspendisse eros metus, mattis at%viverra sit amet, hendrerit non eros.%Aenean " +
-		"nec sagittis ligula. Sed a nisi%ultrices, efficitur libero pellentesque,%porta nibh. Orci " +
-		"varius natoque%penatibus et magnis dis parturient%montes, nascetur ridiculus mus. " +
-		"Cras%dictum, odio nec blandit fermentum, arcu%justo commodo orci, a varius massa erat%ut " +
-		"est. Pellentesque venenatis placerat%efficitur. Donec dapibus ornare%eleifend. Curabitur " +
-		"finibus convallis%mauris eget posuere.Morbi ultricies%rutrum nulla ut condimentum. " +
-		"Aliquam%vulputate iaculis nisl at lacinia. Donec%ac ligula consequat, tempor elit ut," +
-		"%congue neque. Donec lobortis massa%lorem, vitae mattis neque mollis%dignissim. Nulla " +
-		"facilisi. Donec viverra%purus a accumsan pellentesque. Proin%vestibulum accumsan erat " +
-		"vel commodo.%Maecenas sapien mauris, faucibus nec%consectetur eu, ultricies sit amet " +
-		"elit.%Suspendisse.%"
+  expected := "Lorem ipsum dolor sit amet, consectetur%adipiscing elit. Phasellus eu ex sit%" +
+    "amet sapien consectetur faucibus eget eu%arcu. Lorem ipsum dolor sit amet,%consectetur " +
+    "adipiscing elit. Curabitur%vel aliquet massa. Integer id vehicula%mi. Cras elementum, " +
+    "nisi in ultrices%mollis, dui tellus tristique neque, sed%egestas nunc nibh sit amet " +
+    "quam.%Suspendisse at maximus odio, non%ultricies felis. Nam maximus tortor%condimentum " +
+    "egestas ultrices. Donec ac%vehicula nulla, at viverra neque. Etiam%lobortis quis tellus " +
+    "ut%ornare.Suspendisse eros metus, mattis at%viverra sit amet, hendrerit non eros.%Aenean " +
+    "nec sagittis ligula. Sed a nisi%ultrices, efficitur libero pellentesque,%porta nibh. Orci " +
+    "varius natoque%penatibus et magnis dis parturient%montes, nascetur ridiculus mus. " +
+    "Cras%dictum, odio nec blandit fermentum, arcu%justo commodo orci, a varius massa erat%ut " +
+    "est. Pellentesque venenatis placerat%efficitur. Donec dapibus ornare%eleifend. Curabitur " +
+    "finibus convallis%mauris eget posuere.Morbi ultricies%rutrum nulla ut condimentum. " +
+    "Aliquam%vulputate iaculis nisl at lacinia. Donec%ac ligula consequat, tempor elit ut," +
+    "%congue neque. Donec lobortis massa%lorem, vitae mattis neque mollis%dignissim. Nulla " +
+    "facilisi. Donec viverra%purus a accumsan pellentesque. Proin%vestibulum accumsan erat " +
+    "vel commodo.%Maecenas sapien mauris, faucibus nec%consectetur eu, ultricies sit amet " +
+    "elit.%Suspendisse.%"
 
-	actualTxt, err := StrOps{}.BreakTextAtLineLength(tstStr, 40, '\n')
+  actualTxt, err := StrOps{}.BreakTextAtLineLength(tstStr, 40, '\n')
 
-	if err != nil {
-		t.Errorf("Error returned from StrOps{}.BreakTextAtLineLength("+
-			"tstStr, 40, '\n' ). Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from StrOps{}.BreakTextAtLineLength("+
+      "tstStr, 40, '\n' ). Error='%v' ", err.Error())
+  }
 
-	actualTxt = StrOps{}.ReplaceNewLines(actualTxt, "%")
+  actualTxt = StrOps{}.ReplaceNewLines(actualTxt, "%")
 
-	if expected != actualTxt {
-		t.Errorf("Error: Expected text='%v'. Instead, text='%v' ",
-			expected, actualTxt)
-	}
+  if expected != actualTxt {
+    t.Errorf("Error: Expected text='%v'. Instead, text='%v' ",
+      expected, actualTxt)
+  }
 }
 
 func TestStrOps_BreakTextAtLineLength_06(t *testing.T) {
 
-	tstStr := "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eu ex sit amet " +
-		"sapien consectetur faucibus eget eu arcu. Lorem ipsum dolor sit amet, consectetur adipiscing " +
-		"elit. Curabitur vel aliquet massa. Integer id vehicula mi. Cras elementum, nisi in ultrices. "
+  tstStr := "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eu ex sit amet " +
+    "sapien consectetur faucibus eget eu arcu. Lorem ipsum dolor sit amet, consectetur adipiscing " +
+    "elit. Curabitur vel aliquet massa. Integer id vehicula mi. Cras elementum, nisi in ultrices. "
 
-	_, err := StrOps{}.BreakTextAtLineLength(tstStr, 0, '\n')
+  _, err := StrOps{}.BreakTextAtLineLength(tstStr, 0, '\n')
 
-	if err == nil {
-		t.Error("Error: Expected error return from StrOps{}.BreakTextAtLineLength(...). " +
-			"NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Error: Expected error return from StrOps{}.BreakTextAtLineLength(...). " +
+      "NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_BreakTextAtLineLength_07(t *testing.T) {
 
-	tstStr := "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eu ex sit amet " +
-		"sapien consectetur faucibus eget eu arcu. Lorem ipsum dolor sit amet, consectetur adipiscing " +
-		"elit. Curabitur vel aliquet massa. Integer id vehicula mi. Cras elementum, nisi in ultrices. "
+  tstStr := "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eu ex sit amet " +
+    "sapien consectetur faucibus eget eu arcu. Lorem ipsum dolor sit amet, consectetur adipiscing " +
+    "elit. Curabitur vel aliquet massa. Integer id vehicula mi. Cras elementum, nisi in ultrices. "
 
-	_, err := StrOps{}.BreakTextAtLineLength(tstStr, 50, 0)
+  _, err := StrOps{}.BreakTextAtLineLength(tstStr, 50, 0)
 
-	if err == nil {
-		t.Error("Error: Expected error return from StrOps{}.BreakTextAtLineLength(...). " +
-			"NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Error: Expected error return from StrOps{}.BreakTextAtLineLength(...). " +
+      "NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_BreakTextAtLineLength_08(t *testing.T) {
 
-	tstStr := ""
+  tstStr := ""
 
-	_, err := StrOps{}.BreakTextAtLineLength(tstStr, 50, 0)
+  _, err := StrOps{}.BreakTextAtLineLength(tstStr, 50, 0)
 
-	if err == nil {
-		t.Error("Error: Expected error return from StrOps{}.BreakTextAtLineLength(...). " +
-			"NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Error: Expected error return from StrOps{}.BreakTextAtLineLength(...). " +
+      "NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_CopyIn_01(t *testing.T) {
 
-	string1 := "What in the world is Garfield doing!"
-	string2 := "Now is the time for all good men to come to the aid of their country."
-	string3 := "From this valley they say you are going."
+  string1 := "What in the world is Garfield doing!"
+  string2 := "Now is the time for all good men to come to the aid of their country."
+  string3 := "From this valley they say you are going."
 
-	s2 := StrOps{StrOut: string2, StrIn: string1}
-	s2.SetStringData(string3)
+  s2 := StrOps{StrOut: string2, StrIn: string1}
+  s2.SetStringData(string3)
 
-	s1 := StrOps{}
+  s1 := StrOps{}
 
-	s1.CopyIn(&s2)
+  s1.CopyIn(&s2)
 
-	if string1 != s1.StrIn {
-		t.Errorf("Error: expected s1.StrIn='%v'. Instead,  "+
-			"s1.StrIn='%v'", string1, s1.StrIn)
-	}
+  if string1 != s1.StrIn {
+    t.Errorf("Error: expected s1.StrIn='%v'. Instead,  "+
+      "s1.StrIn='%v'", string1, s1.StrIn)
+  }
 
-	if string2 != s1.StrOut {
-		t.Errorf("Error: expected s1.StrOut='%v'. Instead,  "+
-			"s1.StrOut='%v'", string2, s1.StrOut)
-	}
+  if string2 != s1.StrOut {
+    t.Errorf("Error: expected s1.StrOut='%v'. Instead,  "+
+      "s1.StrOut='%v'", string2, s1.StrOut)
+  }
 
-	actualStr := s1.GetStringData()
+  actualStr := s1.GetStringData()
 
-	if string3 != actualStr {
-		t.Errorf("Error: expected s1 StringData='%v'. Instead,  "+
-			"s1 StringData='%v'", string3, actualStr)
-	}
+  if string3 != actualStr {
+    t.Errorf("Error: expected s1 StringData='%v'. Instead,  "+
+      "s1 StringData='%v'", string3, actualStr)
+  }
 
 }
 
 func TestStrOps_CopyOut_01(t *testing.T) {
 
-	string1 := "What in the world is Garfield doing!"
-	string2 := "Now is the time for all good men to come to the aid of their country."
-	string3 := "From this valley they say you are going."
+  string1 := "What in the world is Garfield doing!"
+  string2 := "Now is the time for all good men to come to the aid of their country."
+  string3 := "From this valley they say you are going."
 
-	s1 := StrOps{StrOut: string2, StrIn: string1}
-	s1.SetStringData(string3)
+  s1 := StrOps{StrOut: string2, StrIn: string1}
+  s1.SetStringData(string3)
 
-	s2 := s1.CopyOut()
+  s2 := s1.CopyOut()
 
-	if string1 != s2.StrIn {
-		t.Errorf("Error: expected s2.StrIn='%v'. Instead,  "+
-			"s2.StrIn='%v'", string1, s1.StrIn)
-	}
+  if string1 != s2.StrIn {
+    t.Errorf("Error: expected s2.StrIn='%v'. Instead,  "+
+      "s2.StrIn='%v'", string1, s1.StrIn)
+  }
 
-	if string2 != s2.StrOut {
-		t.Errorf("Error: expected s2.StrOut='%v'. Instead,  "+
-			"s2.StrOut='%v'", string2, s2.StrOut)
-	}
+  if string2 != s2.StrOut {
+    t.Errorf("Error: expected s2.StrOut='%v'. Instead,  "+
+      "s2.StrOut='%v'", string2, s2.StrOut)
+  }
 
-	actualStr := s2.GetStringData()
+  actualStr := s2.GetStringData()
 
-	if string3 != actualStr {
-		t.Errorf("Error: expected s2 StringData='%v'. Instead,  "+
-			"s2 StringData='%v'", string3, actualStr)
-	}
+  if string3 != actualStr {
+    t.Errorf("Error: expected s2 StringData='%v'. Instead,  "+
+      "s2 StringData='%v'", string3, actualStr)
+  }
 
 }
 
 func TestStrOps_DoesLastCharExist_01(t *testing.T) {
 
-	var lastChar rune
+  var lastChar rune
 
-	lastChar = '!'
+  lastChar = '!'
 
-	testString := "What in the world is Garfield doing!"
+  testString := "What in the world is Garfield doing!"
 
-	actualReturn := StrOps{}.DoesLastCharExist(testString, lastChar)
+  actualReturn := StrOps{}.DoesLastCharExist(testString, lastChar)
 
-	if true != actualReturn {
-		t.Errorf("Expected return value='true'. Instead, return value='%v' ",
-			actualReturn)
-	}
+  if true != actualReturn {
+    t.Errorf("Expected return value='true'. Instead, return value='%v' ",
+      actualReturn)
+  }
 
 }
 
 func TestStrOps_DoesLastCharExist_02(t *testing.T) {
 
-	var lastChar rune
+  var lastChar rune
 
-	lastChar = 'x'
+  lastChar = 'x'
 
-	testString := "What in the world is Garfield doing!"
+  testString := "What in the world is Garfield doing!"
 
-	actualReturn := StrOps{}.DoesLastCharExist(testString, lastChar)
+  actualReturn := StrOps{}.DoesLastCharExist(testString, lastChar)
 
-	if false != actualReturn {
-		t.Errorf("Expected return value='false'. Instead, return value='%v' ",
-			actualReturn)
-	}
+  if false != actualReturn {
+    t.Errorf("Expected return value='false'. Instead, return value='%v' ",
+      actualReturn)
+  }
 
 }
 
 func TestStrOps_FindFirstNonSpaceChar_01(t *testing.T) {
-	//012345678901234
-	testStr := "   Hello World"
+  //012345678901234
+  testStr := "   Hello World"
 
-	firstNonSpaceIdx, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 0, 4)
+  firstNonSpaceIdx, err :=
+    StrOps{}.FindFirstNonSpaceChar(testStr, 0, 4)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 3 != firstNonSpaceIdx {
-		t.Errorf("Error: Expected firstNonSpaceIdx='3'. Instead, Idx='%v' ",
-			firstNonSpaceIdx)
-	}
+  if 3 != firstNonSpaceIdx {
+    t.Errorf("Error: Expected firstNonSpaceIdx='3'. Instead, Idx='%v' ",
+      firstNonSpaceIdx)
+  }
 
 }
 
 func TestStrOps_FindFirstNonSpaceChar_02(t *testing.T) {
 
-	//012345678901234
-	testStr := "       Hello"
+  //012345678901234
+  testStr := "       Hello"
 
-	firstNonSpaceIdx, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 0, 6)
+  firstNonSpaceIdx, err :=
+    StrOps{}.FindFirstNonSpaceChar(testStr, 0, 6)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if -1 != firstNonSpaceIdx {
-		t.Errorf("Error: Expected firstNonSpaceIdx='-1'. Instead, Idx='%v' ",
-			firstNonSpaceIdx)
-	}
+  if -1 != firstNonSpaceIdx {
+    t.Errorf("Error: Expected firstNonSpaceIdx='-1'. Instead, Idx='%v' ",
+      firstNonSpaceIdx)
+  }
 
 }
 
 func TestStrOps_FindFirstNonSpaceChar_03(t *testing.T) {
 
-	//012345678901234
-	testStr := "Hello  There"
+  //012345678901234
+  testStr := "Hello  There"
 
-	firstNonSpaceIdx, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 7, 9)
+  firstNonSpaceIdx, err :=
+    StrOps{}.FindFirstNonSpaceChar(testStr, 7, 9)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 7 != firstNonSpaceIdx {
-		t.Errorf("Error: Expected firstNonSpaceIdx='7'. Instead, Idx='%v' ",
-			firstNonSpaceIdx)
-	}
+  if 7 != firstNonSpaceIdx {
+    t.Errorf("Error: Expected firstNonSpaceIdx='7'. Instead, Idx='%v' ",
+      firstNonSpaceIdx)
+  }
 
 }
 
 func TestStrOps_FindFirstNonSpaceChar_04(t *testing.T) {
-	//012345678901234
-	testStr := "xx       H"
+  //012345678901234
+  testStr := "xx       H"
 
-	firstNonSpaceIdx, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 2, 9)
+  firstNonSpaceIdx, err :=
+    StrOps{}.FindFirstNonSpaceChar(testStr, 2, 9)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 9 != firstNonSpaceIdx {
-		t.Errorf("Error: Expected firstNonSpaceIdx='9'. Instead, Idx='%v' ",
-			firstNonSpaceIdx)
-	}
+  if 9 != firstNonSpaceIdx {
+    t.Errorf("Error: Expected firstNonSpaceIdx='9'. Instead, Idx='%v' ",
+      firstNonSpaceIdx)
+  }
 
 }
 
 func TestStrOps_FindFirstNonSpaceChar_05(t *testing.T) {
-	//012345678901234
-	testStr := "      Hello World"
+  //012345678901234
+  testStr := "      Hello World"
 
-	firstNonSpaceIdx, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 0, 9)
+  firstNonSpaceIdx, err :=
+    StrOps{}.FindFirstNonSpaceChar(testStr, 0, 9)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 6 != firstNonSpaceIdx {
-		t.Errorf("Error: Expected firstNonSpaceIdx='6'. Instead, Idx='%v' ",
-			firstNonSpaceIdx)
-	}
+  if 6 != firstNonSpaceIdx {
+    t.Errorf("Error: Expected firstNonSpaceIdx='6'. Instead, Idx='%v' ",
+      firstNonSpaceIdx)
+  }
 
 }
 
 func TestStrOps_FindFirstNonSpaceChar_06(t *testing.T) {
-	//012345678901234
-	testStr := "Hello World"
+  //012345678901234
+  testStr := "Hello World"
 
-	_, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, -1, 9)
+  _, err :=
+    StrOps{}.FindFirstNonSpaceChar(testStr, -1, 9)
 
-	if err == nil {
-		t.Error("Expected an ERROR return. NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Expected an ERROR return. NO ERROR RETURNED!")
+  }
 
 }
 
 func TestStrOps_FindFirstNonSpaceChar_07(t *testing.T) {
 
-	//          012345678901234
-	testStr := "        Hello "
+  //          012345678901234
+  testStr := "        Hello "
 
-	_, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 10, 9)
+  _, err :=
+    StrOps{}.FindFirstNonSpaceChar(testStr, 10, 9)
 
-	if err == nil {
-		t.Error("Expected an ERROR return. NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Expected an ERROR return. NO ERROR RETURNED!")
+  }
 
 }
 
 func TestStrOps_FindFirstNonSpaceChar_08(t *testing.T) {
 
-	//          012345678901234
-	testStr := "012345 78901234"
+  //          012345678901234
+  testStr := "012345 78901234"
 
-	_, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 0, 15)
+  _, err :=
+    StrOps{}.FindFirstNonSpaceChar(testStr, 0, 15)
 
-	if err == nil {
-		t.Error("Expected an ERROR return. NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Expected an ERROR return. NO ERROR RETURNED!")
+  }
 
 }
 
 func TestStrOps_FindFirstNonSpaceChar_09(t *testing.T) {
 
-	//          012345678901234
-	testStr := "012345 78901234"
+  //          012345678901234
+  testStr := "012345 78901234"
 
-	_, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 0, -1)
+  _, err :=
+    StrOps{}.FindFirstNonSpaceChar(testStr, 0, -1)
 
-	if err == nil {
-		t.Error("Expected an ERROR return. NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Expected an ERROR return. NO ERROR RETURNED!")
+  }
 
 }
 
 func TestStrOps_FindFirstNonSpaceChar_10(t *testing.T) {
-	//012345678901234
-	testStr := "xx       Hxglt"
+  //012345678901234
+  testStr := "xx       Hxglt"
 
-	firstNonSpaceIdx, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 2, 9)
+  firstNonSpaceIdx, err :=
+    StrOps{}.FindFirstNonSpaceChar(testStr, 2, 9)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 9 != firstNonSpaceIdx {
-		t.Errorf("Error: Expected firstNonSpaceIdx='9'. Instead, Idx='%v' ",
-			firstNonSpaceIdx)
-	}
+  if 9 != firstNonSpaceIdx {
+    t.Errorf("Error: Expected firstNonSpaceIdx='9'. Instead, Idx='%v' ",
+      firstNonSpaceIdx)
+  }
 
 }
 
 func TestStrOps_FindLastNonSpaceChar_01(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "xx       Hxgltx     "
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := "xx       Hxgltx     "
 
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 19)
+  lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 19)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 14 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='14'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
+  if 14 != lastNonSpaceChar {
+    t.Errorf("Error: Expected last non-space char idx='14'.  Instead, idx='%v' ",
+      lastNonSpaceChar)
+  }
 
 }
 
 func TestStrOps_FindLastNonSpaceChar_02(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "Now is the time for all good men to come to the aid of their country."
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := "Now is the time for all good men to come to the aid of their country."
 
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 68)
+  lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 68)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 68 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='68'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
+  if 68 != lastNonSpaceChar {
+    t.Errorf("Error: Expected last non-space char idx='68'.  Instead, idx='%v' ",
+      lastNonSpaceChar)
+  }
 
 }
 
 func TestStrOps_FindLastNonSpaceChar_03(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "Now is the time for all good men to come to the aid of their country.           "
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := "Now is the time for all good men to come to the aid of their country.           "
 
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 79)
+  lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 79)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 68 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='68'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
+  if 68 != lastNonSpaceChar {
+    t.Errorf("Error: Expected last non-space char idx='68'.  Instead, idx='%v' ",
+      lastNonSpaceChar)
+  }
 
 }
 
 func TestStrOps_FindLastNonSpaceChar_04(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "Now is the time for all good men to come to the aid of their country.           "
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := "Now is the time for all good men to come to the aid of their country.           "
 
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 68, 79)
+  lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 68, 79)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 68 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='68'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
+  if 68 != lastNonSpaceChar {
+    t.Errorf("Error: Expected last non-space char idx='68'.  Instead, idx='%v' ",
+      lastNonSpaceChar)
+  }
 
 }
 
 func TestStrOps_FindLastNonSpaceChar_05(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "Now is the time for all good men to come to the aid of their country.           "
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := "Now is the time for all good men to come to the aid of their country.           "
 
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 59, 79)
+  lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 59, 79)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 68 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='68'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
+  if 68 != lastNonSpaceChar {
+    t.Errorf("Error: Expected last non-space char idx='68'.  Instead, idx='%v' ",
+      lastNonSpaceChar)
+  }
 
 }
 
 func TestStrOps_FindLastNonSpaceChar_06(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "                                                                                 "
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := "                                                                                 "
 
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 80)
+  lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 80)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if -1 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='-1'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
+  if -1 != lastNonSpaceChar {
+    t.Errorf("Error: Expected last non-space char idx='-1'.  Instead, idx='%v' ",
+      lastNonSpaceChar)
+  }
 
 }
 
 func TestStrOps_FindLastNonSpaceChar_07(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "        XX        XX          XX             XXX      XXX.                       "
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := "        XX        XX          XX             XXX      XXX.                       "
 
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 40, 80)
+  lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 40, 80)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 57 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='57'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
+  if 57 != lastNonSpaceChar {
+    t.Errorf("Error: Expected last non-space char idx='57'.  Instead, idx='%v' ",
+      lastNonSpaceChar)
+  }
 
 }
 
 func TestStrOps_FindLastNonSpaceChar_08(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := " The cow jumped over the moon."
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := " The cow jumped over the moon."
 
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 10, 29)
+  lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 10, 29)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 29 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='57'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
+  if 29 != lastNonSpaceChar {
+    t.Errorf("Error: Expected last non-space char idx='57'.  Instead, idx='%v' ",
+      lastNonSpaceChar)
+  }
 
 }
 
 func TestStrOps_FindLastNonSpaceChar_09(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := " The cow jumped over the moon.    "
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := " The cow jumped over the moon.    "
 
-	_, err := StrOps{}.FindLastNonSpaceChar(tStr, 34, 33)
+  _, err := StrOps{}.FindLastNonSpaceChar(tStr, 34, 33)
 
-	if err == nil {
-		t.Error("Expected an Error return.  NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Expected an Error return.  NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_FindLastNonSpaceChar_10(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := ""
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := ""
 
-	_, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 0)
+  _, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 0)
 
-	if err == nil {
-		t.Error("Expected an Error return.  NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Expected an Error return.  NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_FindLastNonSpaceChar_12(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "The cow jumped over the dark side of the moon.   "
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := "The cow jumped over the dark side of the moon.   "
 
-	_, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 49)
+  _, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 49)
 
-	if err == nil {
-		t.Error("Expected an Error return.  NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Expected an Error return.  NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_FindLastNonSpaceChar_13(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "The cow jumped over the dark side of the moon.   "
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := "The cow jumped over the dark side of the moon.   "
 
-	_, err := StrOps{}.FindLastNonSpaceChar(tStr, 49, 50)
+  _, err := StrOps{}.FindLastNonSpaceChar(tStr, 49, 50)
 
-	if err == nil {
-		t.Error("Expected an Error return.  NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Expected an Error return.  NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_FindLastNonSpaceChar_14(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "The cow jumped over the dark side of the moon.   "
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := "The cow jumped over the dark side of the moon.   "
 
-	_, err := StrOps{}.FindLastNonSpaceChar(tStr, -1, 47)
+  _, err := StrOps{}.FindLastNonSpaceChar(tStr, -1, 47)
 
-	if err == nil {
-		t.Error("Expected an Error return.  NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Expected an Error return.  NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_FindLastNonSpaceChar_15(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "The cow jumped over the dark side of the moon.   "
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := "The cow jumped over the dark side of the moon.   "
 
-	_, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, -1)
+  _, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, -1)
 
-	if err == nil {
-		t.Error("Expected an Error return.  NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Expected an Error return.  NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_FindLastNonSpaceChar_16(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "Now is the time for all good men to come to the aid of their country.           "
+  //                 1         2         3         4         5         6         7         8
+  //       012345678901234567890123456789012345678901234567890123456789012345678901234567890
+  tStr := "Now is the time for all good men to come to the aid of their country.           "
 
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 10, 62)
+  lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 10, 62)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 62 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='62'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
+  if 62 != lastNonSpaceChar {
+    t.Errorf("Error: Expected last non-space char idx='62'.  Instead, idx='%v' ",
+      lastNonSpaceChar)
+  }
 
 }
 
 func TestStrOps_FindLastSpace_01(t *testing.T) {
 
-	//          012345678901234
-	testStr := "xx       Hxgltx"
+  //          012345678901234
+  testStr := "xx       Hxgltx"
 
-	lastSpaceIdx, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 14)
+  lastSpaceIdx, err :=
+    StrOps{}.FindLastSpace(testStr, 0, 14)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 8 != lastSpaceIdx {
-		t.Errorf("Error: Expected lastSpaceIdx='8'. Instead, Idx='%v' ",
-			lastSpaceIdx)
-	}
+  if 8 != lastSpaceIdx {
+    t.Errorf("Error: Expected lastSpaceIdx='8'. Instead, Idx='%v' ",
+      lastSpaceIdx)
+  }
 }
 
 func TestStrOps_FindLastSpace_02(t *testing.T) {
 
-	//          012345678901234
-	testStr := "xx1111111Hxglt "
+  //          012345678901234
+  testStr := "xx1111111Hxglt "
 
-	lastSpaceIdx, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 14)
+  lastSpaceIdx, err :=
+    StrOps{}.FindLastSpace(testStr, 0, 14)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 14 != lastSpaceIdx {
-		t.Errorf("Error: Expected lastSpaceIdx='14'. Instead, Idx='%v' ",
-			lastSpaceIdx)
-	}
+  if 14 != lastSpaceIdx {
+    t.Errorf("Error: Expected lastSpaceIdx='14'. Instead, Idx='%v' ",
+      lastSpaceIdx)
+  }
 }
 
 func TestStrOps_FindLastSpace_03(t *testing.T) {
 
-	//          012345678901234
-	testStr := " x1111111Hxgltf"
+  //          012345678901234
+  testStr := " x1111111Hxgltf"
 
-	lastSpaceIdx, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 14)
+  lastSpaceIdx, err :=
+    StrOps{}.FindLastSpace(testStr, 0, 14)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 0 != lastSpaceIdx {
-		t.Errorf("Error: Expected lastSpaceIdx='0'. Instead, Idx='%v' ",
-			lastSpaceIdx)
-	}
+  if 0 != lastSpaceIdx {
+    t.Errorf("Error: Expected lastSpaceIdx='0'. Instead, Idx='%v' ",
+      lastSpaceIdx)
+  }
 }
 
 func TestStrOps_FindLastSpace_04(t *testing.T) {
 
-	//          012345678901234
-	testStr := " x1111111Hxglt "
+  //          012345678901234
+  testStr := " x1111111Hxglt "
 
-	lastSpaceIdx, err :=
-		StrOps{}.FindLastSpace(testStr, 1, 13)
+  lastSpaceIdx, err :=
+    StrOps{}.FindLastSpace(testStr, 1, 13)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 1, 13). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 1, 13). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if -1 != lastSpaceIdx {
-		t.Errorf("Error: Expected lastSpaceIdx='-1'. Instead, Idx='%v' ",
-			lastSpaceIdx)
-	}
+  if -1 != lastSpaceIdx {
+    t.Errorf("Error: Expected lastSpaceIdx='-1'. Instead, Idx='%v' ",
+      lastSpaceIdx)
+  }
 }
 
 func TestStrOps_FindLastSpace_05(t *testing.T) {
 
-	//          012345678901234
-	testStr := " x1111   Hxgl  "
+  //          012345678901234
+  testStr := " x1111   Hxgl  "
 
-	lastSpaceIdx, err :=
-		StrOps{}.FindLastSpace(testStr, 5, 12)
+  lastSpaceIdx, err :=
+    StrOps{}.FindLastSpace(testStr, 5, 12)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 5, 12). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 5, 12). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 8 != lastSpaceIdx {
-		t.Errorf("Error: Expected lastSpaceIdx='8'. Instead, Idx='%v' ",
-			lastSpaceIdx)
-	}
+  if 8 != lastSpaceIdx {
+    t.Errorf("Error: Expected lastSpaceIdx='8'. Instead, Idx='%v' ",
+      lastSpaceIdx)
+  }
 }
 
 func TestStrOps_FindLastSpace_06(t *testing.T) {
 
-	//          012345678901234
-	testStr := "fx1111rg3luHxgl"
+  //          012345678901234
+  testStr := "fx1111rg3luHxgl"
 
-	lastSpaceIdx, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 14)
+  lastSpaceIdx, err :=
+    StrOps{}.FindLastSpace(testStr, 0, 14)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if -1 != lastSpaceIdx {
-		t.Errorf("Error: Expected lastSpaceIdx='-1'. Instead, Idx='%v' ",
-			lastSpaceIdx)
-	}
+  if -1 != lastSpaceIdx {
+    t.Errorf("Error: Expected lastSpaceIdx='-1'. Instead, Idx='%v' ",
+      lastSpaceIdx)
+  }
 }
 
 func TestStrOps_FindLastSpace_07(t *testing.T) {
 
-	//          012345678901234
-	testStr := "fx1111  3luHxgl"
+  //          012345678901234
+  testStr := "fx1111  3luHxgl"
 
-	lastSpaceIdx, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 14)
+  lastSpaceIdx, err :=
+    StrOps{}.FindLastSpace(testStr, 0, 14)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 7 != lastSpaceIdx {
-		t.Errorf("Error: Expected lastSpaceIdx='7'. Instead, Idx='%v' ",
-			lastSpaceIdx)
-	}
+  if 7 != lastSpaceIdx {
+    t.Errorf("Error: Expected lastSpaceIdx='7'. Instead, Idx='%v' ",
+      lastSpaceIdx)
+  }
 }
 
 func TestStrOps_FindLastSpace_08(t *testing.T) {
 
-	//          012345678901234
-	testStr := "fx1111  3luHxgl"
+  //          012345678901234
+  testStr := "fx1111  3luHxgl"
 
-	_, err :=
-		StrOps{}.FindLastSpace(testStr, -1, 14)
+  _, err :=
+    StrOps{}.FindLastSpace(testStr, -1, 14)
 
-	if err == nil {
-		t.Error("Error: Expected an Error return from FindLastSpace(). " +
-			"NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Error: Expected an Error return from FindLastSpace(). " +
+      "NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_FindLastSpace_09(t *testing.T) {
 
-	//          012345678901234
-	testStr := "fx1111  3luHxgl"
+  //          012345678901234
+  testStr := "fx1111  3luHxgl"
 
-	_, err :=
-		StrOps{}.FindLastSpace(testStr, 0, -1)
+  _, err :=
+    StrOps{}.FindLastSpace(testStr, 0, -1)
 
-	if err == nil {
-		t.Error("Error: Expected an Error return from FindLastSpace(). " +
-			"NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Error: Expected an Error return from FindLastSpace(). " +
+      "NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_FindLastSpace_10(t *testing.T) {
 
-	//          012345678901234
-	testStr := "fx1111  3luHxgl"
+  //          012345678901234
+  testStr := "fx1111  3luHxgl"
 
-	_, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 15)
+  _, err :=
+    StrOps{}.FindLastSpace(testStr, 0, 15)
 
-	if err == nil {
-		t.Error("Error: Expected an Error return from FindLastSpace(). " +
-			"NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Error: Expected an Error return from FindLastSpace(). " +
+      "NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_FindLastSpace_11(t *testing.T) {
 
-	//          012345678901234
-	testStr := "fx1111  3luHxgl"
+  //          012345678901234
+  testStr := "fx1111  3luHxgl"
 
-	_, err :=
-		StrOps{}.FindLastSpace(testStr, 19, 14)
+  _, err :=
+    StrOps{}.FindLastSpace(testStr, 19, 14)
 
-	if err == nil {
-		t.Error("Error: Expected an Error return from FindLastSpace(). " +
-			"NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Error: Expected an Error return from FindLastSpace(). " +
+      "NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_FindLastSpace_12(t *testing.T) {
 
-	//          012345678901234
-	testStr := "fx1111  3luHxgl"
+  //          012345678901234
+  testStr := "fx1111  3luHxgl"
 
-	_, err :=
-		StrOps{}.FindLastSpace(testStr, 5, 3)
+  _, err :=
+    StrOps{}.FindLastSpace(testStr, 5, 3)
 
-	if err == nil {
-		t.Error("Error: Expected an Error return from FindLastSpace(). " +
-			"NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Error: Expected an Error return from FindLastSpace(). " +
+      "NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_FindLastSpace_13(t *testing.T) {
 
-	//          012345678901234
-	testStr := ""
+  //          012345678901234
+  testStr := ""
 
-	_, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 0)
+  _, err :=
+    StrOps{}.FindLastSpace(testStr, 0, 0)
 
-	if err == nil {
-		t.Error("Error: Expected an Error return from FindLastSpace(). " +
-			"NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Error: Expected an Error return from FindLastSpace(). " +
+      "NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_FindLastSpace_14(t *testing.T) {
 
-	//          012345678901234
-	testStr := ""
+  //          012345678901234
+  testStr := ""
 
-	_, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 9)
+  _, err :=
+    StrOps{}.FindLastSpace(testStr, 0, 9)
 
-	if err == nil {
-		t.Error("Error: Expected an Error return from FindLastSpace(). " +
-			"NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Error: Expected an Error return from FindLastSpace(). " +
+      "NO ERROR RETURNED!")
+  }
 }
 
 func TestStrOps_FindLastWord_01(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          01234567890123456789012345678901234567890123456789012345678901234567890
-	testStr := "Now is the time for all good men to come to the aid of their country.  "
+  //          0         1         2         3         4         5         6         7
+  //          01234567890123456789012345678901234567890123456789012345678901234567890
+  testStr := "Now is the time for all good men to come to the aid of their country.  "
 
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 0, 70)
+  begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
+    StrOps{}.FindLastWord(testStr, 0, 70)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 61 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='61'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
+  if 61 != begWrdIdx {
+    t.Errorf("Error: Expected begWrdIdx='61'. Instead, begWrdIdx='%v' ", begWrdIdx)
+  }
 
-	if 68 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='68'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
+  if 68 != endWrdIdx {
+    t.Errorf("Error: Expected endWrdIdx='68'. Instead, endWrdIdx='%v' ", endWrdIdx)
+  }
 
-	if false != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
+  if false != isAllOneWord {
+    t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
+  }
 
-	if false != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
+  if false != isAllSpaces {
+    t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
+  }
 
 }
 
 func TestStrOps_FindLastWord_02(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          01234567890123456789012345678901234567890123456789012345678901234567890
-	testStr := "Now is the time for all good men to come to the aid of their country.  "
-	//                    xxxxxx
+  //          0         1         2         3         4         5         6         7
+  //          01234567890123456789012345678901234567890123456789012345678901234567890
+  testStr := "Now is the time for all good men to come to the aid of their country.  "
+  //                    xxxxxx
 
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 10, 15)
+  begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
+    StrOps{}.FindLastWord(testStr, 10, 15)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 11 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='11'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
+  if 11 != begWrdIdx {
+    t.Errorf("Error: Expected begWrdIdx='11'. Instead, begWrdIdx='%v' ", begWrdIdx)
+  }
 
-	if 14 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='14'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
+  if 14 != endWrdIdx {
+    t.Errorf("Error: Expected endWrdIdx='14'. Instead, endWrdIdx='%v' ", endWrdIdx)
+  }
 
-	if false != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
+  if false != isAllOneWord {
+    t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
+  }
 
-	if false != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
+  if false != isAllSpaces {
+    t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
+  }
 
 }
 
 func TestStrOps_FindLastWord_03(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "  Now is the time for all good men to come to the aid of their country.  "
-	//          xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  //          0         1         2         3         4         5         6         7
+  //          0123456789012345678901234567890123456789012345678901234567890123456789012
+  testStr := "  Now is the time for all good men to come to the aid of their country.  "
+  //          xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 0, 72)
+  begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
+    StrOps{}.FindLastWord(testStr, 0, 72)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 63 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='63'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
+  if 63 != begWrdIdx {
+    t.Errorf("Error: Expected begWrdIdx='63'. Instead, begWrdIdx='%v' ", begWrdIdx)
+  }
 
-	if 70 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='70'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
+  if 70 != endWrdIdx {
+    t.Errorf("Error: Expected endWrdIdx='70'. Instead, endWrdIdx='%v' ", endWrdIdx)
+  }
 
-	if false != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
+  if false != isAllOneWord {
+    t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
+  }
 
-	if false != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
+  if false != isAllSpaces {
+    t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
+  }
 
 }
 
 func TestStrOps_FindLastWord_04(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "                                                                         "
-	//          xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  //          0         1         2         3         4         5         6         7
+  //          0123456789012345678901234567890123456789012345678901234567890123456789012
+  testStr := "                                                                         "
+  //          xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 0, 72)
+  begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
+    StrOps{}.FindLastWord(testStr, 0, 72)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
+      "Error='%v' ", err.Error())
+  }
 
-	if -1 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='-1'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
+  if -1 != begWrdIdx {
+    t.Errorf("Error: Expected begWrdIdx='-1'. Instead, begWrdIdx='%v' ", begWrdIdx)
+  }
 
-	if -1 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='-1'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
+  if -1 != endWrdIdx {
+    t.Errorf("Error: Expected endWrdIdx='-1'. Instead, endWrdIdx='%v' ", endWrdIdx)
+  }
 
-	if false != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
+  if false != isAllOneWord {
+    t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
+  }
 
-	if true != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='true'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
+  if true != isAllSpaces {
+    t.Errorf("Error: Expected isAllSpaces='true'. Instead, isAllSpaces='%v' ", isAllSpaces)
+  }
 
 }
 
 func TestStrOps_FindLastWord_05(t *testing.T) {
-	//          0         1         2         4         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-	//          xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  //          0         1         2         4         4         5         6         7
+  //          0123456789012345678901234567890123456789012345678901234567890123456789012
+  testStr := "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  //          xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 0, 72)
+  begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
+    StrOps{}.FindLastWord(testStr, 0, 72)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 0 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='0'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
+  if 0 != begWrdIdx {
+    t.Errorf("Error: Expected begWrdIdx='0'. Instead, begWrdIdx='%v' ", begWrdIdx)
+  }
 
-	if 72 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='72'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
+  if 72 != endWrdIdx {
+    t.Errorf("Error: Expected endWrdIdx='72'. Instead, endWrdIdx='%v' ", endWrdIdx)
+  }
 
-	if true != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='true'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
+  if true != isAllOneWord {
+    t.Errorf("Error: Expected isAllOneWord='true'. Instead, isAllOneWord='%v' ", isAllOneWord)
+  }
 
-	if false != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
+  if false != isAllSpaces {
+    t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
+  }
 
 }
 
 func TestStrOps_FindLastWord_06(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "                xxxxxxxxxxxxxxxxxxxxxxxxxxxxx                            "
-	//            xxxxxxx
+  //          0         1         2         3         4         5         6         7
+  //          0123456789012345678901234567890123456789012345678901234567890123456789012
+  testStr := "                xxxxxxxxxxxxxxxxxxxxxxxxxxxxx                            "
+  //            xxxxxxx
 
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 2, 8)
+  begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
+    StrOps{}.FindLastWord(testStr, 2, 8)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
+      "Error='%v' ", err.Error())
+  }
 
-	if -1 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='-1'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
+  if -1 != begWrdIdx {
+    t.Errorf("Error: Expected begWrdIdx='-1'. Instead, begWrdIdx='%v' ", begWrdIdx)
+  }
 
-	if -1 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='-1'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
+  if -1 != endWrdIdx {
+    t.Errorf("Error: Expected endWrdIdx='-1'. Instead, endWrdIdx='%v' ", endWrdIdx)
+  }
 
-	if false != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
+  if false != isAllOneWord {
+    t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
+  }
 
-	if true != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='true'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
+  if true != isAllSpaces {
+    t.Errorf("Error: Expected isAllSpaces='true'. Instead, isAllSpaces='%v' ", isAllSpaces)
+  }
 
 }
 
 func TestStrOps_FindLastWord_07(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "  Now is the time for all good men to come to the aid of their country . "
-	//                                                       xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  //          0         1         2         3         4         5         6         7
+  //          0123456789012345678901234567890123456789012345678901234567890123456789012
+  testStr := "  Now is the time for all good men to come to the aid of their country . "
+  //                                                       xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 55, 72)
+  begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
+    StrOps{}.FindLastWord(testStr, 55, 72)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 71 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='71'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
+  if 71 != begWrdIdx {
+    t.Errorf("Error: Expected begWrdIdx='71'. Instead, begWrdIdx='%v' ", begWrdIdx)
+  }
 
-	if 71 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='71'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
+  if 71 != endWrdIdx {
+    t.Errorf("Error: Expected endWrdIdx='71'. Instead, endWrdIdx='%v' ", endWrdIdx)
+  }
 
-	if false != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
+  if false != isAllOneWord {
+    t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
+  }
 
-	if false != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
+  if false != isAllSpaces {
+    t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
+  }
 
 }
 
 func TestStrOps_FindLastWord_08(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "  Now is the time for all good men to come to the aid of their country "
-	//                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  //          0         1         2         3         4         5         6         7
+  //          0123456789012345678901234567890123456789012345678901234567890123456789012
+  testStr := "  Now is the time for all good men to come to the aid of their country "
+  //                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 40, 67)
+  begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
+    StrOps{}.FindLastWord(testStr, 40, 67)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
+      "Error='%v' ", err.Error())
+  }
 
-	if 63 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='63'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
+  if 63 != begWrdIdx {
+    t.Errorf("Error: Expected begWrdIdx='63'. Instead, begWrdIdx='%v' ", begWrdIdx)
+  }
 
-	if 67 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='67'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
+  if 67 != endWrdIdx {
+    t.Errorf("Error: Expected endWrdIdx='67'. Instead, endWrdIdx='%v' ", endWrdIdx)
+  }
 
-	if false != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
+  if false != isAllOneWord {
+    t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
+  }
 
-	if false != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
+  if false != isAllSpaces {
+    t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
+  }
 
 }
 
 func TestStrOps_FindLastWord_09(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "  Now is the time for all good men to come to the aid of their country "
-	//                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  //          0         1         2         3         4         5         6         7
+  //          0123456789012345678901234567890123456789012345678901234567890123456789012
+  testStr := "  Now is the time for all good men to come to the aid of their country "
+  //                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	_, _, _, _, err :=
-		StrOps{}.FindLastWord(testStr, -1, 67)
+  _, _, _, _, err :=
+    StrOps{}.FindLastWord(testStr, -1, 67)
 
-	if err == nil {
-		t.Error("Expected an error to be returned. NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Expected an error to be returned. NO ERROR RETURNED!")
+  }
 
 }
 
 func TestStrOps_FindLastWord_10(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "  Now is the time for all good men to come to the aid of their country "
-	//                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  //          0         1         2         3         4         5         6         7
+  //          0123456789012345678901234567890123456789012345678901234567890123456789012
+  testStr := "  Now is the time for all good men to come to the aid of their country "
+  //                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	_, _, _, _, err :=
-		StrOps{}.FindLastWord(testStr, 40, -1)
+  _, _, _, _, err :=
+    StrOps{}.FindLastWord(testStr, 40, -1)
 
-	if err == nil {
-		t.Error("Expected an error to be returned. NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Expected an error to be returned. NO ERROR RETURNED!")
+  }
 
 }
 
 func TestStrOps_FindLastWord_11(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "  Now is the time for all good men to come to the aid of their country "
-	//                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  //          0         1         2         3         4         5         6         7
+  //          0123456789012345678901234567890123456789012345678901234567890123456789012
+  testStr := "  Now is the time for all good men to come to the aid of their country "
+  //                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	_, _, _, _, err :=
-		StrOps{}.FindLastWord(testStr, 72, 72)
+  _, _, _, _, err :=
+    StrOps{}.FindLastWord(testStr, 72, 72)
 
-	if err == nil {
-		t.Error("Expected an error to be returned. NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Expected an error to be returned. NO ERROR RETURNED!")
+  }
 
 }
 
 func TestStrOps_FindLastWord_12(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := ""
-	//           xx
+  //          0         1         2         3         4         5         6         7
+  //          0123456789012345678901234567890123456789012345678901234567890123456789012
+  testStr := ""
+  //           xx
 
-	_, _, _, _, err :=
-		StrOps{}.FindLastWord(testStr, 1, 2)
+  _, _, _, _, err :=
+    StrOps{}.FindLastWord(testStr, 1, 2)
 
-	if err == nil {
-		t.Error("Expected an error to be returned. NO ERROR RETURNED!")
-	}
+  if err == nil {
+    t.Error("Expected an error to be returned. NO ERROR RETURNED!")
+  }
 
 }

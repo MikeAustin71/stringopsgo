@@ -1,5 +1,8 @@
+
+
+
 /*
-package strops (string operations) provides string management
+Package strops - (string operations) provides string management
 utilities designed to perform a variety of string operations
 including string centering, justification, multiple replacements
 and implementation of the the io.Reader and io.Writer interfaces.
@@ -1608,7 +1611,7 @@ func (sops *StrOps) GetCountBytesWritten() uint64 {
   return bytesWritten
 }
 
-// GetReader() Returns an io.Reader which will read the private
+// GetReader - Returns an io.Reader which will read the private
 // member data element StrOps.stringData.
 func (sops *StrOps) GetReader() io.Reader {
   var stringData string
@@ -2099,7 +2102,7 @@ func (sops StrOps) ReadStringFromBytes(
   return extractedStr, nextStartIdx
 }
 
-// ReplaceBytes	- Replaces characters in a target array of bytes ([]bytes) with those specified in
+// ReplaceBytes - Replaces characters in a target array of bytes ([]bytes) with those specified in
 // a two dimensional slice of bytes.
 //
 // ------------------------------------------------------------------------
@@ -2130,6 +2133,7 @@ func (sops StrOps) ReadStringFromBytes(
 //		errors include a zero length targetBytes[] array or replacementBytes[][] array.
 //		In addition, if any of the replacementBytes[][x] 2nd dimension elements have
 //		a length less than two, an error will be returned.
+//
 func (sops StrOps) ReplaceBytes(targetBytes []byte, replacementBytes [][]byte) ([]byte, error) {
 
   ePrefix := "StrOps.ReplaceBytes() "
@@ -2230,9 +2234,10 @@ func (sops StrOps) ReplaceMultipleStrs(targetStr string, replaceArray [][]string
   return newString, nil
 }
 
-// RemoveNewLines - Replaces New Line characters from string. If the specified
+// ReplaceNewLines - Replaces New Line characters from string. If the specified
 // replacement string is empty, the New Line characters are simply removed
 // from the input parameter, 'targetStr'.
+//
 func (sops StrOps) ReplaceNewLines(targetStr string, replacement string) string {
 
   return strings.Replace(targetStr, "\n", replacement, -1)
@@ -2864,7 +2869,7 @@ func (sops StrOps) SwapRune(targetStr string, oldRune rune, newRune rune) (strin
   return string(rStr), nil
 }
 
-// TrimMultipleChars- Performs the following operations on strings:
+// TrimMultipleChars - Performs the following operations on strings:
 //
 // 	1. Trims Right and Left ends of 'targetStr' for all instances of 'trimChar'
 // 	2. Within the interior of a string, multiple instances of 'trimChar' are reduced
