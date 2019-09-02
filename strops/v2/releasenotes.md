@@ -1,3 +1,17 @@
+# Release Notes Package *strops* Version 2.0.4
+
+## New Methods
+Added methods:
+  + StrOps{}.ExtractDataField()
+  + StrOps{}.ExtractNumericDigits()
+  
+## Tests
+  + Added tests for new methods.
+  + Executed tests successfully on *Linux Mint 19.2* and 
+  *Ubantu 18.04.3*. 
+  
+  
+
 # Release Notes Package *strops* Version 2.0.3
 
 ## New Methods 
