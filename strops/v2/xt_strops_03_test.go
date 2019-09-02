@@ -12,7 +12,7 @@ func TestStrOps_MakeSingleCharString_01(t *testing.T) {
   sUtil := StrOps{}
   requestedLen := 20
 
-  charRune := rune('*')
+  charRune := '*'
 
   outputStr, err := sUtil.MakeSingleCharString(charRune, requestedLen)
 
@@ -44,7 +44,7 @@ func TestStrOps_MakeSingleCharString_02(t *testing.T) {
   sUtil := StrOps{}
   requestedLen := 100
 
-  charRune := rune('=')
+  charRune := '='
 
   outputStr, err := sUtil.MakeSingleCharString(charRune, requestedLen)
 
@@ -225,9 +225,11 @@ func TestStrOps_ReadStringFromBytes_02(t *testing.T) {
   expectedStr := "Does your program run?"
   expecteNextIdx := -1
 
-  result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+  var result string
 
-  result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
+  _, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+
+  _, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
 
   result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
 
@@ -255,8 +257,9 @@ func TestStrOps_ReadStringFromBytes_03(t *testing.T) {
 
   expectedStr := "How are you?"
   expecteNextIdx := 26
+  var result string
 
-  result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+  _, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
 
   result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
 
@@ -284,18 +287,19 @@ func TestStrOps_ReadStringFromBytes_04(t *testing.T) {
 
   expectedStr := "How are you?"
   expecteNextIdx := 25
+  var result string
 
-  result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+  _, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
 
   result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
 
   if expectedStr != result {
-    t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+    t.Errorf("Error: Expected result='%v'.\nInstead, result='%v'\n",
       expectedStr, result)
   }
 
   if expecteNextIdx != nextStartIdx {
-    t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
+    t.Errorf("Error: Expected nextStartIdx='%v'.\nInstead, nextStartIdx='%v'\n",
       expecteNextIdx, nextStartIdx)
   }
 
@@ -335,9 +339,10 @@ func TestStrOps_ReadStringFromBytes_06(t *testing.T) {
     'h', 'o', 'w', ' ', 'a', 'r', 'e', ' ', 'y', 'o', 'u', '?'}
 
   expectedStr := ""
-  expecteNextIdx := -1
+  expectedNextIdx := -1
+  var result string
 
-  result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+  _, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
 
   result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
 
@@ -346,16 +351,16 @@ func TestStrOps_ReadStringFromBytes_06(t *testing.T) {
       expectedStr, result)
   }
 
-  if expecteNextIdx != nextStartIdx {
+  if expectedNextIdx != nextStartIdx {
     t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
-      expecteNextIdx, nextStartIdx)
+      expectedNextIdx, nextStartIdx)
   }
 
 }
 
 func TestStrOps_ReadStringFromBytes_07(t *testing.T) {
 
-  bytes := []byte{}
+  var bytes[]byte
 
   expectedStr := ""
   expecteNextIdx := -1
@@ -385,22 +390,23 @@ func TestStrOps_ReadStringFromBytes_08(t *testing.T) {
     'D', 'o', 'e', 's', ' ', 'y', 'o', 'u', 'r', ' ', 'p', 'r', 'o', 'g', 'r', 'a', 'm', ' ', 'r', 'u', 'n', '?', '\r', '\n'}
 
   expectedStr := "Does your program run?"
-  expecteNextIdx := -1
+  expectedNextIdx := -1
+  var result string
 
-  result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+  _, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
 
-  result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
+  _, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
 
   result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
 
   if expectedStr != result {
-    t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
+    t.Errorf("Error: Expected result='%v'.\n Instead, result='%v'\n",
       expectedStr, result)
   }
 
-  if expecteNextIdx != nextStartIdx {
-    t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
-      expecteNextIdx, nextStartIdx)
+  if expectedNextIdx != nextStartIdx {
+    t.Errorf("Error: Expected nextStartIdx='%v'.\nInstead, nextStartIdx='%v'\n",
+      expectedNextIdx, nextStartIdx)
   }
 
 }
@@ -416,11 +422,12 @@ func TestStrOps_ReadStringFromBytes_09(t *testing.T) {
     'D', 'o', 'e', 's', ' ', 'y', 'o', 'u', 'r', ' ', 'p', 'r', 'o', 'g', 'r', 'a', 'm', ' ', 'r', 'u', 'n', '?', '\r', '\n'}
 
   expectedStr := "Does your program run?"
-  expecteNextIdx := -1
+  expectedNextIdx := -1
+  var result string
 
-  result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+  _, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
 
-  result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
+  _, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
 
   result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
 
@@ -429,9 +436,9 @@ func TestStrOps_ReadStringFromBytes_09(t *testing.T) {
       expectedStr, result)
   }
 
-  if expecteNextIdx != nextStartIdx {
+  if expectedNextIdx != nextStartIdx {
     t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
-      expecteNextIdx, nextStartIdx)
+      expectedNextIdx, nextStartIdx)
   }
 
 }
@@ -445,9 +452,10 @@ func TestStrOps_ReadStringFromBytes_10(t *testing.T) {
     'H', 'o', 'w', ' ', 'a', 'r', 'e', ' ', 'y', 'o', 'u', '?'}
 
   expectedStr := "How are you?"
-  expecteNextIdx := -1
+  expectedNextIdx := -1
+  var result string
 
-  result, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
+  _, nextStartIdx := StrOps{}.ReadStringFromBytes(bytes, 0)
 
   result, nextStartIdx = StrOps{}.ReadStringFromBytes(bytes, nextStartIdx)
 
@@ -456,9 +464,9 @@ func TestStrOps_ReadStringFromBytes_10(t *testing.T) {
       expectedStr, result)
   }
 
-  if expecteNextIdx != nextStartIdx {
+  if expectedNextIdx != nextStartIdx {
     t.Errorf("Error: Expected nextStartIdx='%v'. Instead, nextStartIdx='%v'",
-      expecteNextIdx, nextStartIdx)
+      expectedNextIdx, nextStartIdx)
   }
 
 }

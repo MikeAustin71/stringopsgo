@@ -453,4 +453,4 @@
 === RUN   TestStrOps_Write_04
 --- PASS: TestStrOps_Write_04 (0.00s)
 PASS
-ok  	MikeAustin71/stringopsgo/strops/v2	3.866s
+ok  	MikeAustin71/stringopsgo/strops/v2	2.683s
