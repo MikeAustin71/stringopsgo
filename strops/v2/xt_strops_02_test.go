@@ -72,7 +72,7 @@ func TestStrOps_ExtractNumericDigits_01(t *testing.T) {
   if expectedNumIdx != nStrDto.FirstNumCharIndex {
     t.Errorf("Expected starting numeric index='%v'\n" +
       "Instead, staring numeric index='%v'\n",
-      expectedNumIdx, nStrDto.FirstNumCharInde)
+      expectedNumIdx, nStrDto.FirstNumCharIndex)
   }
 
   if expectedNumStr != nStrDto.NumStr {
@@ -145,7 +145,7 @@ func TestStrOps_ExtractNumericDigits_02(t *testing.T) {
   if expectedNumIdx != nStrDto.FirstNumCharIndex {
     t.Errorf("Expected starting numeric index='%v'\n" +
       "Instead, staring numeric index='%v'\n",
-      expectedNumIdx, nStrDto.FirstNumCharInde)
+      expectedNumIdx, nStrDto.FirstNumCharIndex)
   }
 
   if expectedNumStr != nStrDto.NumStr {
@@ -215,7 +215,7 @@ func TestStrOps_ExtractNumericDigits_03(t *testing.T) {
   if expectedNumIdx != nStrDto.FirstNumCharIndex {
     t.Errorf("Expected starting numeric index='%v'\n" +
       "Instead, staring numeric index='%v'\n",
-      expectedNumIdx, nStrDto.FirstNumCharInde)
+      expectedNumIdx, nStrDto.FirstNumCharIndex)
   }
 
   if expectedNumStr != nStrDto.NumStr {
@@ -285,7 +285,7 @@ func TestStrOps_ExtractNumericDigits_04(t *testing.T) {
   if expectedNumIdx != nStrDto.FirstNumCharIndex {
     t.Errorf("Expected starting numeric index='%v'\n" +
       "Instead, staring numeric index='%v'\n",
-      expectedNumIdx, nStrDto.FirstNumCharInde)
+      expectedNumIdx, nStrDto.FirstNumCharIndex)
   }
 
   if expectedNumStr != nStrDto.NumStr {

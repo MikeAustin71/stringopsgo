@@ -129,32 +129,30 @@ func TestStrOps_BreakTextAtLineLength_05(t *testing.T) {
     "nulla, at viverra neque. Etiam lobortis quis tellus ut ornare." +
     "Suspendisse eros metus, mattis at viverra sit amet, hendrerit non eros. Aenean nec sagittis " +
     "ligula. Sed a nisi ultrices, efficitur libero pellentesque, porta nibh. Orci varius natoque " +
-    "penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras dictum, odio nec blandit " +
+    "penatibus et magnis dis parturient montes, nascetur ridiculous mus. Cras dictum, odio nec blandit " +
     "fermentum, arcu justo commodo orci, a varius massa erat ut est. Pellentesque venenatis placerat " +
     "efficitur. Donec dapibus ornare eleifend. Curabitur finibus convallis mauris eget posuere." +
     "Morbi ultricies rutrum nulla ut condimentum. Aliquam vulputate iaculis nisl at lacinia. Donec " +
     "ac ligula consequat, tempor elit ut, congue neque. Donec lobortis massa lorem, vitae mattis " +
-    "neque mollis dignissim. Nulla facilisi. Donec viverra purus a accumsan pellentesque. Proin " +
+    "neque mollis dignissim. Nulla facilities. Donec viverra purus a accumsan pellentesque. Proin " +
     "vestibulum accumsan erat vel commodo. Maecenas sapien mauris, faucibus nec consectetur eu, " +
     "ultricies sit amet elit. Suspendisse. "
 
-  expected := "Lorem ipsum dolor sit amet, consectetur%adipiscing elit. Phasellus eu ex sit%" +
-    "amet sapien consectetur faucibus eget eu%arcu. Lorem ipsum dolor sit amet,%consectetur " +
-    "adipiscing elit. Curabitur%vel aliquet massa. Integer id vehicula%mi. Cras elementum, " +
-    "nisi in ultrices%mollis, dui tellus tristique neque, sed%egestas nunc nibh sit amet " +
-    "quam.%Suspendisse at maximus odio, non%ultricies felis. Nam maximus tortor%condimentum " +
-    "egestas ultrices. Donec ac%vehicula nulla, at viverra neque. Etiam%lobortis quis tellus " +
-    "ut%ornare.Suspendisse eros metus, mattis at%viverra sit amet, hendrerit non eros.%Aenean " +
-    "nec sagittis ligula. Sed a nisi%ultrices, efficitur libero pellentesque,%porta nibh. Orci " +
-    "varius natoque%penatibus et magnis dis parturient%montes, nascetur ridiculus mus. " +
-    "Cras%dictum, odio nec blandit fermentum, arcu%justo commodo orci, a varius massa erat%ut " +
-    "est. Pellentesque venenatis placerat%efficitur. Donec dapibus ornare%eleifend. Curabitur " +
-    "finibus convallis%mauris eget posuere.Morbi ultricies%rutrum nulla ut condimentum. " +
-    "Aliquam%vulputate iaculis nisl at lacinia. Donec%ac ligula consequat, tempor elit ut," +
-    "%congue neque. Donec lobortis massa%lorem, vitae mattis neque mollis%dignissim. Nulla " +
-    "facilisi. Donec viverra%purus a accumsan pellentesque. Proin%vestibulum accumsan erat " +
-    "vel commodo.%Maecenas sapien mauris, faucibus nec%consectetur eu, ultricies sit amet " +
-    "elit.%Suspendisse.%"
+  expected := "Lorem ipsum dolor sit amet, consectetur%adipiscing elit. Phasellus eu ex sit%amet " +
+    "sapien consectetur faucibus eget eu%arcu. Lorem ipsum dolor sit amet,%consectetur adipiscing elit. " +
+    "Curabitur%vel aliquet massa. Integer id vehicula%mi. Cras elementum, nisi in ultrices%mollis, dui " +
+    "tellus tristique neque, sed%egestas nunc nibh sit amet quam.%Suspendisse at maximus odio, " +
+    "non%ultricies felis. Nam maximus tortor%condimentum egestas ultrices. Donec ac%vehicula nulla, " +
+    "at viverra neque. Etiam%lobortis quis tellus ut%ornare.Suspendisse eros metus, mattis at%viverra " +
+    "sit amet, hendrerit non eros.%Aenean nec sagittis ligula. Sed a nisi%ultrices, efficitur libero " +
+    "pellentesque,%porta nibh. Orci varius natoque%penatibus et magnis dis parturient%montes, nascetur " +
+    "ridiculous mus. Cras%dictum, odio nec blandit fermentum, arcu%justo commodo orci, a varius massa " +
+    "erat%ut est. Pellentesque venenatis placerat%efficitur. Donec dapibus ornare%eleifend. Curabitur " +
+    "finibus convallis%mauris eget posuere.Morbi ultricies%rutrum nulla ut condimentum. Aliquam%vulputate " +
+    "iaculis nisl at lacinia. Donec%ac ligula consequat, tempor elit ut,%congue neque. Donec lobortis " +
+    "massa%lorem, vitae mattis neque mollis%dignissim. Nulla facilities. Donec%viverra purus a accumsan " +
+    "pellentesque.%Proin vestibulum accumsan erat vel%commodo. Maecenas sapien mauris,%faucibus nec " +
+    "consectetur eu, ultricies%sit amet elit. Suspendisse.%"
 
   actualTxt, err := StrOps{}.BreakTextAtLineLength(tstStr, 40, '\n')
 
@@ -166,7 +164,7 @@ func TestStrOps_BreakTextAtLineLength_05(t *testing.T) {
   actualTxt = StrOps{}.ReplaceNewLines(actualTxt, "%")
 
   if expected != actualTxt {
-    t.Errorf("Error: Expected text='%v'. Instead, text='%v' ",
+    t.Errorf("Error: Expected text='%v'\n\n. Instead, text='%v'\n",
       expected, actualTxt)
   }
 }

@@ -278,6 +278,7 @@ type StrOps struct {
 //
 // Note: If the caller specifies a line length of 50, the line delimiter character may be placed in the
 // 51st character position depending upon the word breaks.
+//
 func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineDelimiter rune) (string, error) {
 
   ePrefix := "StrOps.BreakTextAtLineLength() "
@@ -309,12 +310,8 @@ func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineD
   var b strings.Builder
   b.Grow(((targetLen / lineLength) * targetLen) + 50)
 
-  begIdx := 0
-  endWrdIdx := 0
-  isAllOneWord := false
-  isAllSpaces := false
-  actualLastIdx := 0
-  beginWrdIdx := 0
+  var begIdx, endWrdIdx, actualLastIdx, beginWrdIdx int
+  var isAllOneWord, isAllSpaces bool
 
   for begIdx < targetLen && begIdx > -1 {
 
@@ -341,7 +338,6 @@ func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineD
     if begIdx == targetLen-1 {
       b.WriteByte(targetStr[begIdx])
       b.WriteRune(lineDelimiter)
-      begIdx = -1 // Exit loop
       break
     }
 
@@ -1472,8 +1468,7 @@ func (sops StrOps) FindLastWord(
 
   idx := endIndex
 
-  endingIdxFound := false
-  beginningIdxFound := false
+  var endingIdxFound bool
 
   isAllSpaces = true
   isAllOneWord = true
@@ -1518,11 +1513,9 @@ func (sops StrOps) FindLastWord(
     }
 
     if endingIdxFound &&
-      !beginningIdxFound &&
       targetStr[idx] == ' ' {
 
       beginWrdIdx = idx + 1
-      beginningIdxFound = true
       break
     }
 
@@ -1985,8 +1978,8 @@ func (sops *StrOps) Read(p []byte) (n int, err error) {
   }
 
   n = 0
-  i := uint64(0)
-  for i = startReadIdx; i < remainingBytesToRead; i++ {
+
+  for i := startReadIdx; i < remainingBytesToRead; i++ {
     p[n] = w[i]
     n++
   }
@@ -2165,11 +2158,9 @@ func (sops StrOps) ReplaceBytes(targetBytes []byte, replacementBytes [][]byte) (
 
   }
 
-  foundReplacement := false
-
   for i := 0; i < targetLen; i++ {
 
-    foundReplacement = false
+    foundReplacement := false
 
     for k := 0; k < baseReplaceLen; k++ {
 
@@ -2305,11 +2296,9 @@ func (sops StrOps) ReplaceRunes(targetRunes []rune, replacementRunes [][]rune) (
 
   }
 
-  foundReplacement := false
-
   for i := 0; i < targetLen; i++ {
 
-    foundReplacement = false
+    foundReplacement := false
 
     for k := 0; k < baseReplaceLen; k++ {
 
@@ -2539,7 +2528,6 @@ func (sops StrOps) StripBadChars(
 
   cycleWhereStringRemoved := 0
   k := -1
-  badCharIdx := -1
 
   for {
 
@@ -2549,7 +2537,7 @@ func (sops StrOps) StripBadChars(
 
       for {
 
-        badCharIdx = strings.Index(cleanStr, badChars[i])
+        badCharIdx := strings.Index(cleanStr, badChars[i])
 
         if badCharIdx == -1 {
           break
@@ -3076,7 +3064,7 @@ func (sops *StrOps) Write(p []byte) (n int, err error) {
 
     sops.stringDataMutex.Unlock()
 
-    err = fmt.Errorf(ePrefix + "Error: Input byte array 'p' is ZERO LENGHT!")
+    err = fmt.Errorf(ePrefix + "Error: Input byte array 'p' is ZERO LENGTH!")
 
     return n, err
   }
