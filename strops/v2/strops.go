@@ -1,18 +1,15 @@
 
 
 
-/*
-Package strops - (string operations) provides string management
-utilities designed to perform a variety of string operations
-including string centering, justification, multiple replacements
-and implementation of the the io.Reader and io.Writer interfaces.
 
-Source file, 'xStrops.go', is located in source code repository:
-	https://github.com/MikeAustin71/stringopsgo.git
-
-Currently, the package consists of one type, 'StrOps' which is
-documented below.
-*/
+// Package strops - (string operations) provides string management
+// utilities designed to perform a variety of string operations
+// including string centering, justification, multiple replacements
+// and implementation of the the io.Reader and io.Writer interfaces.
+//
+// Source files for package 'strops' are located in source code repository:
+// 	      https://github.com/MikeAustin71/stringopsgo.git
+//
 package strops
 
 import (
@@ -217,10 +214,14 @@ type DataFieldProfileDto struct {
   DataFieldStr                  string  //  The extracted data field string
   DataFieldIndex                int     //  The index in 'TargetStr' where the data field
                                         //    begins.
-  DataFieldLength            int  //  The length of the extracted data field string.
-  DataFieldTrailingDelimiter rune //  The trailing character which marked the end of
+  DataFieldLength               int     //  The length of the extracted data field string.
+  DataFieldTrailingDelimiter    rune    //  The trailing character which marked the end of
                                         //    the data field. A zero value indicates end
                                         //    of string encountered.
+  DataFieldTrailingDelimiterType  DataFieldTrailingDelimiterType
+                                        //  A constant or enumeration type used to describe
+                                        //    the type of delimiter used to mark the end of
+                                        //    a data field.
   NextTargetStrIndex            int     //  The index in 'TargetStr' immediately following
                                         //    the extracted data field.
 }
@@ -235,6 +236,7 @@ func (dfProfile DataFieldProfileDto) New() DataFieldProfileDto {
   newDataDto.DataFieldIndex = -1
   newDataDto.DataFieldLength = 0
   newDataDto.DataFieldTrailingDelimiter = 0
+  newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.Unknown()
   newDataDto.NextTargetStrIndex = -1
   return newDataDto
 }
@@ -571,7 +573,7 @@ func (sops StrOps) ExtractDataField(
   startIdx int,
   leadingFieldSeparators []rune,
   trailingFieldSeparators []rune,
-  endOfStringDelimiters []rune) (DataFieldProfileDto, error) {
+  endOfLineDelimiters []rune) (DataFieldProfileDto, error) {
 
   ePrefix := "StrOps.ExtractDataField() "
   newDataDto := DataFieldProfileDto{}.New()
@@ -628,16 +630,16 @@ func (sops StrOps) ExtractDataField(
   lenTargetStr = len(targetStrRunes)
   lastGoodTargetStrIdx := lenTargetStr - 1
 
-  lenOfEndOfStringDelimiters := len(endOfStringDelimiters)
-
-  if lenOfEndOfStringDelimiters > 0 {
+  if len(endOfLineDelimiters) > 0 {
 
     for a:=startIdx; a < lenTargetStr; a++ {
 
-      for b:=0; b < lenOfEndOfStringDelimiters; b++ {
-        if endOfStringDelimiters[b] == targetStrRunes[a] {
+      for b:=0; b < lenOfEndOfLineDelimiters; b++ {
+        if endOfLineDelimiters[b] == targetStrRunes[a] {
           newDataDto.DataFieldTrailingDelimiter = targetStrRunes[a]
+          newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfLine()
           errDataDto.DataFieldTrailingDelimiter = targetStrRunes[a]
+          errDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfLine()
           lastGoodTargetStrIdx = a - 1
           goto endOfStringDelimiter
         }
@@ -668,6 +670,7 @@ func (sops StrOps) ExtractDataField(
     if keyWordIdx >= lastGoodTargetStrIdx {
       return errDataDto, nil
     }
+
     newDataDto.LeadingKeyWordDelimiterIndex = keyWordIdx
     errDataDto.LeadingKeyWordDelimiterIndex = keyWordIdx
     startIdx =  lenLeadingKeyWordDelimiter + keyWordIdx
@@ -693,6 +696,7 @@ func (sops StrOps) ExtractDataField(
       for k:=0; k < lenTrailingFieldSeparators; k++ {
         if targetStrRunes[i] == trailingFieldSeparators[k] {
           newDataDto.DataFieldTrailingDelimiter = targetStrRunes[i]
+          newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfField()
           goto exitMainTargetLoop
         }
       }
@@ -714,6 +718,10 @@ func (sops StrOps) ExtractDataField(
     return errDataDto, nil
   }
 
+  if newDataDto.DataFieldTrailingDelimiterType == DfTrailDelimiter.Unknown() {
+    newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfString()
+  }
+
   newDataDto.DataFieldStr = string(fieldDataRunes)
   newDataDto.DataFieldLength = len(newDataDto.DataFieldStr)
   newDataDto.DataFieldIndex = firstDataFieldIdx
@@ -721,6 +729,7 @@ func (sops StrOps) ExtractDataField(
 
   if nextIdx > lastGoodTargetStrIdx {
     newDataDto.NextTargetStrIndex = -1
+    newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfString()
   } else {
     newDataDto.NextTargetStrIndex = nextIdx
   }
