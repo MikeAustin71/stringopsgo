@@ -206,19 +206,20 @@ func (exNumDto NumStrProfileDto) New() NumStrProfileDto {
 // related to an extracted data field string.
 //
 type DataFieldProfileDto struct {
-  TargetStr               string    //  The string from which the data field
-                                    //    is extracted.
-  TargetStrLength         int       //  Length of 'TargetStr'
-  StartIndex              int       //  The index with in 'TargetStr' from which
-                                    //    the search for a data field was initiated.
-  LeadingKeyWordDelimiter string    //  The Leading Key Word Delimiter which is used
-                                    //    identify the beginning of the field search
-  DataFieldStr            string    //  The extracted data field string
-  DataFieldIndex          int       //  The index in 'TargetStr' where the data field
-                                    //    begins.
-  DataFieldLength         int       //  The length of the extracted data field string.
-  NextTargetStrIndex      int       //  The index in 'TargetStr' immediately following
-                                    //    the extracted data field.
+  TargetStr                     string  //  The string from which the data field
+                                        //    is extracted.
+  TargetStrLength               int     //  Length of 'TargetStr'
+  StartIndex                    int     //  The index with in 'TargetStr' from which
+                                        //    the search for a data field was initiated.
+  LeadingKeyWordDelimiter       string  //  The Leading Key Word Delimiter which is used
+                                        //    identify the beginning of the field search
+  LeadingKeyWordDelimiterIndex  int     //  Index of the found Leading Key Word Delimiter
+  DataFieldStr                  string  //  The extracted data field string
+  DataFieldIndex                int     //  The index in 'TargetStr' where the data field
+                                        //    begins.
+  DataFieldLength               int     //  The length of the extracted data field string.
+  NextTargetStrIndex            int     //  The index in 'TargetStr' immediately following
+                                        //    the extracted data field.
 }
 
 func (dfProfile DataFieldProfileDto) New() DataFieldProfileDto {
@@ -226,6 +227,7 @@ func (dfProfile DataFieldProfileDto) New() DataFieldProfileDto {
   newDataDto.TargetStr = ""
   newDataDto.StartIndex = -1
   newDataDto.LeadingKeyWordDelimiter = ""
+  newDataDto.LeadingKeyWordDelimiterIndex = -1
   newDataDto.DataFieldStr = ""
   newDataDto.DataFieldIndex = -1
   newDataDto.DataFieldLength = 0
@@ -569,18 +571,24 @@ func (sops StrOps) ExtractDataField(
 
   ePrefix := "StrOps.ExtractDataField() "
   newDataDto := DataFieldProfileDto{}.New()
+  errDataDto := DataFieldProfileDto{}.New()
+  errDataDto.TargetStr = targetStr
+  errDataDto.StartIndex = startIdx
+  errDataDto.LeadingKeyWordDelimiter = leadingKeyWordDelimiter
+  errDataDto.TargetStrLength = len(targetStr)
+
 
   lenTargetStr := len(targetStr)
 
   if lenTargetStr == 0 {
 
-    return newDataDto,
+    return errDataDto,
       errors.New(ePrefix +
         "ERROR: Input Parameter 'targetStr' is an EMPTY string!\n")
   }
 
   if startIdx >= lenTargetStr {
-    return newDataDto,
+    return errDataDto,
       fmt.Errorf("ERROR: Input Parameter 'startIdx' is out-of-bounds!\n" +
         "startIdx='%v'\t\tLast TargetStr Index='%v'\n" +
         "Length Of TargetStr='%v'\n",
@@ -614,7 +622,8 @@ func (sops StrOps) ExtractDataField(
  endOfStringDelimiter:
 
   if startIdx == endTargetStrIdx {
-    return newDataDto, nil
+
+    return errDataDto, nil
   }
 
   lenLeadingKeyWordDelimiter := len(leadingKeyWordDelimiter)
@@ -625,13 +634,13 @@ func (sops StrOps) ExtractDataField(
 
     if keyWordIdx== -1 ||
       keyWordIdx >= endTargetStrIdx {
-      return newDataDto, nil
+      return errDataDto, nil
     }
-
+    newDataDto.LeadingKeyWordDelimiterIndex = keyWordIdx
     startIdx =  lenLeadingKeyWordDelimiter + keyWordIdx
   }
 
-  lenTrailingFieldSepartors := len(trailingFieldSeparators)
+  lenTrailingFieldSeparators := len(trailingFieldSeparators)
   fieldDataRunes := make([]rune, 0, 20)
   firstDataFieldIdx := -1
 
@@ -649,7 +658,7 @@ func (sops StrOps) ExtractDataField(
 
     } else {
 
-      for k:=0; k < lenTrailingFieldSepartors; k++ {
+      for k:=0; k < lenTrailingFieldSeparators; k++ {
         if targetStrRunes[i] == trailingFieldSeparators[k] {
           goto exitMainTargetLoop
         }
@@ -669,7 +678,7 @@ func (sops StrOps) ExtractDataField(
   exitMainTargetLoop:
 
   if len(fieldDataRunes) == 0 {
-    return newDataDto, nil
+    return errDataDto, nil
   }
 
   newDataDto.DataFieldStr = string(fieldDataRunes)

@@ -368,7 +368,7 @@ func TestStrOps_StripTrailingChars_002(t *testing.T) {
   testString := expectedStr + "..........      ./../.\\.\\..\\////   "
 
   expectedStr = testString
-  expectedStrLen = len(expectedStr)
+  expectedStrLen := len(expectedStr)
 
 
   actualString, actualStrLen := StrOps{}.StripTrailingChars(testString, badChars)
