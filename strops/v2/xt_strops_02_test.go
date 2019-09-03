@@ -99,7 +99,7 @@ func TestStrOps_ExtractDataField_01(t *testing.T) {
   if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
     t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
       "Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiter)
+      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
   }
 
   if expectedDataFieldStr != datDto.DataFieldStr {
@@ -191,7 +191,7 @@ func TestStrOps_ExtractDataField_02(t *testing.T) {
   if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
     t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
       "Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiter)
+      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
   }
 
   if expectedDataFieldStr != datDto.DataFieldStr {
@@ -277,7 +277,7 @@ func TestStrOps_ExtractDataField_03(t *testing.T) {
   if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
     t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
       "Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiter)
+      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
   }
 
   if expectedDataFieldStr != datDto.DataFieldStr {
@@ -367,7 +367,7 @@ func TestStrOps_ExtractDataField_04(t *testing.T) {
   if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
     t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
       "Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiter)
+      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
   }
 
   if expectedDataFieldStr != datDto.DataFieldStr {
@@ -386,6 +386,281 @@ func TestStrOps_ExtractDataField_04(t *testing.T) {
     t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
       "Instead, datDto.DataFieldIndex='%v'.\n",
       expectedDataFieldIdx, datDto.DataFieldIndex)
+  }
+
+  if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
+    t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+      "Instead, datDto.NextTargetStrIndex='%v'.\n",
+      expectedNextTargetIdx, datDto.NextTargetStrIndex)
+  }
+}
+
+
+func TestStrOps_ExtractDataField_05(t *testing.T) {
+
+  endOfLineRunes := []rune("\n#")
+  leadingRunes := []rune("\t \r\f\n\v")
+  trailingRunes := []rune("\t \r\f\n\v")
+  targetStr := " Zone:\t #America/Chicago\t Good morning America!\n"
+  lenTargetStr := len(targetStr)
+  startIdx := 0
+  leadingKeyWordDelimiter := "Zone:"
+  expectedDataFieldStr := ""
+  expectedDataFieldIdx := -1
+  expectedDataFieldLength := len(expectedDataFieldStr)
+  expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, leadingKeyWordDelimiter)
+  expectedNextTargetIdx := -1
+
+  datDto,
+  err := StrOps{}.ExtractDataField(
+    targetStr,
+    leadingKeyWordDelimiter,
+    startIdx,
+    leadingRunes,
+    trailingRunes,
+    endOfLineRunes)
+
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
+      "targetStr='%v'\tstartIdx='%v'\n"+
+      "Error='%v'\n", targetStr, startIdx, err.Error())
+    return
+  }
+
+  if targetStr  != datDto.TargetStr {
+    t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+      "Instead, datDto.TargetStr='%v'.\n",
+      targetStr ,datDto.TargetStr)
+  }
+
+  if lenTargetStr !=  datDto.TargetStrLength {
+    t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+      "Instead, datDto.TargetStrLength='%v'.\n",
+      lenTargetStr ,datDto.TargetStrLength)
+  }
+
+  if startIdx != datDto.StartIndex {
+    t.Errorf("ERROR: Expected datDto.StartIndex='%v'.\n"+
+      "Instead, datDto.StartIndex='%v'.\n",
+      startIdx, datDto.StartIndex)
+  }
+
+  if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+    t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+      "Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+      leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+  }
+
+  if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+    t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+      "Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+  }
+
+  if expectedDataFieldStr != datDto.DataFieldStr {
+    t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+      "Instead, datDto.DataFieldStr='%v'.\n",
+      expectedDataFieldStr, datDto.DataFieldStr )
+  }
+
+  if  expectedDataFieldLength != datDto.DataFieldLength {
+    t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+      "Instead, datDto.DataFieldLength='%v'.\n",
+      expectedDataFieldLength, datDto.DataFieldLength )
+  }
+
+  if expectedDataFieldIdx != datDto.DataFieldIndex {
+    t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+      "Instead, datDto.DataFieldIndex='%v'.\n",
+      expectedDataFieldIdx, datDto.DataFieldIndex)
+  }
+
+  if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
+    t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+      "Instead, datDto.NextTargetStrIndex='%v'.\n",
+      expectedNextTargetIdx, datDto.NextTargetStrIndex)
+  }
+}
+
+func TestStrOps_ExtractDataField_06(t *testing.T) {
+
+  endOfLineRunes := []rune("\n#")
+  leadingRunes := []rune("\t \r\f\n\v")
+  trailingRunes := []rune("\t \r\f\n\v")
+  targetStr := " #Zone:\t America/Chicago\t Good morning America!\n"
+  lenTargetStr := len(targetStr)
+  startIdx := 0
+  leadingKeyWordDelimiter := "Zone:"
+  expectedDataFieldStr := ""
+  expectedDataFieldIdx := -1
+  expectedDataFieldLength := len(expectedDataFieldStr)
+  expectedLeadingKeyWordDelimiterIndex := -1
+  expectedNextTargetIdx := -1
+
+  datDto,
+  err := StrOps{}.ExtractDataField(
+    targetStr,
+    leadingKeyWordDelimiter,
+    startIdx,
+    leadingRunes,
+    trailingRunes,
+    endOfLineRunes)
+
+  if err != nil {
+    t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
+      "targetStr='%v'\tstartIdx='%v'\n"+
+      "Error='%v'\n", targetStr, startIdx, err.Error())
+    return
+  }
+
+  if targetStr  != datDto.TargetStr {
+    t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+      "Instead, datDto.TargetStr='%v'.\n",
+      targetStr ,datDto.TargetStr)
+  }
+
+  if lenTargetStr !=  datDto.TargetStrLength {
+    t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+      "Instead, datDto.TargetStrLength='%v'.\n",
+      lenTargetStr ,datDto.TargetStrLength)
+  }
+
+  if startIdx != datDto.StartIndex {
+    t.Errorf("ERROR: Expected datDto.StartIndex='%v'.\n"+
+      "Instead, datDto.StartIndex='%v'.\n",
+      startIdx, datDto.StartIndex)
+  }
+
+  if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+    t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+      "Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+      leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+  }
+
+  if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+    t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+      "Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+  }
+
+  if expectedDataFieldStr != datDto.DataFieldStr {
+    t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+      "Instead, datDto.DataFieldStr='%v'.\n",
+      expectedDataFieldStr, datDto.DataFieldStr )
+  }
+
+  if  expectedDataFieldLength != datDto.DataFieldLength {
+    t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+      "Instead, datDto.DataFieldLength='%v'.\n",
+      expectedDataFieldLength, datDto.DataFieldLength )
+  }
+
+  if expectedDataFieldIdx != datDto.DataFieldIndex {
+    t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+      "Instead, datDto.DataFieldIndex='%v'.\n",
+      expectedDataFieldIdx, datDto.DataFieldIndex)
+  }
+
+  if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
+    t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+      "Instead, datDto.NextTargetStrIndex='%v'.\n",
+      expectedNextTargetIdx, datDto.NextTargetStrIndex)
+  }
+}
+
+func TestStrOps_ExtractDataField_07(t *testing.T) {
+
+  endOfLineRunes := []rune("\n#")
+  leadingRunes := []rune("\t \r\f\n\v")
+  trailingRunes := []rune("\t \r\f\n\v")
+  targetStr := "\tZone:\tAmerica/Chicago\t\tZone:\tAmerica/New_York\t\tZone:\tAmerica/Los_Angeles\n"
+  lastGoodIdx := strings.LastIndex(targetStr, "\n")
+  lastGoodIdx--
+  lenTargetStr := len(targetStr)
+  startIdx := 0
+  expectedStartIdx := 46
+  leadingKeyWordDelimiter := "Zone:"
+  expectedDataFieldStr := "America/Los_Angeles"
+  expectedFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
+  expectedFieldLength := len(expectedDataFieldStr)
+  expectedLeadingKeyWordDelimiterIndex := strings.LastIndex(targetStr, leadingKeyWordDelimiter)
+  expectedNextTargetIdx := expectedFieldIdx + expectedFieldLength
+
+  if expectedNextTargetIdx > lastGoodIdx {
+    expectedNextTargetIdx = -1
+  }
+
+  var datDto DataFieldProfileDto
+  var err error
+
+  for i:=0; i < 3; i++ {
+
+    datDto,
+      err = StrOps{}.ExtractDataField(
+      targetStr,
+      leadingKeyWordDelimiter,
+      startIdx,
+      leadingRunes,
+      trailingRunes,
+      endOfLineRunes)
+
+    if err != nil {
+      t.Errorf("Error returned by StrOps{}.ExtractDataField()\n" +
+        "Cycle No='%v'\n"+
+        "targetStr='%v'\tstartIdx='%v'\n"+
+        "Error='%v'\n", i, targetStr, startIdx, err.Error())
+      return
+    }
+
+    startIdx = datDto.NextTargetStrIndex
+  }
+
+  if targetStr  != datDto.TargetStr {
+    t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+      "Instead, datDto.TargetStr='%v'.\n",
+      targetStr ,datDto.TargetStr)
+  }
+
+  if lenTargetStr !=  datDto.TargetStrLength {
+    t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+      "Instead, datDto.TargetStrLength='%v'.\n",
+      lenTargetStr ,datDto.TargetStrLength)
+  }
+
+  if expectedStartIdx != datDto.StartIndex {
+    t.Errorf("ERROR: Expected datDto.StartIndex='%v'.\n"+
+      "Instead, datDto.StartIndex='%v'.\n",
+      expectedStartIdx, datDto.StartIndex)
+  }
+
+  if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+    t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+      "Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+      leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+  }
+
+  if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+    t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+      "Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+  }
+
+  if expectedDataFieldStr != datDto.DataFieldStr {
+    t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+      "Instead, datDto.DataFieldStr='%v'.\n",
+      expectedDataFieldStr, datDto.DataFieldStr )
+  }
+
+  if  expectedFieldLength != datDto.DataFieldLength {
+    t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+      "Instead, datDto.DataFieldLength='%v'.\n",
+      expectedFieldLength, datDto.DataFieldLength )
+  }
+
+  if expectedFieldIdx != datDto.DataFieldIndex {
+    t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+      "Instead, datDto.DataFieldIndex='%v'.\n",
+      expectedFieldIdx, datDto.DataFieldIndex)
   }
 
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {

@@ -573,26 +573,46 @@ func (sops StrOps) ExtractDataField(
   newDataDto := DataFieldProfileDto{}.New()
   errDataDto := DataFieldProfileDto{}.New()
   errDataDto.TargetStr = targetStr
+  errDataDto.TargetStrLength = len(targetStr)
   errDataDto.StartIndex = startIdx
   errDataDto.LeadingKeyWordDelimiter = leadingKeyWordDelimiter
-  errDataDto.TargetStrLength = len(targetStr)
-
 
   lenTargetStr := len(targetStr)
 
   if lenTargetStr == 0 {
-
     return errDataDto,
       errors.New(ePrefix +
         "ERROR: Input Parameter 'targetStr' is an EMPTY string!\n")
   }
 
+  if startIdx < 0 {
+    return errDataDto,
+      fmt.Errorf(ePrefix + "ERROR: Input parameter 'startIdx' is less than zero!\n" +
+        "startIdx='%v'\n", startIdx)
+  }
+
   if startIdx >= lenTargetStr {
     return errDataDto,
-      fmt.Errorf("ERROR: Input Parameter 'startIdx' is out-of-bounds!\n" +
+      fmt.Errorf(ePrefix + "ERROR: Input Parameter 'startIdx' is out-of-bounds!\n" +
         "startIdx='%v'\t\tLast TargetStr Index='%v'\n" +
         "Length Of TargetStr='%v'\n",
         startIdx, lenTargetStr -1, lenTargetStr)
+  }
+
+  lenLeadingFieldSeparators := len(leadingFieldSeparators)
+
+  if lenLeadingFieldSeparators == 0 {
+    return errDataDto,
+      errors.New (ePrefix + "ERROR: Input Parameter 'leadingFieldSeparators' is a zero length array!\n" +
+        "'leadingFieldSeparators' are required!\n")
+  }
+
+  lenTrailingFieldSeparators := len(trailingFieldSeparators)
+
+  if lenTrailingFieldSeparators == 0 {
+    return errDataDto,
+      errors.New (ePrefix + "ERROR: Input Parameter 'trailingFieldSeparators' is a zero length array!\n" +
+        "'trailingFieldSeparators' are required!\n")
   }
 
   newDataDto.TargetStr = targetStr
@@ -602,7 +622,7 @@ func (sops StrOps) ExtractDataField(
 
   targetStrRunes := []rune(targetStr)
   lenTargetStr = len(targetStrRunes)
-  endTargetStrIdx := lenTargetStr - 1
+  lastGoodTargetStrIdx := lenTargetStr - 1
 
   lenOfEndOfStringDelimiters := len(endOfStringDelimiters)
 
@@ -612,7 +632,7 @@ func (sops StrOps) ExtractDataField(
 
       for b:=0; b < lenOfEndOfStringDelimiters; b++ {
         if endOfStringDelimiters[b] == targetStrRunes[a] {
-          endTargetStrIdx = a
+          lastGoodTargetStrIdx = a - 1
           goto endOfStringDelimiter
         }
       }
@@ -621,7 +641,8 @@ func (sops StrOps) ExtractDataField(
 
  endOfStringDelimiter:
 
-  if startIdx == endTargetStrIdx {
+  if startIdx > lastGoodTargetStrIdx ||
+    lastGoodTargetStrIdx < 0 {
 
     return errDataDto, nil
   }
@@ -632,23 +653,28 @@ func (sops StrOps) ExtractDataField(
 
     keyWordIdx := strings.Index(targetStr[startIdx:], leadingKeyWordDelimiter)
 
-    if keyWordIdx== -1 ||
-      keyWordIdx >= endTargetStrIdx {
+    if keyWordIdx == -1 {
+      return errDataDto, nil
+    }
+
+    keyWordIdx += startIdx
+
+    if keyWordIdx >= lastGoodTargetStrIdx {
       return errDataDto, nil
     }
     newDataDto.LeadingKeyWordDelimiterIndex = keyWordIdx
+    errDataDto.LeadingKeyWordDelimiterIndex = keyWordIdx
     startIdx =  lenLeadingKeyWordDelimiter + keyWordIdx
   }
 
-  lenTrailingFieldSeparators := len(trailingFieldSeparators)
   fieldDataRunes := make([]rune, 0, 20)
   firstDataFieldIdx := -1
 
-  for i:= startIdx; i <= endTargetStrIdx; i++ {
+  for i:= startIdx; i <= lastGoodTargetStrIdx; i++ {
 
     if firstDataFieldIdx == -1 {
 
-      for j:= 0; j < len(leadingFieldSeparators); j++ {
+      for j:= 0; j < lenLeadingFieldSeparators; j++ {
 
         if targetStrRunes[i] == leadingFieldSeparators[j]  {
           goto mainTargetLoop
@@ -686,7 +712,7 @@ func (sops StrOps) ExtractDataField(
   newDataDto.DataFieldIndex = firstDataFieldIdx
   nextIdx := newDataDto.DataFieldIndex + newDataDto.DataFieldLength
 
-  if nextIdx >= endTargetStrIdx {
+  if nextIdx > lastGoodTargetStrIdx {
     newDataDto.NextTargetStrIndex = -1
   } else {
     newDataDto.NextTargetStrIndex = nextIdx

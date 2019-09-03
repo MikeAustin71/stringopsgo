@@ -88,7 +88,7 @@ func (mt MainTest) ExampleExtractDataField01() {
   if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
     fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
       "Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiter)
+      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
     isError = true
   }
 
@@ -158,7 +158,6 @@ func (mt MainTest) ExampleExtractDataField01() {
 
 }
 
-
 func (mt MainTest) ExampleExtractDataField02() {
 
   endOfLineRunes := []rune("\n#")
@@ -227,7 +226,158 @@ func (mt MainTest) ExampleExtractDataField02() {
   if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
     fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
       "Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiter)
+      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+    isError = true
+  }
+
+  if expectedDataFieldStr != datDto.DataFieldStr {
+    fmt.Printf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+      "Instead, datDto.DataFieldStr='%v'.\n",
+      expectedDataFieldStr, datDto.DataFieldStr )
+    isError = true
+  }
+
+  if  expectedFieldLength != datDto.DataFieldLength {
+    fmt.Printf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+      "Instead, datDto.DataFieldLength='%v'.\n",
+      expectedFieldLength, datDto.DataFieldLength )
+    isError = true
+  }
+
+  if expectedFieldIdx != datDto.DataFieldIndex {
+    fmt.Printf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+      "Instead, datDto.DataFieldIndex='%v'.\n",
+      expectedFieldIdx, datDto.DataFieldIndex)
+    isError = true
+  }
+
+  if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
+    fmt.Printf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+      "Instead, datDto.NextTargetStrIndex='%v'.\n",
+      expectedNextTargetIdx, datDto.NextTargetStrIndex)
+    isError = true
+  }
+
+  fmt.Println("================================================")
+  fmt.Println("           ExampleExtractDataField02            ")
+  fmt.Println("================================================")
+  if isError {
+    fmt.Println("              @@@@ FAILURE @@@@                 ")
+  } else {
+    fmt.Println("                   SUCCESS!                     ")
+  }
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                    Base Data                   ")
+  fmt.Println("------------------------------------------------")
+  fmt.Printf("             TargetStr: %v", targetStr)
+  fmt.Println("      TargetStr Length: ", lenTargetStr)
+  fmt.Println("           Start Index: ", startIdx)
+  fmt.Println("    Key Word Delimiter: ", leadingKeyWordDelimiter)
+  fmt.Println("Key Word Delimiter Idx: ", expectedLeadingKeyWordDelimiterIndex)
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                 Expected Results               ")
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                  Field String: ", expectedDataFieldStr)
+  fmt.Println("              Field Str Length: ", expectedFieldLength)
+  fmt.Println("                   Field Index: ", expectedFieldIdx)
+  fmt.Println("             Next Target Index: ", expectedNextTargetIdx)
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                  Actual Results                ")
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                  Field String: ", datDto.DataFieldStr)
+  fmt.Println("              Field Str Length: ", datDto.DataFieldLength)
+  fmt.Println("                   Field Index: ", datDto.DataFieldIndex)
+  fmt.Println("             Next Target Index: ", datDto.NextTargetStrIndex)
+  fmt.Println("                 Target String: ", datDto.TargetStr)
+  fmt.Println("             Target Str Length: ", datDto.TargetStrLength)
+  fmt.Println("               Target StartIdx: ", datDto.StartIndex)
+  fmt.Println("    Leading Key Delimiter Word: ", datDto.LeadingKeyWordDelimiter)
+  fmt.Println("Leading Key Word Delimiter Idx: ", datDto.LeadingKeyWordDelimiterIndex)
+
+}
+
+func (mt MainTest) ExampleExtractDataField03() {
+
+  endOfLineRunes := []rune("\n#")
+  leadingRunes := []rune("\t \r\f\n\v")
+  trailingRunes := []rune("\t \r\f\n\v")
+  targetStr := "\tZone:\tAmerica/Chicago\t\tZone:\tAmerica/New_York\t\tZone:\tAmerica/Los_Angeles\n"
+  lastGoodIdx := strings.LastIndex(targetStr, "\n")
+  lastGoodIdx--
+  lenTargetStr := len(targetStr)
+  startIdx := 0
+  expectedStartIdx := 46
+  leadingKeyWordDelimiter := "Zone:"
+  expectedDataFieldStr := "America/Los_Angeles"
+  expectedFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
+  expectedFieldLength := len(expectedDataFieldStr)
+  expectedLeadingKeyWordDelimiterIndex := strings.LastIndex(targetStr, leadingKeyWordDelimiter)
+  expectedNextTargetIdx := expectedFieldIdx + expectedFieldLength
+
+  if expectedNextTargetIdx > lastGoodIdx {
+    expectedNextTargetIdx = -1
+  }
+
+  var datDto strops.DataFieldProfileDto
+  var err error
+
+  for i:=0; i < 3; i++ {
+
+    datDto,
+      err = strops.StrOps{}.ExtractDataField(
+      targetStr,
+      leadingKeyWordDelimiter,
+      startIdx,
+      leadingRunes,
+      trailingRunes,
+      endOfLineRunes)
+
+    if err != nil {
+      fmt.Printf("Error returned by StrOps{}.ExtractDataField()\n" +
+        "Cycle No='%v'\n"+
+        "targetStr='%v'\tstartIdx='%v'\n"+
+        "Error='%v'\n", i, targetStr, startIdx, err.Error())
+      return
+    }
+
+    startIdx = datDto.NextTargetStrIndex
+
+  }
+
+  isError := false
+
+  if targetStr  != datDto.TargetStr {
+    fmt.Printf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+      "Instead, datDto.TargetStr='%v'.\n",
+      targetStr ,datDto.TargetStr)
+    isError = true
+  }
+
+  if lenTargetStr !=  datDto.TargetStrLength {
+    fmt.Printf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+      "Instead, datDto.TargetStrLength='%v'.\n",
+      lenTargetStr ,datDto.TargetStrLength)
+    isError = true
+  }
+
+  if expectedStartIdx != datDto.StartIndex {
+    fmt.Printf("ERROR: Expected datDto.StartIndex='%v'.\n"+
+      "Instead, datDto.StartIndex='%v'.\n",
+      expectedStartIdx, datDto.StartIndex)
+    isError = true
+  }
+
+  if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+    fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+      "Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+      leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+    isError = true
+  }
+
+  if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+    fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+      "Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
     isError = true
   }
 
@@ -583,7 +733,7 @@ func (mt MainTest) ExampleExpressions01() {
 
   lArray := len(samples)
   for i := 0; i < lArray; i++ {
-    match, err := mt.findExpressionExample01(samples[i], regexAMpm)
+    match, err := mt.FindExpressionExample01(samples[i], regexAMpm)
 
     if err != nil {
       if err.Error() == "No Match" {
@@ -975,7 +1125,7 @@ func (mt MainTest) ExampleIoCopy02() {
   fmt.Println("New value of n: ", n)
 }
 
-func (mt MainTest) timer(starTime, endTime time.Time) string {
+func (mt MainTest) Timer(starTime, endTime time.Time) string {
 
   // MicroSecondNanoseconds - Number of Nanoseconds in a Microsecond
   // 	A MicroSecond is 1/1,000,000 or 1 one-millionth of a second

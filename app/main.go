@@ -33,5 +33,5 @@ import (
 
 func main() {
 
-  examples.MainTest{}.ExampleExtractDataField02()
+  examples.MainTest{}.ExampleExtractDataField03()
 }
