@@ -30,11 +30,11 @@ func (mt MainTest) ExampleExtractDataField01() {
   expectedDataFieldStr := ""
   expectedFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
   expectedFieldLength := len(expectedDataFieldStr)
+  expectedDataFieldTrailingDelimiter := rune(0)
   expectedLeadingKeyWordDelimiterIndex := -1
-
   expectedNextTargetIdx := expectedFieldIdx + expectedFieldLength
 
-  if expectedNextTargetIdx >= len(targetStr) {
+  if expectedNextTargetIdx > lastGoodIdx {
     expectedNextTargetIdx = -1
   }
 
@@ -110,6 +110,13 @@ func (mt MainTest) ExampleExtractDataField01() {
     fmt.Printf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
       "Instead, datDto.DataFieldIndex='%v'.\n",
       expectedFieldIdx, datDto.DataFieldIndex)
+    isError = true
+  }
+
+  if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+    fmt.Printf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
     isError = true
   }
 
@@ -142,6 +149,7 @@ func (mt MainTest) ExampleExtractDataField01() {
   fmt.Println("                  Field String: ", expectedDataFieldStr)
   fmt.Println("              Field Str Length: ", expectedFieldLength)
   fmt.Println("                   Field Index: ", expectedFieldIdx)
+  fmt.Printf("      Field Trailing Delimiter: %#U\n", expectedDataFieldTrailingDelimiter)
   fmt.Println("             Next Target Index: ", expectedNextTargetIdx)
   fmt.Println("------------------------------------------------")
   fmt.Println("                  Actual Results                ")
@@ -149,6 +157,7 @@ func (mt MainTest) ExampleExtractDataField01() {
   fmt.Println("                  Field String: ", datDto.DataFieldStr)
   fmt.Println("              Field Str Length: ", datDto.DataFieldLength)
   fmt.Println("                   Field Index: ", datDto.DataFieldIndex)
+  fmt.Printf("      Field Trailing Delimiter: %#U\n", datDto.DataFieldTrailingDelimiter)
   fmt.Println("             Next Target Index: ", datDto.NextTargetStrIndex)
   fmt.Println("                 Target String: ", datDto.TargetStr)
   fmt.Println("             Target Str Length: ", datDto.TargetStrLength)
@@ -164,16 +173,19 @@ func (mt MainTest) ExampleExtractDataField02() {
   leadingRunes := []rune("\t \r\f\n\v")
   trailingRunes := []rune("\t \r\f\n\v")
   targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
+  lastGoodIdx := strings.LastIndex(targetStr, "\n")
+  lastGoodIdx--
   lenTargetStr := len(targetStr)
   startIdx := 0
   leadingKeyWordDelimiter := "Zone:"
   expectedDataFieldStr := "America/Chicago"
   expectedFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
   expectedFieldLength := len(expectedDataFieldStr)
+  expectedDataFieldTrailingDelimiter := '\t'
   expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, leadingKeyWordDelimiter)
   expectedNextTargetIdx := expectedFieldIdx + expectedFieldLength
 
-  if expectedNextTargetIdx >= len(targetStr) {
+  if expectedNextTargetIdx > lastGoodIdx {
     expectedNextTargetIdx = -1
   }
 
@@ -251,6 +263,13 @@ func (mt MainTest) ExampleExtractDataField02() {
     isError = true
   }
 
+  if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+    fmt.Printf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+    isError = true
+  }
+
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
     fmt.Printf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
       "Instead, datDto.NextTargetStrIndex='%v'.\n",
@@ -280,6 +299,7 @@ func (mt MainTest) ExampleExtractDataField02() {
   fmt.Println("                  Field String: ", expectedDataFieldStr)
   fmt.Println("              Field Str Length: ", expectedFieldLength)
   fmt.Println("                   Field Index: ", expectedFieldIdx)
+  fmt.Printf("      Field Trailing Delimiter: %#U\n", expectedDataFieldTrailingDelimiter)
   fmt.Println("             Next Target Index: ", expectedNextTargetIdx)
   fmt.Println("------------------------------------------------")
   fmt.Println("                  Actual Results                ")
@@ -287,6 +307,7 @@ func (mt MainTest) ExampleExtractDataField02() {
   fmt.Println("                  Field String: ", datDto.DataFieldStr)
   fmt.Println("              Field Str Length: ", datDto.DataFieldLength)
   fmt.Println("                   Field Index: ", datDto.DataFieldIndex)
+  fmt.Printf("      Field Trailing Delimiter: %#U\n", datDto.DataFieldTrailingDelimiter)
   fmt.Println("             Next Target Index: ", datDto.NextTargetStrIndex)
   fmt.Println("                 Target String: ", datDto.TargetStr)
   fmt.Println("             Target Str Length: ", datDto.TargetStrLength)
@@ -309,10 +330,11 @@ func (mt MainTest) ExampleExtractDataField03() {
   expectedStartIdx := 46
   leadingKeyWordDelimiter := "Zone:"
   expectedDataFieldStr := "America/Los_Angeles"
-  expectedFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
-  expectedFieldLength := len(expectedDataFieldStr)
+  expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
+  expectedDataFieldLength := len(expectedDataFieldStr)
+  expectedDataFieldTrailingDelimiter := '\n'
   expectedLeadingKeyWordDelimiterIndex := strings.LastIndex(targetStr, leadingKeyWordDelimiter)
-  expectedNextTargetIdx := expectedFieldIdx + expectedFieldLength
+  expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
 
   if expectedNextTargetIdx > lastGoodIdx {
     expectedNextTargetIdx = -1
@@ -388,17 +410,24 @@ func (mt MainTest) ExampleExtractDataField03() {
     isError = true
   }
 
-  if  expectedFieldLength != datDto.DataFieldLength {
+  if  expectedDataFieldLength != datDto.DataFieldLength {
     fmt.Printf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
       "Instead, datDto.DataFieldLength='%v'.\n",
-      expectedFieldLength, datDto.DataFieldLength )
+      expectedDataFieldLength, datDto.DataFieldLength )
     isError = true
   }
 
-  if expectedFieldIdx != datDto.DataFieldIndex {
+  if expectedDataFieldIdx != datDto.DataFieldIndex {
     fmt.Printf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
       "Instead, datDto.DataFieldIndex='%v'.\n",
-      expectedFieldIdx, datDto.DataFieldIndex)
+      expectedDataFieldIdx, datDto.DataFieldIndex)
+    isError = true
+  }
+
+  if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+    fmt.Printf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
     isError = true
   }
 
@@ -429,8 +458,9 @@ func (mt MainTest) ExampleExtractDataField03() {
   fmt.Println("                 Expected Results               ")
   fmt.Println("------------------------------------------------")
   fmt.Println("                  Field String: ", expectedDataFieldStr)
-  fmt.Println("              Field Str Length: ", expectedFieldLength)
-  fmt.Println("                   Field Index: ", expectedFieldIdx)
+  fmt.Println("              Field Str Length: ", expectedDataFieldLength)
+  fmt.Println("                   Field Index: ", expectedDataFieldIdx)
+  fmt.Printf("      Field Trailing Delimiter: %#U\n", expectedDataFieldTrailingDelimiter)
   fmt.Println("             Next Target Index: ", expectedNextTargetIdx)
   fmt.Println("------------------------------------------------")
   fmt.Println("                  Actual Results                ")
@@ -438,6 +468,7 @@ func (mt MainTest) ExampleExtractDataField03() {
   fmt.Println("                  Field String: ", datDto.DataFieldStr)
   fmt.Println("              Field Str Length: ", datDto.DataFieldLength)
   fmt.Println("                   Field Index: ", datDto.DataFieldIndex)
+  fmt.Printf("      Field Trailing Delimiter: %#U\n", datDto.DataFieldTrailingDelimiter)
   fmt.Println("             Next Target Index: ", datDto.NextTargetStrIndex)
   fmt.Println("                 Target String: ", datDto.TargetStr)
   fmt.Println("             Target Str Length: ", datDto.TargetStrLength)

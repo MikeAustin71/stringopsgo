@@ -43,16 +43,19 @@ func TestStrOps_ExtractDataField_01(t *testing.T) {
   trailingRunes := []rune("\t \r\f\n\v")
   targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
   lenTargetStr := len(targetStr)
+  lastGoodIdx := strings.LastIndex(targetStr, "\n")
+  lastGoodIdx--
   startIdx := 0
   leadingKeyWordDelimiter := "Zone:"
   expectedDataFieldStr := "America/Chicago"
   expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
   expectedDataFieldLength := len(expectedDataFieldStr)
+  expectedDataFieldTrailingDelimiter := '\t'
   expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, leadingKeyWordDelimiter)
 
   expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
 
-  if expectedNextTargetIdx >= len(targetStr) {
+  if expectedNextTargetIdx > lastGoodIdx {
     expectedNextTargetIdx = -1
   }
 
@@ -118,6 +121,12 @@ func TestStrOps_ExtractDataField_01(t *testing.T) {
     t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
       "Instead, datDto.DataFieldIndex='%v'.\n",
       expectedDataFieldIdx, datDto.DataFieldIndex)
+  }
+
+  if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+    t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
   }
 
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
@@ -134,17 +143,19 @@ func TestStrOps_ExtractDataField_02(t *testing.T) {
   trailingRunes := []rune("\t \r\f\n\v")
   targetStr := " Zone:\t America/Chicago Good morning America!\n"
   lenTargetStr := len(targetStr)
+  lastGoodIdx := strings.LastIndex(targetStr, "\n")
+  lastGoodIdx--
   startIdx := 0
   leadingKeyWordDelimiter := "Zone:"
   expectedDataFieldStr := "America/Chicago"
   expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
   expectedDataFieldLength := len(expectedDataFieldStr)
   expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, leadingKeyWordDelimiter)
-
+  expectedDataFieldTrailingDelimiter := ' '
   expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
 
 
-  if expectedNextTargetIdx >= len(targetStr) {
+  if expectedNextTargetIdx > lastGoodIdx {
     expectedNextTargetIdx = -1
   }
 
@@ -210,6 +221,12 @@ func TestStrOps_ExtractDataField_02(t *testing.T) {
     t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
       "Instead, datDto.DataFieldIndex='%v'.\n",
       expectedDataFieldIdx, datDto.DataFieldIndex)
+  }
+
+  if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+    t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
   }
 
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
@@ -231,6 +248,7 @@ func TestStrOps_ExtractDataField_03(t *testing.T) {
   expectedDataFieldStr := ""
   expectedDataFieldIdx := -1
   expectedDataFieldLength := len(expectedDataFieldStr)
+  expectedDataFieldTrailingDelimiter := '\n'
   expectedLeadingKeyWordDelimiterIndex := -1
   expectedNextTargetIdx := -1
 
@@ -298,6 +316,12 @@ func TestStrOps_ExtractDataField_03(t *testing.T) {
       expectedDataFieldIdx, datDto.DataFieldIndex)
   }
 
+  if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+    t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+  }
+
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
     t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
       "Instead, datDto.NextTargetStrIndex='%v'.\n",
@@ -312,15 +336,18 @@ func TestStrOps_ExtractDataField_04(t *testing.T) {
   trailingRunes := []rune("\t \r\f\n\v")
   targetStr := " Zone:\t America/Chicago Good morning America!\n"
   lenTargetStr := len(targetStr)
+  lastGoodIdx := strings.LastIndex(targetStr, "\n")
+  lastGoodIdx--
   startIdx := 6
   leadingKeyWordDelimiter := ""
   expectedLeadingKeyWordDelimiterIndex := -1
   expectedDataFieldStr := "America/Chicago"
   expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
   expectedDataFieldLength := len(expectedDataFieldStr)
+  expectedDataFieldTrailingDelimiter := ' '
   expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
 
-  if expectedNextTargetIdx >= len(targetStr) {
+  if expectedNextTargetIdx > lastGoodIdx {
     expectedNextTargetIdx = -1
   }
 
@@ -386,6 +413,12 @@ func TestStrOps_ExtractDataField_04(t *testing.T) {
     t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
       "Instead, datDto.DataFieldIndex='%v'.\n",
       expectedDataFieldIdx, datDto.DataFieldIndex)
+  }
+
+  if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+    t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
   }
 
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
@@ -408,6 +441,7 @@ func TestStrOps_ExtractDataField_05(t *testing.T) {
   expectedDataFieldStr := ""
   expectedDataFieldIdx := -1
   expectedDataFieldLength := len(expectedDataFieldStr)
+  expectedDataFieldTrailingDelimiter := '#'
   expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, leadingKeyWordDelimiter)
   expectedNextTargetIdx := -1
 
@@ -475,6 +509,12 @@ func TestStrOps_ExtractDataField_05(t *testing.T) {
       expectedDataFieldIdx, datDto.DataFieldIndex)
   }
 
+  if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+    t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+  }
+
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
     t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
       "Instead, datDto.NextTargetStrIndex='%v'.\n",
@@ -494,6 +534,7 @@ func TestStrOps_ExtractDataField_06(t *testing.T) {
   expectedDataFieldStr := ""
   expectedDataFieldIdx := -1
   expectedDataFieldLength := len(expectedDataFieldStr)
+  expectedDataFieldTrailingDelimiter := '#'
   expectedLeadingKeyWordDelimiterIndex := -1
   expectedNextTargetIdx := -1
 
@@ -561,6 +602,12 @@ func TestStrOps_ExtractDataField_06(t *testing.T) {
       expectedDataFieldIdx, datDto.DataFieldIndex)
   }
 
+  if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+    t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+  }
+
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
     t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
       "Instead, datDto.NextTargetStrIndex='%v'.\n",
@@ -581,10 +628,11 @@ func TestStrOps_ExtractDataField_07(t *testing.T) {
   expectedStartIdx := 46
   leadingKeyWordDelimiter := "Zone:"
   expectedDataFieldStr := "America/Los_Angeles"
-  expectedFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
-  expectedFieldLength := len(expectedDataFieldStr)
+  expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
+  expectedDataFieldLength := len(expectedDataFieldStr)
+  expectedDataFieldTrailingDelimiter := '\n'
   expectedLeadingKeyWordDelimiterIndex := strings.LastIndex(targetStr, leadingKeyWordDelimiter)
-  expectedNextTargetIdx := expectedFieldIdx + expectedFieldLength
+  expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
 
   if expectedNextTargetIdx > lastGoodIdx {
     expectedNextTargetIdx = -1
@@ -651,16 +699,22 @@ func TestStrOps_ExtractDataField_07(t *testing.T) {
       expectedDataFieldStr, datDto.DataFieldStr )
   }
 
-  if  expectedFieldLength != datDto.DataFieldLength {
+  if  expectedDataFieldLength != datDto.DataFieldLength {
     t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
       "Instead, datDto.DataFieldLength='%v'.\n",
-      expectedFieldLength, datDto.DataFieldLength )
+      expectedDataFieldLength, datDto.DataFieldLength )
   }
 
-  if expectedFieldIdx != datDto.DataFieldIndex {
+  if expectedDataFieldIdx != datDto.DataFieldIndex {
     t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
       "Instead, datDto.DataFieldIndex='%v'.\n",
-      expectedFieldIdx, datDto.DataFieldIndex)
+      expectedDataFieldIdx, datDto.DataFieldIndex)
+  }
+
+  if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+    t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
   }
 
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {

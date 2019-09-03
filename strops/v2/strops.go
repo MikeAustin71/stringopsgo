@@ -217,7 +217,10 @@ type DataFieldProfileDto struct {
   DataFieldStr                  string  //  The extracted data field string
   DataFieldIndex                int     //  The index in 'TargetStr' where the data field
                                         //    begins.
-  DataFieldLength               int     //  The length of the extracted data field string.
+  DataFieldLength            int  //  The length of the extracted data field string.
+  DataFieldTrailingDelimiter rune //  The trailing character which marked the end of
+                                        //    the data field. A zero value indicates end
+                                        //    of string encountered.
   NextTargetStrIndex            int     //  The index in 'TargetStr' immediately following
                                         //    the extracted data field.
 }
@@ -231,6 +234,7 @@ func (dfProfile DataFieldProfileDto) New() DataFieldProfileDto {
   newDataDto.DataFieldStr = ""
   newDataDto.DataFieldIndex = -1
   newDataDto.DataFieldLength = 0
+  newDataDto.DataFieldTrailingDelimiter = 0
   newDataDto.NextTargetStrIndex = -1
   return newDataDto
 }
@@ -632,6 +636,8 @@ func (sops StrOps) ExtractDataField(
 
       for b:=0; b < lenOfEndOfStringDelimiters; b++ {
         if endOfStringDelimiters[b] == targetStrRunes[a] {
+          newDataDto.DataFieldTrailingDelimiter = targetStrRunes[a]
+          errDataDto.DataFieldTrailingDelimiter = targetStrRunes[a]
           lastGoodTargetStrIdx = a - 1
           goto endOfStringDelimiter
         }
@@ -686,6 +692,7 @@ func (sops StrOps) ExtractDataField(
 
       for k:=0; k < lenTrailingFieldSeparators; k++ {
         if targetStrRunes[i] == trailingFieldSeparators[k] {
+          newDataDto.DataFieldTrailingDelimiter = targetStrRunes[i]
           goto exitMainTargetLoop
         }
       }
