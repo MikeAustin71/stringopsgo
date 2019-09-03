@@ -327,7 +327,7 @@ func (mt mainTest) exampleSortStrLenHighestToLowest01() {
     fmt.Printf("%3d. %v\n", i+1, badChars[i])
   }
 
-  sort.Sort(strOps.SortStrLengthHighestToLowest(badChars))
+  sort.Sort(strops.SortStrLengthHighestToLowest(badChars))
 
   fmt.Println()
   fmt.Println("================================")
@@ -363,7 +363,7 @@ func (mt mainTest) exampleSortStrLenLowestToHighest01() {
     fmt.Printf("%3d. %v\n", i+1, badChars[i])
   }
 
-  sort.Sort(strOps.SortStrLengthLowestToHighest(badChars))
+  sort.Sort(strops.SortStrLengthLowestToHighest(badChars))
 
   fmt.Println()
   fmt.Println("================================")
@@ -570,11 +570,11 @@ func (mt mainTest) exampleWrite03() {
 
   originalStr := "Original base string written to sops1"
 
-  sops1 := strOps.StrOps{}.NewPtr()
+  sops1 := strops.StrOps{}.NewPtr()
 
   sops1.SetStringData(originalStr)
 
-  sops2 := strOps.StrOps{}.NewPtr()
+  sops2 := strops.StrOps{}.NewPtr()
 
   n, err := io.Copy(sops2, sops1)
 
@@ -609,7 +609,7 @@ func (mt mainTest) exampleWrite01() {
 
   originalStr := "Hello World"
 
-  sops1 := strOps.StrOps{}.NewPtr()
+  sops1 := strops.StrOps{}.NewPtr()
 
   lenOriginalStr := len(originalStr)
 
@@ -672,7 +672,7 @@ func (mt mainTest) exampleWrite02() {
 
   originalStr := "Original base string written to sops1"
 
-  sops1 := strOps.StrOps{}.NewPtr()
+  sops1 := strops.StrOps{}.NewPtr()
 
   lenOriginalStr := len(originalStr)
 
@@ -714,7 +714,7 @@ func (mt mainTest) exampleRead01() {
 
   originalStr := "Original sops1 base string"
 
-  sops1 := strOps.StrOps{}.NewPtr()
+  sops1 := strops.StrOps{}.NewPtr()
   sops1.SetStringData(originalStr)
 
   p := make([]byte, 5, 15)
@@ -772,7 +772,7 @@ func (mt mainTest) exampleRead02() {
 
   originalStr := "Original sops1 base string"
 
-  sops1 := strOps.StrOps{}.NewPtr()
+  sops1 := strops.StrOps{}.NewPtr()
   sops1.SetStringData(originalStr)
 
   p := make([]byte, 3, 100)
@@ -785,7 +785,7 @@ func (mt mainTest) exampleRead02() {
     return
   }
 
-  sops2 := strOps.StrOps{}.NewPtr()
+  sops2 := strops.StrOps{}.NewPtr()
   n, err := sops2.Write(p)
 
   fmt.Println("        Original Str: ", originalStr)
@@ -802,9 +802,9 @@ func (mt mainTest) exampleIoCopy02() {
 
   originalStr := "Original sops1 base string"
 
-  sops1 := strOps.StrOps{}.NewPtr()
+  sops1 := strops.StrOps{}.NewPtr()
   sops1.SetStringData(originalStr)
-  sops2 := strOps.StrOps{}.NewPtr()
+  sops2 := strops.StrOps{}.NewPtr()
 
   n, err := io.Copy(sops2, sops1)
 
