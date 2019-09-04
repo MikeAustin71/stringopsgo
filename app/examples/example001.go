@@ -18,185 +18,46 @@ type MainTest struct {
   input string
 }
 
+
 func (mt MainTest) ExampleExtractDataField01() {
 
-  endOfLineRunes := []rune("\n#")
-  leadingRunes := []rune("\t \r\f\n\v")
-  trailingRunes := []rune("\t \r\f\n\v")
-  targetStr := " America/Chicago\t Good morning America!\n"
-  lenTargetStr := len(targetStr)
-  startIdx := 0
-  leadingKeyWordDelimiter := "Zone:"
-  expectedDataFieldStr := ""
-  expectedFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
-  expectedFieldLength := len(expectedDataFieldStr)
-  expectedDataFieldTrailingDelimiter := rune(0)
-  expectedLeadingKeyWordDelimiterIndex := -1
-  expectedNextTargetIdx := expectedFieldIdx + expectedFieldLength
-
-  if expectedNextTargetIdx > lastGoodIdx {
-    expectedNextTargetIdx = -1
-  }
-
-
-  datDto,
-  err := strops.StrOps{}.ExtractDataField(
-    targetStr,
-    leadingKeyWordDelimiter,
-    startIdx,
-    leadingRunes,
-    trailingRunes,
-    endOfLineRunes)
-
-  if err != nil {
-    fmt.Printf("Error returned by strops.StrOps{}.ExtractDataField()\n"+
-      "targetStr='%v'\tstartIdx='%v'\n"+
-      "Error='%v'\n", targetStr, startIdx, err.Error())
-    return
-  }
-
-  isError := false
-
-  if targetStr  != datDto.TargetStr {
-    fmt.Printf("ERROR: Expected datDto.TargetStr='%v'.\n"+
-      "Instead, datDto.TargetStr='%v'.\n",
-      targetStr ,datDto.TargetStr)
-    isError = true
-  }
-
-  if lenTargetStr !=  datDto.TargetStrLength {
-    fmt.Printf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
-      "Instead, datDto.TargetStrLength='%v'.\n",
-      lenTargetStr ,datDto.TargetStrLength)
-    isError = true
-  }
-
-  if startIdx != datDto.StartIndex {
-    fmt.Printf("ERROR: Expected datDto.StartIndex='%v'.\n"+
-      "Instead, datDto.StartIndex='%v'.\n",
-      startIdx, datDto.StartIndex)
-    isError = true
-  }
-
-  if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
-    fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
-      "Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-      leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
-    isError = true
-  }
-
-  if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
-    fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
-      "Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
-    isError = true
-  }
-
-  if expectedDataFieldStr != datDto.DataFieldStr {
-    fmt.Printf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
-      "Instead, datDto.DataFieldStr='%v'.\n",
-      expectedDataFieldStr, datDto.DataFieldStr )
-    isError = true
-  }
-
-  if  expectedFieldLength != datDto.DataFieldLength {
-    fmt.Printf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
-      "Instead, datDto.DataFieldLength='%v'.\n",
-      expectedFieldLength, datDto.DataFieldLength )
-    isError = true
-  }
-
-  if expectedFieldIdx != datDto.DataFieldIndex {
-    fmt.Printf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
-      "Instead, datDto.DataFieldIndex='%v'.\n",
-      expectedFieldIdx, datDto.DataFieldIndex)
-    isError = true
-  }
-
-  if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
-    fmt.Printf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
-      "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
-      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
-    isError = true
-  }
-
-  if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
-    fmt.Printf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
-      "Instead, datDto.NextTargetStrIndex='%v'.\n",
-      expectedNextTargetIdx, datDto.NextTargetStrIndex)
-    isError = true
-  }
-
-  fmt.Println("================================================")
-  fmt.Println("           ExampleExtractDataField01            ")
-  fmt.Println("================================================")
-  if isError {
-    fmt.Println("              @@@@ FAILURE @@@@                 ")
-  } else {
-    fmt.Println("                   SUCCESS!                     ")
-  }
-  fmt.Println("------------------------------------------------")
-  fmt.Println("                    Base Data                   ")
-  fmt.Println("------------------------------------------------")
-  fmt.Printf("             TargetStr: %v", targetStr)
-  fmt.Println("      TargetStr Length: ", lenTargetStr)
-  fmt.Println("           Start Index: ", startIdx)
-  fmt.Println("    Key Word Delimiter: ", leadingKeyWordDelimiter)
-  fmt.Println("Key Word Delimiter Idx: ", expectedLeadingKeyWordDelimiterIndex)
-  fmt.Println("------------------------------------------------")
-  fmt.Println("                 Expected Results               ")
-  fmt.Println("------------------------------------------------")
-  fmt.Println("                  Field String: ", expectedDataFieldStr)
-  fmt.Println("              Field Str Length: ", expectedFieldLength)
-  fmt.Println("                   Field Index: ", expectedFieldIdx)
-  fmt.Printf("      Field Trailing Delimiter: %#U\n", expectedDataFieldTrailingDelimiter)
-  fmt.Println("             Next Target Index: ", expectedNextTargetIdx)
-  fmt.Println("------------------------------------------------")
-  fmt.Println("                  Actual Results                ")
-  fmt.Println("------------------------------------------------")
-  fmt.Println("                  Field String: ", datDto.DataFieldStr)
-  fmt.Println("              Field Str Length: ", datDto.DataFieldLength)
-  fmt.Println("                   Field Index: ", datDto.DataFieldIndex)
-  fmt.Printf("      Field Trailing Delimiter: %#U\n", datDto.DataFieldTrailingDelimiter)
-  fmt.Println("             Next Target Index: ", datDto.NextTargetStrIndex)
-  fmt.Println("                 Target String: ", datDto.TargetStr)
-  fmt.Println("             Target Str Length: ", datDto.TargetStrLength)
-  fmt.Println("               Target StartIdx: ", datDto.StartIndex)
-  fmt.Println("    Leading Key Delimiter Word: ", datDto.LeadingKeyWordDelimiter)
-  fmt.Println("Leading Key Word Delimiter Idx: ", datDto.LeadingKeyWordDelimiterIndex)
-
-}
-
-func (mt MainTest) ExampleExtractDataField02() {
-
-  endOfLineRunes := []rune("\n#")
-  leadingRunes := []rune("\t \r\f\n\v")
-  trailingRunes := []rune("\t \r\f\n\v")
+  endOfLineDelimiters := []string{"\n"}
+  commentDelimiters := []string{"#"}
+  leadingFieldSeparators := []string{"\t", " ", "\r","\f","\v"}
+  trailingFieldSeparators := []string{"\t", " ", "\r","\f","\v"}
   targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
-  lastGoodIdx := strings.LastIndex(targetStr, "\n")
-  lastGoodIdx--
+  expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+  expectedLastGoodIdx--
   lenTargetStr := len(targetStr)
   startIdx := 0
   leadingKeyWordDelimiter := "Zone:"
   expectedDataFieldStr := "America/Chicago"
-  expectedFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
-  expectedFieldLength := len(expectedDataFieldStr)
-  expectedDataFieldTrailingDelimiter := '\t'
+  expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
+  expectedDataFieldLength := len(expectedDataFieldStr)
+  expectedDataFieldTrailingDelimiter := "\t"
+  expectedDataFieldTrailingDelimiterType := strops.DfTrailDelimiter.EndOfField()
   expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, leadingKeyWordDelimiter)
-  expectedNextTargetIdx := expectedFieldIdx + expectedFieldLength
+  expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
 
-  if expectedNextTargetIdx > lastGoodIdx {
+  if expectedNextTargetIdx > expectedLastGoodIdx {
     expectedNextTargetIdx = -1
   }
+
+  var startTime, endTime time.Time
+
+  startTime = time.Now()
 
   datDto,
   err := strops.StrOps{}.ExtractDataField(
     targetStr,
     leadingKeyWordDelimiter,
     startIdx,
-    leadingRunes,
-    trailingRunes,
-    endOfLineRunes)
+    leadingFieldSeparators,
+    trailingFieldSeparators,
+    commentDelimiters,
+    endOfLineDelimiters)
+
+  endTime = time.Now()
 
   if err != nil {
     fmt.Printf("Error returned by strops.StrOps{}.ExtractDataField()\n"+
@@ -221,171 +82,10 @@ func (mt MainTest) ExampleExtractDataField02() {
     isError = true
   }
 
-  if startIdx != datDto.StartIndex {
-    fmt.Printf("ERROR: Expected datDto.StartIndex='%v'.\n"+
-      "Instead, datDto.StartIndex='%v'.\n",
-      startIdx, datDto.StartIndex)
-    isError = true
-  }
-
-  if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
-    fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
-      "Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-      leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
-    isError = true
-  }
-
-  if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
-    fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
-      "Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
-    isError = true
-  }
-
-  if expectedDataFieldStr != datDto.DataFieldStr {
-    fmt.Printf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
-      "Instead, datDto.DataFieldStr='%v'.\n",
-      expectedDataFieldStr, datDto.DataFieldStr )
-    isError = true
-  }
-
-  if  expectedFieldLength != datDto.DataFieldLength {
-    fmt.Printf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
-      "Instead, datDto.DataFieldLength='%v'.\n",
-      expectedFieldLength, datDto.DataFieldLength )
-    isError = true
-  }
-
-  if expectedFieldIdx != datDto.DataFieldIndex {
-    fmt.Printf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
-      "Instead, datDto.DataFieldIndex='%v'.\n",
-      expectedFieldIdx, datDto.DataFieldIndex)
-    isError = true
-  }
-
-  if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
-    fmt.Printf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
-      "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
-      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
-    isError = true
-  }
-
-  if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
-    fmt.Printf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
-      "Instead, datDto.NextTargetStrIndex='%v'.\n",
-      expectedNextTargetIdx, datDto.NextTargetStrIndex)
-    isError = true
-  }
-
-  fmt.Println("================================================")
-  fmt.Println("           ExampleExtractDataField02            ")
-  fmt.Println("================================================")
-  if isError {
-    fmt.Println("              @@@@ FAILURE @@@@                 ")
-  } else {
-    fmt.Println("                   SUCCESS!                     ")
-  }
-  fmt.Println("------------------------------------------------")
-  fmt.Println("                    Base Data                   ")
-  fmt.Println("------------------------------------------------")
-  fmt.Printf("             TargetStr: %v", targetStr)
-  fmt.Println("      TargetStr Length: ", lenTargetStr)
-  fmt.Println("           Start Index: ", startIdx)
-  fmt.Println("    Key Word Delimiter: ", leadingKeyWordDelimiter)
-  fmt.Println("Key Word Delimiter Idx: ", expectedLeadingKeyWordDelimiterIndex)
-  fmt.Println("------------------------------------------------")
-  fmt.Println("                 Expected Results               ")
-  fmt.Println("------------------------------------------------")
-  fmt.Println("                  Field String: ", expectedDataFieldStr)
-  fmt.Println("              Field Str Length: ", expectedFieldLength)
-  fmt.Println("                   Field Index: ", expectedFieldIdx)
-  fmt.Printf("      Field Trailing Delimiter: %#U\n", expectedDataFieldTrailingDelimiter)
-  fmt.Println("             Next Target Index: ", expectedNextTargetIdx)
-  fmt.Println("------------------------------------------------")
-  fmt.Println("                  Actual Results                ")
-  fmt.Println("------------------------------------------------")
-  fmt.Println("                  Field String: ", datDto.DataFieldStr)
-  fmt.Println("              Field Str Length: ", datDto.DataFieldLength)
-  fmt.Println("                   Field Index: ", datDto.DataFieldIndex)
-  fmt.Printf("      Field Trailing Delimiter: %#U\n", datDto.DataFieldTrailingDelimiter)
-  fmt.Println("             Next Target Index: ", datDto.NextTargetStrIndex)
-  fmt.Println("                 Target String: ", datDto.TargetStr)
-  fmt.Println("             Target Str Length: ", datDto.TargetStrLength)
-  fmt.Println("               Target StartIdx: ", datDto.StartIndex)
-  fmt.Println("    Leading Key Delimiter Word: ", datDto.LeadingKeyWordDelimiter)
-  fmt.Println("Leading Key Word Delimiter Idx: ", datDto.LeadingKeyWordDelimiterIndex)
-
-}
-
-func (mt MainTest) ExampleExtractDataField03() {
-
-  endOfLineRunes := []rune("\n#")
-  leadingRunes := []rune("\t \r\f\n\v")
-  trailingRunes := []rune("\t \r\f\n\v")
-  targetStr := "\tZone:\tAmerica/Chicago\t\tZone:\tAmerica/New_York\t\tZone:\tAmerica/Los_Angeles\n"
-  lastGoodIdx := strings.LastIndex(targetStr, "\n")
-  lastGoodIdx--
-  lenTargetStr := len(targetStr)
-  startIdx := 0
-  expectedStartIdx := 46
-  leadingKeyWordDelimiter := "Zone:"
-  expectedDataFieldStr := "America/Los_Angeles"
-  expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
-  expectedDataFieldLength := len(expectedDataFieldStr)
-  expectedDataFieldTrailingDelimiter := '\n'
-  expectedLeadingKeyWordDelimiterIndex := strings.LastIndex(targetStr, leadingKeyWordDelimiter)
-  expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
-
-  if expectedNextTargetIdx > lastGoodIdx {
-    expectedNextTargetIdx = -1
-  }
-
-  var datDto strops.DataFieldProfileDto
-  var err error
-
-  for i:=0; i < 3; i++ {
-
-    datDto,
-      err = strops.StrOps{}.ExtractDataField(
-      targetStr,
-      leadingKeyWordDelimiter,
-      startIdx,
-      leadingRunes,
-      trailingRunes,
-      endOfLineRunes)
-
-    if err != nil {
-      fmt.Printf("Error returned by StrOps{}.ExtractDataField()\n" +
-        "Cycle No='%v'\n"+
-        "targetStr='%v'\tstartIdx='%v'\n"+
-        "Error='%v'\n", i, targetStr, startIdx, err.Error())
-      return
-    }
-
-    startIdx = datDto.NextTargetStrIndex
-
-  }
-
-  isError := false
-
-  if targetStr  != datDto.TargetStr {
-    fmt.Printf("ERROR: Expected datDto.TargetStr='%v'.\n"+
-      "Instead, datDto.TargetStr='%v'.\n",
-      targetStr ,datDto.TargetStr)
-    isError = true
-  }
-
-  if lenTargetStr !=  datDto.TargetStrLength {
-    fmt.Printf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
-      "Instead, datDto.TargetStrLength='%v'.\n",
-      lenTargetStr ,datDto.TargetStrLength)
-    isError = true
-  }
-
-  if expectedStartIdx != datDto.StartIndex {
-    fmt.Printf("ERROR: Expected datDto.StartIndex='%v'.\n"+
-      "Instead, datDto.StartIndex='%v'.\n",
-      expectedStartIdx, datDto.StartIndex)
+  if startIdx != datDto.TargetStrStartIndex {
+    fmt.Printf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+      "Instead, datDto.TargetStrStartIndex='%v'.\n",
+      startIdx, datDto.TargetStrStartIndex)
     isError = true
   }
 
@@ -431,12 +131,227 @@ func (mt MainTest) ExampleExtractDataField03() {
     isError = true
   }
 
+  if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+    fmt.Printf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+      expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+    isError = true
+  }
+
+  if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+    fmt.Printf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+      "Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+      expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+    isError = true
+  }
+
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
     fmt.Printf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
       "Instead, datDto.NextTargetStrIndex='%v'.\n",
       expectedNextTargetIdx, datDto.NextTargetStrIndex)
     isError = true
   }
+
+  elapsedTotalNanoSecs, elapsedTime := mt.Timer(startTime, endTime)
+
+  fmt.Println("================================================")
+  fmt.Println("           ExampleExtractDataField01            ")
+  fmt.Println("================================================")
+  if isError {
+    fmt.Println("              @@@@ FAILURE @@@@                 ")
+  } else {
+    fmt.Println("                   SUCCESS!                     ")
+  }
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                    Base Data                   ")
+  fmt.Println("------------------------------------------------")
+  fmt.Printf("             TargetStr: %v", targetStr)
+  fmt.Println("      TargetStr Length: ", lenTargetStr)
+  fmt.Println("           Start Index: ", startIdx)
+  fmt.Println("    Key Word Delimiter: ", leadingKeyWordDelimiter)
+  fmt.Println("Key Word Delimiter Idx: ", expectedLeadingKeyWordDelimiterIndex)
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                 Expected Results               ")
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                  Field String: ", expectedDataFieldStr)
+  fmt.Println("              Field Str Length: ", expectedDataFieldLength)
+  fmt.Println("                   Field Index: ", expectedDataFieldIdx)
+  fmt.Println("      Field Trailing Delimiter: ", expectedDataFieldTrailingDelimiter)
+  fmt.Println(" Field Trailing Delimiter Type: ", expectedDataFieldTrailingDelimiterType.String())
+  fmt.Println("    Target Str Last Good Index: ", expectedLastGoodIdx)
+  fmt.Println("             Next Target Index: ", expectedNextTargetIdx)
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                  Actual Results                ")
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                  Field String: ", datDto.DataFieldStr)
+  fmt.Println("              Field Str Length: ", datDto.DataFieldLength)
+  fmt.Println("                   Field Index: ", datDto.DataFieldIndex)
+  fmt.Println("      Field Trailing Delimiter: ", datDto.DataFieldTrailingDelimiter)
+  fmt.Println(" Field Trailing Delimiter Type: ", datDto.DataFieldTrailingDelimiterType.String())
+  fmt.Println("             Comment Delimiter: ", datDto.CommentDelimiter)
+  fmt.Println("       Comment Delimiter Index: ", datDto.CommentDelimiterIndex)
+  fmt.Println("         End Of Line Delimiter: ", datDto.EndOfLineDelimiter)
+  fmt.Println("   End Of Line Delimiter Index: ", datDto.EndOfLineDelimiterIndex)
+  fmt.Println("             Next Target Index: ", datDto.NextTargetStrIndex)
+  fmt.Println("                 Target String: ", datDto.TargetStr)
+  fmt.Println("             Target Str Length: ", datDto.TargetStrLength)
+  fmt.Println("           Target Str StartIdx: ", datDto.TargetStrStartIndex)
+  fmt.Println("    Target Str Last Good Index: ", datDto.TargetStrLastGoodIndex)
+  fmt.Println("    Leading Key Delimiter Word: ", datDto.LeadingKeyWordDelimiter)
+  fmt.Println("Leading Key Word Delimiter Idx: ", datDto.LeadingKeyWordDelimiterIndex)
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                 Elapsed Time                   ")
+  fmt.Println("------------------------------------------------")
+  fmt.Println("     Elapsed Time: ", elapsedTime)
+  fmt.Println("Total Nanoseconds: ", elapsedTotalNanoSecs)
+
+}
+
+
+func (mt MainTest) ExampleExtractDataField02() {
+
+  endOfLineDelimiters := []string{"\n"}
+  commentDelimiters := []string{"#"}
+  leadingFieldSeparators := []string{"\t", " ", "\r","\f","\v"}
+  trailingFieldSeparators := []string{"\t", " ", "\r","\f","\v"}
+  targetStr := "\tZone:\tAmerica/Chicago\t\tZone:\tAmerica/New_York\t\tZone:\tAmerica/Los_Angeles\n"
+  expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+  expectedLastGoodIdx--
+  lenTargetStr := len(targetStr)
+  startIdx := 0
+  expectedStartIdx := 46
+  leadingKeyWordDelimiter := "Zone:"
+  expectedDataFieldStr := "America/Los_Angeles"
+  expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
+  expectedDataFieldLength := len(expectedDataFieldStr)
+  expectedDataFieldTrailingDelimiter := "\n"
+  expectedDataFieldTrailingDelimiterType := strops.DfTrailDelimiter.EndOfLine()
+  expectedLeadingKeyWordDelimiterIndex := strings.LastIndex(targetStr, leadingKeyWordDelimiter)
+  expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
+
+  if expectedNextTargetIdx > expectedLastGoodIdx {
+    expectedNextTargetIdx = -1
+  }
+
+  var datDto strops.DataFieldProfileDto
+  var err error
+  var startTime, endTime time.Time
+
+  startTime = time.Now()
+
+  for i:=0; i < 3; i++ {
+
+    datDto,
+      err = strops.StrOps{}.ExtractDataField(
+      targetStr,
+      leadingKeyWordDelimiter,
+      startIdx,
+      leadingFieldSeparators,
+      trailingFieldSeparators,
+      commentDelimiters,
+      endOfLineDelimiters)
+
+    if err != nil {
+      fmt.Printf("Error returned by StrOps{}.ExtractDataField()\n" +
+        "Cycle No='%v'\n"+
+        "targetStr='%v'\tstartIdx='%v'\n"+
+        "Error='%v'\n", i, targetStr, startIdx, err.Error())
+      return
+    }
+
+    startIdx = datDto.NextTargetStrIndex
+
+  }
+
+  endTime = time.Now()
+
+  isError := false
+
+  if targetStr  != datDto.TargetStr {
+    fmt.Printf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+      "Instead, datDto.TargetStr='%v'.\n",
+      targetStr ,datDto.TargetStr)
+    isError = true
+  }
+
+  if lenTargetStr !=  datDto.TargetStrLength {
+    fmt.Printf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+      "Instead, datDto.TargetStrLength='%v'.\n",
+      lenTargetStr ,datDto.TargetStrLength)
+    isError = true
+  }
+
+  if expectedStartIdx != datDto.TargetStrStartIndex {
+    fmt.Printf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+      "Instead, datDto.TargetStrStartIndex='%v'.\n",
+      expectedStartIdx, datDto.TargetStrStartIndex)
+    isError = true
+  }
+
+  if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+    fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+      "Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+      leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+    isError = true
+  }
+
+  if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+    fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+      "Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+    isError = true
+  }
+
+  if expectedDataFieldStr != datDto.DataFieldStr {
+    fmt.Printf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+      "Instead, datDto.DataFieldStr='%v'.\n",
+      expectedDataFieldStr, datDto.DataFieldStr )
+    isError = true
+  }
+
+  if  expectedDataFieldLength != datDto.DataFieldLength {
+    fmt.Printf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+      "Instead, datDto.DataFieldLength='%v'.\n",
+      expectedDataFieldLength, datDto.DataFieldLength )
+    isError = true
+  }
+
+  if expectedDataFieldIdx != datDto.DataFieldIndex {
+    fmt.Printf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+      "Instead, datDto.DataFieldIndex='%v'.\n",
+      expectedDataFieldIdx, datDto.DataFieldIndex)
+    isError = true
+  }
+
+  if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+    fmt.Printf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+    isError = true
+  }
+
+  if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+    fmt.Printf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+      expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+    isError = true
+  }
+
+  if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+    fmt.Printf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+      "Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+      expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+    isError = true
+  }
+
+  if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
+    fmt.Printf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+      "Instead, datDto.NextTargetStrIndex='%v'.\n",
+      expectedNextTargetIdx, datDto.NextTargetStrIndex)
+    isError = true
+  }
+
+  elapsedTotalNanoSecs, elapsedTime := mt.Timer(startTime, endTime)
 
   fmt.Println("================================================")
   fmt.Println("           ExampleExtractDataField02            ")
@@ -460,7 +375,9 @@ func (mt MainTest) ExampleExtractDataField03() {
   fmt.Println("                  Field String: ", expectedDataFieldStr)
   fmt.Println("              Field Str Length: ", expectedDataFieldLength)
   fmt.Println("                   Field Index: ", expectedDataFieldIdx)
-  fmt.Printf("      Field Trailing Delimiter: %#U\n", expectedDataFieldTrailingDelimiter)
+  fmt.Printf("      Field Trailing Delimiter: %v", expectedDataFieldTrailingDelimiter)
+  fmt.Println(" Field Trailing Delimiter Type: ", expectedDataFieldTrailingDelimiterType.String())
+  fmt.Println("    Target Str Last Good Index: ", expectedLastGoodIdx)
   fmt.Println("             Next Target Index: ", expectedNextTargetIdx)
   fmt.Println("------------------------------------------------")
   fmt.Println("                  Actual Results                ")
@@ -468,17 +385,214 @@ func (mt MainTest) ExampleExtractDataField03() {
   fmt.Println("                  Field String: ", datDto.DataFieldStr)
   fmt.Println("              Field Str Length: ", datDto.DataFieldLength)
   fmt.Println("                   Field Index: ", datDto.DataFieldIndex)
-  fmt.Printf("      Field Trailing Delimiter: %#U\n", datDto.DataFieldTrailingDelimiter)
+  fmt.Println("      Field Trailing Delimiter: ",
+    strops.StrOps{}.ConvertNonPrintableCharacters(datDto.DataFieldTrailingDelimiter, false))
+  fmt.Println(" Field Trailing Delimiter Type: ", datDto.DataFieldTrailingDelimiterType.String())
+  fmt.Println("             Comment Delimiter: ",
+    strops.StrOps{}.ConvertNonPrintableCharacters(datDto.CommentDelimiter, false))
+  fmt.Println("       Comment Delimiter Index: ", datDto.CommentDelimiterIndex)
+  fmt.Println("         End Of Line Delimiter: ",
+    strops.StrOps{}.ConvertNonPrintableCharacters(datDto.EndOfLineDelimiter, false))
+  fmt.Println("   End Of Line Delimiter Index: ", datDto.EndOfLineDelimiterIndex)
   fmt.Println("             Next Target Index: ", datDto.NextTargetStrIndex)
   fmt.Println("                 Target String: ", datDto.TargetStr)
   fmt.Println("             Target Str Length: ", datDto.TargetStrLength)
-  fmt.Println("               Target StartIdx: ", datDto.StartIndex)
+  fmt.Println("           Target Str StartIdx: ", datDto.TargetStrStartIndex)
+  fmt.Println("    Target Str Last Good Index: ", datDto.TargetStrLastGoodIndex)
   fmt.Println("    Leading Key Delimiter Word: ", datDto.LeadingKeyWordDelimiter)
   fmt.Println("Leading Key Word Delimiter Idx: ", datDto.LeadingKeyWordDelimiterIndex)
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                 Elapsed Time                   ")
+  fmt.Println("------------------------------------------------")
+  fmt.Println("     Elapsed Time: ", elapsedTime)
+  fmt.Println("Total Nanoseconds: ", elapsedTotalNanoSecs)
 
 }
 
-func (mt MainTest) exampleExtractNumStr01() {
+
+func (mt MainTest) ExampleExtractDataField03() {
+
+  endOfLineDelimiters := []string{"\n"}
+  commentDelimiters := []string{"#"}
+  leadingFieldSeparators := []string{"\t", " ", "\r","\f","\v"}
+  trailingFieldSeparators := []string{"\t", " ", "\r","\f","\v"}
+  targetStr := " America/Chicago\t Good morning America!\n"
+  lenTargetStr := len(targetStr)
+  expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+  expectedLastGoodIdx--
+  startIdx := 0
+  leadingKeyWordDelimiter := "Zone:"
+  expectedDataFieldStr := ""
+  expectedDataFieldIdx := -1
+  expectedDataFieldLength := len(expectedDataFieldStr)
+  expectedDataFieldTrailingDelimiter := "\n"
+  expectedDataFieldTrailingDelimiterType := strops.DfTrailDelimiter.EndOfLine()
+  expectedLeadingKeyWordDelimiterIndex := -1
+  expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
+  expectedNextTargetIdx = -1
+
+  var startTime, endTime time.Time
+
+  startTime = time.Now()
+
+  datDto,
+  err := strops.StrOps{}.ExtractDataField(
+    targetStr,
+    leadingKeyWordDelimiter,
+    startIdx,
+    leadingFieldSeparators,
+    trailingFieldSeparators,
+    commentDelimiters,
+    endOfLineDelimiters)
+
+  if err != nil {
+    fmt.Printf("Error returned by strops.StrOps{}.ExtractDataField()\n"+
+      "targetStr='%v'\tstartIdx='%v'\n"+
+      "Error='%v'\n", targetStr, startIdx, err.Error())
+    return
+  }
+
+  endTime = time.Now()
+
+  isError := false
+
+  if targetStr  != datDto.TargetStr {
+    fmt.Printf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+      "Instead, datDto.TargetStr='%v'.\n",
+      targetStr ,datDto.TargetStr)
+    isError = true
+  }
+
+  if lenTargetStr !=  datDto.TargetStrLength {
+    fmt.Printf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+      "Instead, datDto.TargetStrLength='%v'.\n",
+      lenTargetStr ,datDto.TargetStrLength)
+    isError = true
+  }
+
+  if startIdx != datDto.TargetStrStartIndex {
+    fmt.Printf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+      "Instead, datDto.TargetStrStartIndex='%v'.\n",
+      startIdx, datDto.TargetStrStartIndex)
+    isError = true
+  }
+
+  if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+    fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+      "Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+      leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+    isError = true
+  }
+
+  if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+    fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+      "Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+      expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+    isError = true
+  }
+
+  if expectedDataFieldStr != datDto.DataFieldStr {
+    fmt.Printf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+      "Instead, datDto.DataFieldStr='%v'.\n",
+      expectedDataFieldStr, datDto.DataFieldStr )
+    isError = true
+  }
+
+  if  expectedDataFieldLength != datDto.DataFieldLength {
+    fmt.Printf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+      "Instead, datDto.DataFieldLength='%v'.\n",
+      expectedDataFieldLength, datDto.DataFieldLength )
+    isError = true
+  }
+
+  if expectedDataFieldIdx != datDto.DataFieldIndex {
+    fmt.Printf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+      "Instead, datDto.DataFieldIndex='%v'.\n",
+      expectedDataFieldIdx, datDto.DataFieldIndex)
+    isError = true
+  }
+
+  if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+    fmt.Printf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+    isError = true
+  }
+
+  if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+    fmt.Printf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+      expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+    isError = true
+  }
+
+  if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+    fmt.Printf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+      "Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+      expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+    isError = true
+  }
+
+  if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
+    fmt.Printf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+      "Instead, datDto.NextTargetStrIndex='%v'.\n",
+      expectedNextTargetIdx, datDto.NextTargetStrIndex)
+    isError = true
+  }
+
+  elapsedTotalNanoSecs, elapsedTime := mt.Timer(startTime, endTime)
+
+  fmt.Println("================================================")
+  fmt.Println("           ExampleExtractDataField03            ")
+  fmt.Println("================================================")
+  if isError {
+    fmt.Println("              @@@@ FAILURE @@@@                 ")
+  } else {
+    fmt.Println("                   SUCCESS!                     ")
+  }
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                    Base Data                   ")
+  fmt.Println("------------------------------------------------")
+  fmt.Printf("             TargetStr: %v", targetStr)
+  fmt.Println("      TargetStr Length: ", lenTargetStr)
+  fmt.Println("           Start Index: ", startIdx)
+  fmt.Println("    Key Word Delimiter: ", leadingKeyWordDelimiter)
+  fmt.Println("Key Word Delimiter Idx: ", expectedLeadingKeyWordDelimiterIndex)
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                 Expected Results               ")
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                  Field String: ", expectedDataFieldStr)
+  fmt.Println("              Field Str Length: ", expectedDataFieldLength)
+  fmt.Println("                   Field Index: ", expectedDataFieldIdx)
+  fmt.Printf("      Field Trailing Delimiter: %v", expectedDataFieldTrailingDelimiter)
+  fmt.Println(" Field Trailing Delimiter Type: ", expectedDataFieldTrailingDelimiterType.String())
+  fmt.Println("    Target Str Last Good Index: ", expectedLastGoodIdx)
+  fmt.Println("             Next Target Index: ", expectedNextTargetIdx)
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                  Actual Results                ")
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                  Field String: ", datDto.DataFieldStr)
+  fmt.Println("              Field Str Length: ", datDto.DataFieldLength)
+  fmt.Println("                   Field Index: ", datDto.DataFieldIndex)
+  fmt.Println("      Field Trailing Delimiter: ", datDto.DataFieldTrailingDelimiter)
+  fmt.Println(" Field Trailing Delimiter Type: ", datDto.DataFieldTrailingDelimiterType.String())
+  fmt.Println("             Next Target Index: ", datDto.NextTargetStrIndex)
+  fmt.Println("                 Target String: ", datDto.TargetStr)
+  fmt.Println("             Target Str Length: ", datDto.TargetStrLength)
+  fmt.Println("           Target Str StartIdx: ", datDto.TargetStrStartIndex)
+  fmt.Println("    Target Str Last Good Index: ", datDto.TargetStrLastGoodIndex)
+  fmt.Println("    Leading Key Delimiter Word: ", datDto.LeadingKeyWordDelimiter)
+  fmt.Println("Leading Key Word Delimiter Idx: ", datDto.LeadingKeyWordDelimiterIndex)
+  fmt.Println("------------------------------------------------")
+  fmt.Println("                 Elapsed Time                   ")
+  fmt.Println("------------------------------------------------")
+  fmt.Println("     Elapsed Time: ", elapsedTime)
+  fmt.Println("Total Nanoseconds: ", elapsedTotalNanoSecs)
+
+}
+
+
+func (mt MainTest) ExampleExtractNumStr01() {
   // Etc/GMT-4
   // "Etc/GMT+11"
   // "November 12, 2016 1:6:3pm -(+0000) UTC"
@@ -592,7 +706,7 @@ func (mt MainTest) exampleExtractNumStr01() {
 }
 
 
-func (mt MainTest) exampleStripLeadingChars01() {
+func (mt MainTest) ExampleStripLeadingChars01() {
 
   badChars := []string {
     " ",
@@ -627,7 +741,7 @@ func (mt MainTest) exampleStripLeadingChars01() {
 
 }
 
-func (mt MainTest) exampleSortStrLenHighestToLowest01() {
+func (mt MainTest) ExampleSortStrLenHighestToLowest01() {
   badChars := []string {
     "aaaaa",
     "bbbbb",
@@ -662,7 +776,7 @@ func (mt MainTest) exampleSortStrLenHighestToLowest01() {
 
 }
 
-func (mt MainTest) exampleSortStrLenLowestToHighest01() {
+func (mt MainTest) ExampleSortStrLenLowestToHighest01() {
 
   badChars := []string {
     "aaaaa",
@@ -1156,7 +1270,8 @@ func (mt MainTest) ExampleIoCopy02() {
   fmt.Println("New value of n: ", n)
 }
 
-func (mt MainTest) Timer(starTime, endTime time.Time) string {
+func (mt MainTest) Timer(
+  startTime, endTime time.Time) (totalNanoSecs int64, elapsedTime string) {
 
   // MicroSecondNanoseconds - Number of Nanoseconds in a Microsecond
   // 	A MicroSecond is 1/1,000,000 or 1 one-millionth of a second
@@ -1175,12 +1290,12 @@ func (mt MainTest) Timer(starTime, endTime time.Time) string {
   // HourNanoseconds - Number of Nanoseconds in an hour
   HourNanoseconds := int64(time.Hour)
 
-  t2Dur := endTime.Sub(starTime)
+  t2Dur := endTime.Sub(startTime)
 
   str := ""
 
   totalNanoseconds := t2Dur.Nanoseconds()
-  var numOfHours, numOfMinutes, numOfSeconds, numOfMillisecionds,
+  var numOfHours, numOfMinutes, numOfSeconds, numOfMilliseconds,
   numOfMicroseconds, numOfNanoseconds int64
 
   if totalNanoseconds >= HourNanoseconds {
@@ -1204,8 +1319,8 @@ func (mt MainTest) Timer(starTime, endTime time.Time) string {
   }
 
   if totalNanoseconds >= MilliSecondNanoseconds {
-    numOfMillisecionds = totalNanoseconds / MilliSecondNanoseconds
-    totalNanoseconds = totalNanoseconds - (numOfMillisecionds * MilliSecondNanoseconds)
+    numOfMilliseconds = totalNanoseconds / MilliSecondNanoseconds
+    totalNanoseconds = totalNanoseconds - (numOfMilliseconds * MilliSecondNanoseconds)
   }
 
   if totalNanoseconds >= MicroSecondNanoseconds {
@@ -1233,9 +1348,9 @@ func (mt MainTest) Timer(starTime, endTime time.Time) string {
 
   }
 
-  if numOfMillisecionds > 0 || str != "" {
+  if numOfMilliseconds > 0 || str != "" {
 
-    str += fmt.Sprintf("%v-Milliseconds ", numOfMillisecionds)
+    str += fmt.Sprintf("%v-Milliseconds ", numOfMilliseconds)
 
   }
 
@@ -1247,6 +1362,6 @@ func (mt MainTest) Timer(starTime, endTime time.Time) string {
 
   str += fmt.Sprintf("%v-Nanoseconds", numOfNanoseconds)
 
-  return str
+  return t2Dur.Nanoseconds(), str
 }
 

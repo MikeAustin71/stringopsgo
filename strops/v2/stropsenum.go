@@ -1,12 +1,15 @@
 package strops
 
 import (
+  "errors"
+  "fmt"
   "strings"
 )
 
 var mDataFieldTrailingDelimiterStringToCode = map[string]DataFieldTrailingDelimiterType{
   "Unknown"     : DataFieldTrailingDelimiterType(0).Unknown(),
   "EndOfField"  : DataFieldTrailingDelimiterType(0).EndOfField(),
+  "Comment"     : DataFieldTrailingDelimiterType(0).Comment(),
   "EndOfLine"   : DataFieldTrailingDelimiterType(0).EndOfLine(),
   "EndOfString" : DataFieldTrailingDelimiterType(0).EndOfString(),
 }
@@ -14,6 +17,7 @@ var mDataFieldTrailingDelimiterStringToCode = map[string]DataFieldTrailingDelimi
 var mDataFieldTrailingDelimiterLwrCaseStringToCode = map[string]DataFieldTrailingDelimiterType{
   "unknown"     : DataFieldTrailingDelimiterType(0).Unknown(),
   "endoffield"  : DataFieldTrailingDelimiterType(0).EndOfField(),
+  "comment"     : DataFieldTrailingDelimiterType(0).Comment(),
   "endofline"   : DataFieldTrailingDelimiterType(0).EndOfLine(),
   "endofstring" : DataFieldTrailingDelimiterType(0).EndOfString(),
 }
@@ -21,6 +25,7 @@ var mDataFieldTrailingDelimiterLwrCaseStringToCode = map[string]DataFieldTrailin
 var mDataFieldTrailingDelimiterToString = map[DataFieldTrailingDelimiterType]string{
   DataFieldTrailingDelimiterType(0).Unknown()     : "Unknown",
   DataFieldTrailingDelimiterType(0).EndOfField()  : "EndOfField",
+  DataFieldTrailingDelimiterType(0).Comment()     : "Comment",
   DataFieldTrailingDelimiterType(0).EndOfLine()   : "EndOfLine",
   DataFieldTrailingDelimiterType(0).EndOfString() : "EndOfString",
 }
@@ -38,6 +43,27 @@ var mDataFieldTrailingDelimiterToString = map[DataFieldTrailingDelimiterType]str
 //      Jeffrey Richter Using Reflection to implement enumerated types
 //             https://www.youtube.com/watch?v=DyXJy_0v0_U
 //
+// Valid Enumerations for DataFieldTrailingDelimiterType are invoked by calling the
+// appropriate method on this type:
+//
+//      DataFieldTrailingDelimiterType(0).Unknown()
+//      DataFieldTrailingDelimiterType(0).EndOfField()
+//      DataFieldTrailingDelimiterType(0).Comment()
+//      DataFieldTrailingDelimiterType(0).EndOfLine()
+//      DataFieldTrailingDelimiterType(0).EndOfString()
+//
+// Alternatively the shorthand method of invoking this enumeration may be employed as
+// follows:
+//
+//      DfTrailDelimiter.Unknown()
+//      DfTrailDelimiter.EndOfField()
+//      DfTrailDelimiter.Comment()
+//      DfTrailDelimiter.EndOfLine()
+//      DfTrailDelimiter.EndOfString()
+//
+//    Note: The variable DfTrailDelimiter is discussed below.
+//
+//
 type DataFieldTrailingDelimiterType int
 
 // Unknown - Data Field Trailing Delimiter Type is unknown or undetermined.
@@ -52,18 +78,24 @@ func (dfTrailDelimiter DataFieldTrailingDelimiterType) EndOfField() DataFieldTra
   return DataFieldTrailingDelimiterType(1)
 }
 
+// Comment - The Data Field is terminated by a trailing 'comment' separator.
+//
+func (dfTrailDelimiter DataFieldTrailingDelimiterType) Comment() DataFieldTrailingDelimiterType {
+  return DataFieldTrailingDelimiterType(2)
+}
+
 // EndOfLine - The Data Field is terminated by a designated end-of-line separator. Often this is
 // a designated new line character such as '\n'.
 //
 func (dfTrailDelimiter DataFieldTrailingDelimiterType) EndOfLine() DataFieldTrailingDelimiterType {
-  return DataFieldTrailingDelimiterType(2)
+  return DataFieldTrailingDelimiterType(3)
 }
 
 // EndOfString - No specific character terminated the data field. The next character after the
 // data field represents the end of the host string.
 //
 func (dfTrailDelimiter DataFieldTrailingDelimiterType) EndOfString() DataFieldTrailingDelimiterType {
-  return DataFieldTrailingDelimiterType(3)
+  return DataFieldTrailingDelimiterType(4)
 }
 
 // =============================================================================
@@ -249,6 +281,7 @@ func (dfTrailDelimiter DataFieldTrailingDelimiterType) Value() DataFieldTrailing
 // Usage:
 //  DfTrailDelimiter.Unknown()
 //  DfTrailDelimiter.EndOfField()
+//  DfTrailDelimiter.Comment()
 //  DfTrailDelimiter.EndOfLine()
 //  DfTrailDelimiter.EndOfString()
 //

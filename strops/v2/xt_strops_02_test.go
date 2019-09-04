@@ -35,7 +35,7 @@ func TestStrOps_FindLastWord_14(t *testing.T) {
   }
 
 }
-
+/*
 func TestStrOps_ExtractDataField_01(t *testing.T) {
 
   endOfLineRunes := []rune("\n#")
@@ -43,19 +43,21 @@ func TestStrOps_ExtractDataField_01(t *testing.T) {
   trailingRunes := []rune("\t \r\f\n\v")
   targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
   lenTargetStr := len(targetStr)
-  lastGoodIdx := strings.LastIndex(targetStr, "\n")
-  lastGoodIdx--
+  expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+  expectedLastGoodIdx--
   startIdx := 0
   leadingKeyWordDelimiter := "Zone:"
   expectedDataFieldStr := "America/Chicago"
   expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
   expectedDataFieldLength := len(expectedDataFieldStr)
   expectedDataFieldTrailingDelimiter := '\t'
+  expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfField()
+  
   expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, leadingKeyWordDelimiter)
 
   expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
 
-  if expectedNextTargetIdx > lastGoodIdx {
+  if expectedNextTargetIdx > expectedLastGoodIdx {
     expectedNextTargetIdx = -1
   }
 
@@ -87,10 +89,10 @@ func TestStrOps_ExtractDataField_01(t *testing.T) {
       lenTargetStr ,datDto.TargetStrLength)
   }
 
-  if startIdx != datDto.StartIndex {
-    t.Errorf("ERROR: Expected datDto.StartIndex='%v'.\n"+
-      "Instead, datDto.StartIndex='%v'.\n",
-      startIdx, datDto.StartIndex)
+  if startIdx != datDto.TargetStrStartIndex {
+    t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+      "Instead, datDto.TargetStrStartIndex='%v'.\n",
+      startIdx, datDto.TargetStrStartIndex)
   }
 
   if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
@@ -127,6 +129,18 @@ func TestStrOps_ExtractDataField_01(t *testing.T) {
     t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
       "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
       expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+  }
+
+  if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+    t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+      expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+  }
+
+  if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+    t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+      "Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+      expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
   }
 
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
@@ -143,8 +157,8 @@ func TestStrOps_ExtractDataField_02(t *testing.T) {
   trailingRunes := []rune("\t \r\f\n\v")
   targetStr := " Zone:\t America/Chicago Good morning America!\n"
   lenTargetStr := len(targetStr)
-  lastGoodIdx := strings.LastIndex(targetStr, "\n")
-  lastGoodIdx--
+  expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+  expectedLastGoodIdx--
   startIdx := 0
   leadingKeyWordDelimiter := "Zone:"
   expectedDataFieldStr := "America/Chicago"
@@ -152,10 +166,12 @@ func TestStrOps_ExtractDataField_02(t *testing.T) {
   expectedDataFieldLength := len(expectedDataFieldStr)
   expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, leadingKeyWordDelimiter)
   expectedDataFieldTrailingDelimiter := ' '
+  expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfField()
+
   expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
 
 
-  if expectedNextTargetIdx > lastGoodIdx {
+  if expectedNextTargetIdx > expectedLastGoodIdx {
     expectedNextTargetIdx = -1
   }
 
@@ -187,10 +203,10 @@ func TestStrOps_ExtractDataField_02(t *testing.T) {
       lenTargetStr ,datDto.TargetStrLength)
   }
 
-  if startIdx != datDto.StartIndex {
-    t.Errorf("ERROR: Expected datDto.StartIndex='%v'.\n"+
-      "Instead, datDto.StartIndex='%v'.\n",
-      startIdx, datDto.StartIndex)
+  if startIdx != datDto.TargetStrStartIndex {
+    t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+      "Instead, datDto.TargetStrStartIndex='%v'.\n",
+      startIdx, datDto.TargetStrStartIndex)
   }
 
   if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
@@ -229,6 +245,18 @@ func TestStrOps_ExtractDataField_02(t *testing.T) {
       expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
   }
 
+  if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+    t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+      expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+  }
+
+  if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+    t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+      "Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+      expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+  }
+
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
     t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
       "Instead, datDto.NextTargetStrIndex='%v'.\n",
@@ -243,12 +271,17 @@ func TestStrOps_ExtractDataField_03(t *testing.T) {
   trailingRunes := []rune("\t \r\f\n\v")
   targetStr := " America/Chicago Good morning America!\n"
   lenTargetStr := len(targetStr)
+  expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+  expectedLastGoodIdx--
+
   startIdx := 0
   leadingKeyWordDelimiter := "Zone:"
   expectedDataFieldStr := ""
   expectedDataFieldIdx := -1
   expectedDataFieldLength := len(expectedDataFieldStr)
   expectedDataFieldTrailingDelimiter := '\n'
+  expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfLine()
+
   expectedLeadingKeyWordDelimiterIndex := -1
   expectedNextTargetIdx := -1
 
@@ -280,10 +313,10 @@ func TestStrOps_ExtractDataField_03(t *testing.T) {
       lenTargetStr ,datDto.TargetStrLength)
   }
 
-  if startIdx != datDto.StartIndex {
-    t.Errorf("ERROR: Expected datDto.StartIndex='%v'.\n"+
-      "Instead, datDto.StartIndex='%v'.\n",
-      startIdx, datDto.StartIndex)
+  if startIdx != datDto.TargetStrStartIndex {
+    t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+      "Instead, datDto.TargetStrStartIndex='%v'.\n",
+      startIdx, datDto.TargetStrStartIndex)
   }
 
   if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
@@ -322,6 +355,18 @@ func TestStrOps_ExtractDataField_03(t *testing.T) {
       expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
   }
 
+  if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+    t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+      expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+  }
+
+  if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+    t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+      "Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+      expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+  }
+
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
     t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
       "Instead, datDto.NextTargetStrIndex='%v'.\n",
@@ -336,8 +381,8 @@ func TestStrOps_ExtractDataField_04(t *testing.T) {
   trailingRunes := []rune("\t \r\f\n\v")
   targetStr := " Zone:\t America/Chicago Good morning America!\n"
   lenTargetStr := len(targetStr)
-  lastGoodIdx := strings.LastIndex(targetStr, "\n")
-  lastGoodIdx--
+  expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+  expectedLastGoodIdx--
   startIdx := 6
   leadingKeyWordDelimiter := ""
   expectedLeadingKeyWordDelimiterIndex := -1
@@ -345,9 +390,11 @@ func TestStrOps_ExtractDataField_04(t *testing.T) {
   expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
   expectedDataFieldLength := len(expectedDataFieldStr)
   expectedDataFieldTrailingDelimiter := ' '
+  expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfField()
+
   expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
 
-  if expectedNextTargetIdx > lastGoodIdx {
+  if expectedNextTargetIdx > expectedLastGoodIdx {
     expectedNextTargetIdx = -1
   }
 
@@ -379,10 +426,10 @@ func TestStrOps_ExtractDataField_04(t *testing.T) {
       lenTargetStr ,datDto.TargetStrLength)
   }
 
-  if startIdx != datDto.StartIndex {
-    t.Errorf("ERROR: Expected datDto.StartIndex='%v'.\n"+
-      "Instead, datDto.StartIndex='%v'.\n",
-      startIdx, datDto.StartIndex)
+  if startIdx != datDto.TargetStrStartIndex {
+    t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+      "Instead, datDto.TargetStrStartIndex='%v'.\n",
+      startIdx, datDto.TargetStrStartIndex)
   }
 
   if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
@@ -419,6 +466,18 @@ func TestStrOps_ExtractDataField_04(t *testing.T) {
     t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
       "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
       expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+  }
+
+  if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+    t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+      expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+  }
+
+  if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+    t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+      "Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+      expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
   }
 
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
@@ -436,12 +495,17 @@ func TestStrOps_ExtractDataField_05(t *testing.T) {
   trailingRunes := []rune("\t \r\f\n\v")
   targetStr := " Zone:\t #America/Chicago\t Good morning America!\n"
   lenTargetStr := len(targetStr)
+  expectedLastGoodIdx := strings.Index(targetStr, "#")
+  expectedLastGoodIdx--
+
   startIdx := 0
   leadingKeyWordDelimiter := "Zone:"
   expectedDataFieldStr := ""
   expectedDataFieldIdx := -1
   expectedDataFieldLength := len(expectedDataFieldStr)
   expectedDataFieldTrailingDelimiter := '#'
+  expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfLine()
+
   expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, leadingKeyWordDelimiter)
   expectedNextTargetIdx := -1
 
@@ -473,10 +537,10 @@ func TestStrOps_ExtractDataField_05(t *testing.T) {
       lenTargetStr ,datDto.TargetStrLength)
   }
 
-  if startIdx != datDto.StartIndex {
-    t.Errorf("ERROR: Expected datDto.StartIndex='%v'.\n"+
-      "Instead, datDto.StartIndex='%v'.\n",
-      startIdx, datDto.StartIndex)
+  if startIdx != datDto.TargetStrStartIndex {
+    t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+      "Instead, datDto.TargetStrStartIndex='%v'.\n",
+      startIdx, datDto.TargetStrStartIndex)
   }
 
   if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
@@ -515,6 +579,18 @@ func TestStrOps_ExtractDataField_05(t *testing.T) {
       expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
   }
 
+  if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+    t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+      expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+  }
+
+  if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+    t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+      "Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+      expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+  }
+
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
     t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
       "Instead, datDto.NextTargetStrIndex='%v'.\n",
@@ -529,12 +605,15 @@ func TestStrOps_ExtractDataField_06(t *testing.T) {
   trailingRunes := []rune("\t \r\f\n\v")
   targetStr := " #Zone:\t America/Chicago\t Good morning America!\n"
   lenTargetStr := len(targetStr)
+  expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+  expectedLastGoodIdx--
   startIdx := 0
   leadingKeyWordDelimiter := "Zone:"
   expectedDataFieldStr := ""
   expectedDataFieldIdx := -1
   expectedDataFieldLength := len(expectedDataFieldStr)
   expectedDataFieldTrailingDelimiter := '#'
+  expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfField()
   expectedLeadingKeyWordDelimiterIndex := -1
   expectedNextTargetIdx := -1
 
@@ -566,10 +645,10 @@ func TestStrOps_ExtractDataField_06(t *testing.T) {
       lenTargetStr ,datDto.TargetStrLength)
   }
 
-  if startIdx != datDto.StartIndex {
-    t.Errorf("ERROR: Expected datDto.StartIndex='%v'.\n"+
-      "Instead, datDto.StartIndex='%v'.\n",
-      startIdx, datDto.StartIndex)
+  if startIdx != datDto.TargetStrStartIndex {
+    t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+      "Instead, datDto.TargetStrStartIndex='%v'.\n",
+      startIdx, datDto.TargetStrStartIndex)
   }
 
   if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
@@ -608,6 +687,18 @@ func TestStrOps_ExtractDataField_06(t *testing.T) {
       expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
   }
 
+  if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+    t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+      expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+  }
+
+  if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+    t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+      "Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+      expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+  }
+
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
     t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
       "Instead, datDto.NextTargetStrIndex='%v'.\n",
@@ -621,8 +712,8 @@ func TestStrOps_ExtractDataField_07(t *testing.T) {
   leadingRunes := []rune("\t \r\f\n\v")
   trailingRunes := []rune("\t \r\f\n\v")
   targetStr := "\tZone:\tAmerica/Chicago\t\tZone:\tAmerica/New_York\t\tZone:\tAmerica/Los_Angeles\n"
-  lastGoodIdx := strings.LastIndex(targetStr, "\n")
-  lastGoodIdx--
+  expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+  expectedLastGoodIdx--
   lenTargetStr := len(targetStr)
   startIdx := 0
   expectedStartIdx := 46
@@ -631,10 +722,11 @@ func TestStrOps_ExtractDataField_07(t *testing.T) {
   expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
   expectedDataFieldLength := len(expectedDataFieldStr)
   expectedDataFieldTrailingDelimiter := '\n'
+  expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfLine()
   expectedLeadingKeyWordDelimiterIndex := strings.LastIndex(targetStr, leadingKeyWordDelimiter)
   expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
 
-  if expectedNextTargetIdx > lastGoodIdx {
+  if expectedNextTargetIdx > expectedLastGoodIdx {
     expectedNextTargetIdx = -1
   }
 
@@ -675,10 +767,10 @@ func TestStrOps_ExtractDataField_07(t *testing.T) {
       lenTargetStr ,datDto.TargetStrLength)
   }
 
-  if expectedStartIdx != datDto.StartIndex {
-    t.Errorf("ERROR: Expected datDto.StartIndex='%v'.\n"+
-      "Instead, datDto.StartIndex='%v'.\n",
-      expectedStartIdx, datDto.StartIndex)
+  if expectedStartIdx != datDto.TargetStrStartIndex {
+    t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+      "Instead, datDto.TargetStrStartIndex='%v'.\n",
+      expectedStartIdx, datDto.TargetStrStartIndex)
   }
 
   if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
@@ -717,12 +809,25 @@ func TestStrOps_ExtractDataField_07(t *testing.T) {
       expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
   }
 
+  if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+    t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+      "Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+      expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+  }
+
+  if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+    t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+      "Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+      expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+  }
+
   if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
     t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
       "Instead, datDto.NextTargetStrIndex='%v'.\n",
       expectedNextTargetIdx, datDto.NextTargetStrIndex)
   }
 }
+*/
 
 func TestStrOps_ExtractNumericDigits_01(t *testing.T) {
 

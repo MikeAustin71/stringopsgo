@@ -206,8 +206,12 @@ type DataFieldProfileDto struct {
   TargetStr                     string  //  The string from which the data field
                                         //    is extracted.
   TargetStrLength               int     //  Length of 'TargetStr'
-  StartIndex                    int     //  The index with in 'TargetStr' from which
+  TargetStrStartIndex           int     //  The index with in 'TargetStr' from which
                                         //    the search for a data field was initiated.
+  TargetStrLastGoodIndex        int     //  Last valid index in target string which is
+                                        //    less than the target string length and is
+                                        //    NOT an 'End Of Field' or 'End Of Line'
+                                        //    Delimiter
   LeadingKeyWordDelimiter       string  //  The Leading Key Word Delimiter which is used
                                         //    identify the beginning of the field search
   LeadingKeyWordDelimiterIndex  int     //  Index of the found Leading Key Word Delimiter
@@ -215,7 +219,7 @@ type DataFieldProfileDto struct {
   DataFieldIndex                int     //  The index in 'TargetStr' where the data field
                                         //    begins.
   DataFieldLength               int     //  The length of the extracted data field string.
-  DataFieldTrailingDelimiter    rune    //  The trailing character which marked the end of
+  DataFieldTrailingDelimiter    string  //  The trailing character which marked the end of
                                         //    the data field. A zero value indicates end
                                         //    of string encountered.
   DataFieldTrailingDelimiterType  DataFieldTrailingDelimiterType
@@ -224,21 +228,47 @@ type DataFieldProfileDto struct {
                                         //    a data field.
   NextTargetStrIndex            int     //  The index in 'TargetStr' immediately following
                                         //    the extracted data field.
+  CommentDelimiter              string  //  If a Comment Delimiter is detected it is stored
+                                        //    here.
+  CommentDelimiterIndex         int     //  If a Comment Delimiter is detected, the string
+                                        //    index in 'TargetStr' showing its location is
+                                        //    stored here.
+  EndOfLineDelimiter            string  //  If an End-Of-Line Delimiter is detected it is
+                                        //    captured and stored here.
+  EndOfLineDelimiterIndex       int     //  If an End-Of-Line Delimiter is detected, the string
+                                        //    index in 'TargetStr' showing its location is
+                                        //    stored here.
 }
 
 func (dfProfile DataFieldProfileDto) New() DataFieldProfileDto {
   newDataDto := DataFieldProfileDto{}
   newDataDto.TargetStr = ""
-  newDataDto.StartIndex = -1
+  newDataDto.TargetStrStartIndex = -1
   newDataDto.LeadingKeyWordDelimiter = ""
   newDataDto.LeadingKeyWordDelimiterIndex = -1
   newDataDto.DataFieldStr = ""
   newDataDto.DataFieldIndex = -1
   newDataDto.DataFieldLength = 0
-  newDataDto.DataFieldTrailingDelimiter = 0
+  newDataDto.DataFieldTrailingDelimiter = ""
   newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.Unknown()
   newDataDto.NextTargetStrIndex = -1
+  newDataDto.CommentDelimiter = ""
+  newDataDto.CommentDelimiterIndex = -1
+  newDataDto.EndOfLineDelimiter = ""
+  newDataDto.EndOfLineDelimiterIndex = -1
   return newDataDto
+}
+
+// ConvertToErrorState - Prepares the current DataFieldProfileDto instance
+// for return as part of an error or null state condition. All references
+// to the data field are zeroed.
+//
+func (dfProfile DataFieldProfileDto) ConvertToErrorState() {
+  dfProfile.DataFieldStr = ""
+  dfProfile.DataFieldIndex = -1
+  dfProfile.DataFieldLength = 0
+  dfProfile.NextTargetStrIndex = -1
+
 }
 
 // StrOps - encapsulates a collection of methods used to manage string
@@ -468,6 +498,48 @@ func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineD
   return b.String(), nil
 }
 
+// ConvertNonPrintableCharacters - Receives a string containing non-printable characters
+// and converts them to 'printable' characters returned in a string.
+//
+// If the input parameter 'convertSpace' is set to 'true' then all spaces are converted
+// to "[SPACE]" in the returned string.
+//
+func (sops StrOps) ConvertNonPrintableCharacters(
+  nonPrintableChars string, convertSpace bool) (printableChars string) {
+
+  lenNonPrintableChars := len(nonPrintableChars)
+
+  if lenNonPrintableChars == 0 {
+    return ""
+  }
+
+  var tStr, finalStr string
+
+  for i:=0; i < lenNonPrintableChars; i++ {
+    cRune := rune(nonPrintableChars[i])
+
+    switch cRune {
+    case '\n':
+      tStr = "\\n"
+    case '\t':
+      tStr = "\\t"
+    case '\r':
+      tStr = "\\r"
+    case '\f':
+      tStr = "\\f"
+    case '\v':
+      tStr = "\\v"
+    default :
+      tStr = string(cRune)
+    }
+
+    finalStr += tStr
+
+  }
+
+  return finalStr
+}
+
 // CopyIn - Copies string information from another StrOps
 // instance passed as an input parameter to the current
 // StrOps instance.
@@ -546,7 +618,7 @@ func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
 //             TargetStr               string    //  The string from which the data field
 //                                               //    is extracted.
 //             TargetStrLength         int       //  Length of 'TargetStr'
-//             StartIndex              int       //  The index with in 'TargetStr' from which
+//             TargetStrStartIndex              int       //  The index with in 'TargetStr' from which
 //                                               //    the search for a data field was initiated.
 //             LeadingKeyWordDelimiter string    //  The Leading Key Word Delimiter which is used
 //                                               //    identify the beginning of the field search
@@ -571,34 +643,35 @@ func (sops StrOps) ExtractDataField(
   targetStr string,
   leadingKeyWordDelimiter string,
   startIdx int,
-  leadingFieldSeparators []rune,
-  trailingFieldSeparators []rune,
-  endOfLineDelimiters []rune) (DataFieldProfileDto, error) {
+  leadingFieldSeparators []string,
+  trailingFieldSeparators []string,
+  commentDelimiters [] string,
+  endOfLineDelimiters []string) (DataFieldProfileDto, error) {
 
   ePrefix := "StrOps.ExtractDataField() "
   newDataDto := DataFieldProfileDto{}.New()
-  errDataDto := DataFieldProfileDto{}.New()
-  errDataDto.TargetStr = targetStr
-  errDataDto.TargetStrLength = len(targetStr)
-  errDataDto.StartIndex = startIdx
-  errDataDto.LeadingKeyWordDelimiter = leadingKeyWordDelimiter
+  newDataDto.TargetStr = targetStr
+  newDataDto.TargetStrLength = len(targetStr)
+  newDataDto.TargetStrStartIndex = startIdx
+  newDataDto.LeadingKeyWordDelimiter = leadingKeyWordDelimiter
 
   lenTargetStr := len(targetStr)
 
   if lenTargetStr == 0 {
-    return errDataDto,
+    return newDataDto,
       errors.New(ePrefix +
         "ERROR: Input Parameter 'targetStr' is an EMPTY string!\n")
   }
 
   if startIdx < 0 {
-    return errDataDto,
+    return newDataDto,
       fmt.Errorf(ePrefix + "ERROR: Input parameter 'startIdx' is less than zero!\n" +
         "startIdx='%v'\n", startIdx)
   }
 
   if startIdx >= lenTargetStr {
-    return errDataDto,
+
+    return newDataDto,
       fmt.Errorf(ePrefix + "ERROR: Input Parameter 'startIdx' is out-of-bounds!\n" +
         "startIdx='%v'\t\tLast TargetStr Index='%v'\n" +
         "Length Of TargetStr='%v'\n",
@@ -608,7 +681,8 @@ func (sops StrOps) ExtractDataField(
   lenLeadingFieldSeparators := len(leadingFieldSeparators)
 
   if lenLeadingFieldSeparators == 0 {
-    return errDataDto,
+
+    return newDataDto,
       errors.New (ePrefix + "ERROR: Input Parameter 'leadingFieldSeparators' is a zero length array!\n" +
         "'leadingFieldSeparators' are required!\n")
   }
@@ -616,43 +690,97 @@ func (sops StrOps) ExtractDataField(
   lenTrailingFieldSeparators := len(trailingFieldSeparators)
 
   if lenTrailingFieldSeparators == 0 {
-    return errDataDto,
+
+    return newDataDto,
       errors.New (ePrefix + "ERROR: Input Parameter 'trailingFieldSeparators' is a zero length array!\n" +
         "'trailingFieldSeparators' are required!\n")
   }
-
-  newDataDto.TargetStr = targetStr
-  newDataDto.StartIndex = startIdx
-  newDataDto.TargetStrLength = lenTargetStr
-  newDataDto.LeadingKeyWordDelimiter = leadingKeyWordDelimiter
 
   targetStrRunes := []rune(targetStr)
   lenTargetStr = len(targetStrRunes)
   lastGoodTargetStrIdx := lenTargetStr - 1
 
-  if len(endOfLineDelimiters) > 0 {
+  lenOfEndOfLineDelimiters := len(endOfLineDelimiters)
 
-    for a:=startIdx; a < lenTargetStr; a++ {
+  if lenOfEndOfLineDelimiters > 0 {
 
-      for b:=0; b < lenOfEndOfLineDelimiters; b++ {
-        if endOfLineDelimiters[b] == targetStrRunes[a] {
-          newDataDto.DataFieldTrailingDelimiter = targetStrRunes[a]
-          newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfLine()
-          errDataDto.DataFieldTrailingDelimiter = targetStrRunes[a]
-          errDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfLine()
-          lastGoodTargetStrIdx = a - 1
-          goto endOfStringDelimiter
-        }
+    for b:=0; b < lenOfEndOfLineDelimiters; b++ {
+      eolDelimiterIdx := strings.Index(targetStr[startIdx:], endOfLineDelimiters[b])
+
+      if eolDelimiterIdx == -1 {
+        continue
       }
-    }
-  }
 
- endOfStringDelimiter:
+      eolDelimiterIdx += startIdx
+
+      newDataDto.EndOfLineDelimiter = endOfLineDelimiters[b]
+      newDataDto.EndOfLineDelimiterIndex = eolDelimiterIdx
+
+      if eolDelimiterIdx > lastGoodTargetStrIdx {
+        continue
+      }
+
+      // End-Of-Line Index is less than or equal to 'lastGoodTargetStrIds'
+      newDataDto.DataFieldTrailingDelimiter = endOfLineDelimiters[b]
+      newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfLine()
+
+      eolDelimiterIdx--
+      lastGoodTargetStrIdx = eolDelimiterIdx
+
+      break
+    }
+
+  }
 
   if startIdx > lastGoodTargetStrIdx ||
     lastGoodTargetStrIdx < 0 {
 
-    return errDataDto, nil
+    newDataDto.TargetStrLastGoodIndex = lastGoodTargetStrIdx
+
+    return newDataDto, nil
+  }
+
+  lenCommentDelimiters := len(commentDelimiters)
+
+  if lenCommentDelimiters > 0 {
+
+    for b:=0; b < lenCommentDelimiters; b++ {
+
+      commentIdx := strings.Index(targetStr[startIdx:], commentDelimiters[b])
+
+      if commentIdx == -1 {
+        continue
+      }
+
+      commentIdx += startIdx
+
+      newDataDto.CommentDelimiter = commentDelimiters[b]
+      newDataDto.CommentDelimiterIndex = commentIdx
+
+      if commentIdx > lastGoodTargetStrIdx {
+        continue
+      }
+
+      // Comment Index is less than or equal to 'lastGoodTargetStrIds'
+      newDataDto.DataFieldTrailingDelimiter = commentDelimiters[b]
+      newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.Comment()
+
+      commentIdx--
+      lastGoodTargetStrIdx = commentIdx
+
+      break
+    }
+
+  }
+
+  newDataDto.TargetStrLastGoodIndex = lastGoodTargetStrIdx
+
+  if startIdx > lastGoodTargetStrIdx ||
+    lastGoodTargetStrIdx < 0 {
+
+    newDataDto.ConvertToErrorState()
+
+    return newDataDto, nil
   }
 
   lenLeadingKeyWordDelimiter := len(leadingKeyWordDelimiter)
@@ -662,43 +790,58 @@ func (sops StrOps) ExtractDataField(
     keyWordIdx := strings.Index(targetStr[startIdx:], leadingKeyWordDelimiter)
 
     if keyWordIdx == -1 {
-      return errDataDto, nil
+      return newDataDto, nil
     }
 
     keyWordIdx += startIdx
+    newDataDto.LeadingKeyWordDelimiterIndex = keyWordIdx
 
     if keyWordIdx >= lastGoodTargetStrIdx {
-      return errDataDto, nil
+      return newDataDto, nil
     }
 
-    newDataDto.LeadingKeyWordDelimiterIndex = keyWordIdx
-    errDataDto.LeadingKeyWordDelimiterIndex = keyWordIdx
     startIdx =  lenLeadingKeyWordDelimiter + keyWordIdx
   }
+
 
   fieldDataRunes := make([]rune, 0, 20)
   firstDataFieldIdx := -1
 
-  for i:= startIdx; i <= lastGoodTargetStrIdx; i++ {
+  i:= startIdx
+
+  for i <= lastGoodTargetStrIdx {
 
     if firstDataFieldIdx == -1 {
 
-      for j:= 0; j < lenLeadingFieldSeparators; j++ {
+      for j:=0; j < lenLeadingFieldSeparators; j++ {
 
-        if targetStrRunes[i] == leadingFieldSeparators[j]  {
-          goto mainTargetLoop
+        idxLeadingFieldSep := strings.Index(targetStr[i:], leadingFieldSeparators[j])
+
+        if idxLeadingFieldSep != 0 {
+          continue
         }
 
+        // Found a leading Field Separator - skip it
+        i += len(leadingFieldSeparators[j])
+
+        goto cycleMainTargetLoop
       }
 
     } else {
 
       for k:=0; k < lenTrailingFieldSeparators; k++ {
-        if targetStrRunes[i] == trailingFieldSeparators[k] {
-          newDataDto.DataFieldTrailingDelimiter = targetStrRunes[i]
-          newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfField()
-          goto exitMainTargetLoop
+
+        idxTrailingFieldSep := strings.Index(targetStr[i:], trailingFieldSeparators[k])
+
+        if idxTrailingFieldSep != 0 {
+          continue
         }
+
+        newDataDto.DataFieldTrailingDelimiter = trailingFieldSeparators[k]
+
+        newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfField()
+
+        goto exitMainTargetLoop
       }
 
     }
@@ -709,13 +852,16 @@ func (sops StrOps) ExtractDataField(
 
     fieldDataRunes = append(fieldDataRunes, targetStrRunes[i])
 
-  mainTargetLoop:
+    i++
+
+  cycleMainTargetLoop:
+
   }
 
   exitMainTargetLoop:
 
   if len(fieldDataRunes) == 0 {
-    return errDataDto, nil
+    return newDataDto, nil
   }
 
   if newDataDto.DataFieldTrailingDelimiterType == DfTrailDelimiter.Unknown() {
@@ -725,11 +871,11 @@ func (sops StrOps) ExtractDataField(
   newDataDto.DataFieldStr = string(fieldDataRunes)
   newDataDto.DataFieldLength = len(newDataDto.DataFieldStr)
   newDataDto.DataFieldIndex = firstDataFieldIdx
+  newDataDto.TargetStrLastGoodIndex = lastGoodTargetStrIdx
   nextIdx := newDataDto.DataFieldIndex + newDataDto.DataFieldLength
 
   if nextIdx > lastGoodTargetStrIdx {
     newDataDto.NextTargetStrIndex = -1
-    newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfString()
   } else {
     newDataDto.NextTargetStrIndex = nextIdx
   }
@@ -846,7 +992,7 @@ func (sops StrOps) ExtractDataField(
 //
 //					type NumStrProfileDto struct {
 //								TargetStr        string   // The original target string which is scanned for a number string
-//								StartIndex          int   // The starting index in 'TargetStr' from which the number string
+//								TargetStrStartIndex          int   // The starting index in 'TargetStr' from which the number string
 //																			    //    search was initiated.
 //								LeadingSignIndex    int   //  The string index of a leading sign in 'NumStr' below. If a
 //																			    //    leading sign character is NOT present in 'NumStr' this value

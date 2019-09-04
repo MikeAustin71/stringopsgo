@@ -1,6 +1,34 @@
 package main
 
-import "MikeAustin71/stringopsgo/app/examples"
+import (
+  "MikeAustin71/stringopsgo/app/examples"
+
+)
+
+func main() {
+
+
+ examples.MainTest{}.ExampleExtractDataField02()
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* This Works
 import (
@@ -29,9 +57,3 @@ import (
 )
 
 */
-
-
-func main() {
-
-  examples.MainTest{}.ExampleExtractDataField03()
-}
