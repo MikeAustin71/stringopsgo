@@ -15,6 +15,7 @@ func TestStrOps_FindLastWord_13(t *testing.T) {
   _, _, _, _, err :=
     StrOps{}.FindLastWord(testStr, 0, 71)
 
+
   if err == nil {
     t.Error("Expected an error to be returned. NO ERROR RETURNED!")
   }

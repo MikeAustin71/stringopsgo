@@ -379,8 +379,6 @@ func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineD
       break
     }
 
-    // begIdx < targetLen - 1
-
     actualLastIdx = begIdx + lineLength - 1
 
     if actualLastIdx >= targetLen {
@@ -505,39 +503,57 @@ func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineD
 // to "[SPACE]" in the returned string.
 //
 func (sops StrOps) ConvertNonPrintableCharacters(
-  nonPrintableChars string, convertSpace bool) (printableChars string) {
+  nonPrintableChars []rune, convertSpace bool) (printableChars string) {
 
   lenNonPrintableChars := len(nonPrintableChars)
 
   if lenNonPrintableChars == 0 {
-    return ""
+    return "[EMPTY]"
   }
 
-  var tStr, finalStr string
+
+  var b strings.Builder
+  b.Grow(lenNonPrintableChars * 5)
+
 
   for i:=0; i < lenNonPrintableChars; i++ {
-    cRune := rune(nonPrintableChars[i])
+    cRune := nonPrintableChars[i]
 
     switch cRune {
-    case '\n':
-      tStr = "\\n"
-    case '\t':
-      tStr = "\\t"
-    case '\r':
-      tStr = "\\r"
+    case '\a' :
+      b.WriteString("\\a")
+    case '\b':
+      b.WriteString("\\b") // backspace
     case '\f':
-      tStr = "\\f"
+      b.WriteString("\\f")  // form feed
+    case '\n':
+      b.WriteString("\\n")  // new line
+    case '\r':
+      b.WriteString("\\r")  // carriage return
+    case '\t':
+      b.WriteString("\\t")  // tab
     case '\v':
-      tStr = "\\v"
-    default :
-      tStr = string(cRune)
-    }
+      b.WriteString("\\v")  // vertical tab
+    case '\\':
+      b.WriteString("\\")
+    case 0:
+      b.WriteString("[NULL]")
+    case ' ':
 
-    finalStr += tStr
+      if convertSpace {
+        b.WriteString("[SPACE]")
+      } else {
+        b.WriteRune(' ')
+      }
+
+    default :
+      b.WriteRune(cRune)
+
+    }
 
   }
 
-  return finalStr
+  return b.String()
 }
 
 // CopyIn - Copies string information from another StrOps

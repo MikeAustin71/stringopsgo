@@ -1,20 +1,12 @@
 package main
 
-import (
-  "MikeAustin71/stringopsgo/app/examples"
-
-)
+import "MikeAustin71/stringopsgo/app/examples"
 
 func main() {
 
-
- examples.MainTest{}.ExampleExtractDataField02()
+examples.MainTest{}.ExampleExtractDataField02()
 
 }
-
-
-
-
 
 
 
