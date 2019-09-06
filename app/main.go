@@ -2,28 +2,16 @@ package main
 
 import (
   "MikeAustin71/stringopsgo/app/examples"
-  "fmt"
-  "time"
 )
 
 func main() {
-  var startTime, endTime time.Time
 
-  startTime = time.Now()
+  mt := examples.MainTest{}
 
-  time.Sleep(500 * time.Millisecond)
-
-  endTime = time.Now()
-
-  totalNanoSecs,
-  elapsedTime := examples.MainTest{}.Timer(startTime, endTime)
-
-
-
-  fmt.Println("totalNanoSecs", elapsedTime)
-  fmt.Println("Elapsed Time", totalNanoSecs)
+  mt.ExampleExtractDataField02()
 
 }
+
 
 
 
