@@ -1,35 +1,34 @@
 package strops
 
 import (
-  "errors"
-  "fmt"
-  "strings"
+	"errors"
+	"fmt"
+	"strings"
 )
 
 var mDataFieldTrailingDelimiterStringToCode = map[string]DataFieldTrailingDelimiterType{
-  "Unknown"     : DataFieldTrailingDelimiterType(0).Unknown(),
-  "EndOfField"  : DataFieldTrailingDelimiterType(0).EndOfField(),
-  "Comment"     : DataFieldTrailingDelimiterType(0).Comment(),
-  "EndOfLine"   : DataFieldTrailingDelimiterType(0).EndOfLine(),
-  "EndOfString" : DataFieldTrailingDelimiterType(0).EndOfString(),
+	"Unknown":     DataFieldTrailingDelimiterType(0).Unknown(),
+	"EndOfField":  DataFieldTrailingDelimiterType(0).EndOfField(),
+	"Comment":     DataFieldTrailingDelimiterType(0).Comment(),
+	"EndOfLine":   DataFieldTrailingDelimiterType(0).EndOfLine(),
+	"EndOfString": DataFieldTrailingDelimiterType(0).EndOfString(),
 }
 
 var mDataFieldTrailingDelimiterLwrCaseStringToCode = map[string]DataFieldTrailingDelimiterType{
-  "unknown"     : DataFieldTrailingDelimiterType(0).Unknown(),
-  "endoffield"  : DataFieldTrailingDelimiterType(0).EndOfField(),
-  "comment"     : DataFieldTrailingDelimiterType(0).Comment(),
-  "endofline"   : DataFieldTrailingDelimiterType(0).EndOfLine(),
-  "endofstring" : DataFieldTrailingDelimiterType(0).EndOfString(),
+	"unknown":     DataFieldTrailingDelimiterType(0).Unknown(),
+	"endoffield":  DataFieldTrailingDelimiterType(0).EndOfField(),
+	"comment":     DataFieldTrailingDelimiterType(0).Comment(),
+	"endofline":   DataFieldTrailingDelimiterType(0).EndOfLine(),
+	"endofstring": DataFieldTrailingDelimiterType(0).EndOfString(),
 }
 
 var mDataFieldTrailingDelimiterToString = map[DataFieldTrailingDelimiterType]string{
-  DataFieldTrailingDelimiterType(0).Unknown()     : "Unknown",
-  DataFieldTrailingDelimiterType(0).EndOfField()  : "EndOfField",
-  DataFieldTrailingDelimiterType(0).Comment()     : "Comment",
-  DataFieldTrailingDelimiterType(0).EndOfLine()   : "EndOfLine",
-  DataFieldTrailingDelimiterType(0).EndOfString() : "EndOfString",
+	DataFieldTrailingDelimiterType(0).Unknown():     "Unknown",
+	DataFieldTrailingDelimiterType(0).EndOfField():  "EndOfField",
+	DataFieldTrailingDelimiterType(0).Comment():     "Comment",
+	DataFieldTrailingDelimiterType(0).EndOfLine():   "EndOfLine",
+	DataFieldTrailingDelimiterType(0).EndOfString(): "EndOfString",
 }
-
 
 // DataFieldTrailingDelimiterType - Enumerates the type of delimiters used to mark the
 // end of a a data field within a host string.
@@ -69,33 +68,33 @@ type DataFieldTrailingDelimiterType int
 // Unknown - Data Field Trailing Delimiter Type is unknown or undetermined.
 //
 func (dfTrailDelimiter DataFieldTrailingDelimiterType) Unknown() DataFieldTrailingDelimiterType {
-  return DataFieldTrailingDelimiterType(0)
+	return DataFieldTrailingDelimiterType(0)
 }
 
 // EndOfField - The Data Field is terminated by a trailing end of field separator.
 //
 func (dfTrailDelimiter DataFieldTrailingDelimiterType) EndOfField() DataFieldTrailingDelimiterType {
-  return DataFieldTrailingDelimiterType(1)
+	return DataFieldTrailingDelimiterType(1)
 }
 
 // Comment - The Data Field is terminated by a trailing 'comment' separator.
 //
 func (dfTrailDelimiter DataFieldTrailingDelimiterType) Comment() DataFieldTrailingDelimiterType {
-  return DataFieldTrailingDelimiterType(2)
+	return DataFieldTrailingDelimiterType(2)
 }
 
 // EndOfLine - The Data Field is terminated by a designated end-of-line separator. Often this is
 // a designated new line character such as '\n'.
 //
 func (dfTrailDelimiter DataFieldTrailingDelimiterType) EndOfLine() DataFieldTrailingDelimiterType {
-  return DataFieldTrailingDelimiterType(3)
+	return DataFieldTrailingDelimiterType(3)
 }
 
 // EndOfString - No specific character terminated the data field. The next character after the
 // data field represents the end of the host string.
 //
 func (dfTrailDelimiter DataFieldTrailingDelimiterType) EndOfString() DataFieldTrailingDelimiterType {
-  return DataFieldTrailingDelimiterType(4)
+	return DataFieldTrailingDelimiterType(4)
 }
 
 // =============================================================================
@@ -157,54 +156,53 @@ func (dfTrailDelimiter DataFieldTrailingDelimiterType) EndOfString() DataFieldTr
 //  t is now equal to DataFieldTrailingDelimiterType(0).EndOfLine()
 //
 func (dfTrailDelimiter DataFieldTrailingDelimiterType) ParseString(
-  valueString string,
-  caseSensitive bool) (DataFieldTrailingDelimiterType, error) {
+	valueString string,
+	caseSensitive bool) (DataFieldTrailingDelimiterType, error) {
 
-  ePrefix := "DataFieldTrailingDelimiterType.ParseString() "
+	ePrefix := "DataFieldTrailingDelimiterType.ParseString() "
 
-  lenValueStr := len(valueString)
+	lenValueStr := len(valueString)
 
-  if strings.HasSuffix(valueString, "()") {
-    valueString = valueString[0 : lenValueStr-2]
-    lenValueStr -= 2
-  }
+	if strings.HasSuffix(valueString, "()") {
+		valueString = valueString[0 : lenValueStr-2]
+		lenValueStr -= 2
+	}
 
-  if lenValueStr < 3 {
-    return DataFieldTrailingDelimiterType(0).Unknown(),
-      fmt.Errorf(ePrefix+
-        "Input parameter 'valueString' is INVALID! Length Less than 3-characters\n"+
-        "valueString='%v'\n", valueString)
-  }
+	if lenValueStr < 3 {
+		return DataFieldTrailingDelimiterType(0).Unknown(),
+			fmt.Errorf(ePrefix+
+				"Input parameter 'valueString' is INVALID! Length Less than 3-characters\n"+
+				"valueString='%v'\n", valueString)
+	}
 
-  var ok bool
+	var ok bool
 
-  var dfTrailType DataFieldTrailingDelimiterType
+	var dfTrailType DataFieldTrailingDelimiterType
 
-  if caseSensitive {
+	if caseSensitive {
 
-    dfTrailType, ok = mDataFieldTrailingDelimiterStringToCode[valueString]
+		dfTrailType, ok = mDataFieldTrailingDelimiterStringToCode[valueString]
 
-    if !ok {
-      return DataFieldTrailingDelimiterType(0),
-        errors.New(ePrefix + "Invalid Permission Code!")
-    }
+		if !ok {
+			return DataFieldTrailingDelimiterType(0),
+				errors.New(ePrefix + "Invalid Permission Code!")
+		}
 
-  } else {
+	} else {
 
-    valueString = strings.ToLower(valueString)
+		valueString = strings.ToLower(valueString)
 
-    dfTrailType, ok = mDataFieldTrailingDelimiterLwrCaseStringToCode[valueString]
+		dfTrailType, ok = mDataFieldTrailingDelimiterLwrCaseStringToCode[valueString]
 
-    if !ok {
-      return DataFieldTrailingDelimiterType(0),
-        errors.New(ePrefix + "Invalid Permission Code!")
-    }
+		if !ok {
+			return DataFieldTrailingDelimiterType(0),
+				errors.New(ePrefix + "Invalid Permission Code!")
+		}
 
-  }
+	}
 
-  return dfTrailType, nil
+	return dfTrailType, nil
 }
-
 
 // StatusIsValid - If the value of the current DataFieldTrailingDelimiterType instance
 // is 'invalid', this method will return an error.
@@ -217,18 +215,17 @@ func (dfTrailDelimiter DataFieldTrailingDelimiterType) ParseString(
 //
 func (dfTrailDelimiter DataFieldTrailingDelimiterType) StatusIsValid() error {
 
-  _, ok := mDataFieldTrailingDelimiterToString[dfTrailDelimiter]
+	_, ok := mDataFieldTrailingDelimiterToString[dfTrailDelimiter]
 
-  if !ok {
-    ePrefix := "DataFieldTrailingDelimiterType.StatusIsValid()\n"
-    return fmt.Errorf(ePrefix+
-      "Error: The current DataFieldTrailingDelimiterType is INVALID! "+
-      "DataFieldTrailingDelimiterType Value='%v'", int(dfTrailDelimiter))
-  }
+	if !ok {
+		ePrefix := "DataFieldTrailingDelimiterType.StatusIsValid()\n"
+		return fmt.Errorf(ePrefix+
+			"Error: The current DataFieldTrailingDelimiterType is INVALID! "+
+			"DataFieldTrailingDelimiterType Value='%v'", int(dfTrailDelimiter))
+	}
 
-  return nil
+	return nil
 }
-
 
 // String - Returns a string with the name of the enumeration associated
 // with this instance of 'DataFieldTrailingDelimiterType'.
@@ -254,13 +251,13 @@ func (dfTrailDelimiter DataFieldTrailingDelimiterType) StatusIsValid() error {
 //
 func (dfTrailDelimiter DataFieldTrailingDelimiterType) String() string {
 
-  label, ok := mDataFieldTrailingDelimiterToString[dfTrailDelimiter]
+	label, ok := mDataFieldTrailingDelimiterToString[dfTrailDelimiter]
 
-  if !ok {
-    return ""
-  }
+	if !ok {
+		return ""
+	}
 
-  return label
+	return label
 }
 
 // Value - Returns the value of the DataFieldTrailingDelimiterType instance
@@ -268,7 +265,7 @@ func (dfTrailDelimiter DataFieldTrailingDelimiterType) String() string {
 //
 func (dfTrailDelimiter DataFieldTrailingDelimiterType) Value() DataFieldTrailingDelimiterType {
 
-  return dfTrailDelimiter
+	return dfTrailDelimiter
 }
 
 // DfTrailDelimiter - public global variable of

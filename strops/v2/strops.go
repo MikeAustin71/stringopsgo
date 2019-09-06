@@ -163,20 +163,14 @@ func (sortStrLenLow SortStrLengthLowestToHighest) Less(i, j int) bool {
 // strings.
 //
 type NumStrProfileDto struct {
-	TargetStr  string // The original target string which is scanned for a number string
-	StartIndex int    // The starting index in 'TargetStr' from which the number string
-	//    search was initiated.
-	LeadingSignIndex int //  The string index of a leading sign in 'NumStr' below. If a
-	//    leading sign character is NOT present in 'NumStr' this value
-	//    is set to -1
-	LeadingSignChar string //  If a leading sign character (plus '+' or minus '-') exists in
-	//    data field 'NumStr' (below), it is stored in this string.
-	FirstNumCharIndex int //  The index in 'TargetStr' (above) where the first character
-	//    of the extracted number string is located.
-	NextTargetStrIndex int //  The index of the next character in 'TargetStr' immediately
-	//    following the extracted number string.
-	NumStrLen int    //  The length of the extracted number string.
-	NumStr    string //  The number string extracted from 'TargetStr'.
+	TargetStr          string // The original target string which is scanned for a number string.
+	StartIndex         int    // The starting index in 'TargetStr' from which the number string search was initiated.
+	LeadingSignIndex   int    // The string index of a leading sign in 'NumStr' below. If a leading sign character is NOT present in 'NumStr' this value is set to -1.
+	LeadingSignChar    string // If a leading sign character (plus '+' or minus '-') exists in data field 'NumStr' (below), it is stored in this string.
+	FirstNumCharIndex  int    // The index in 'TargetStr' (above) where the first character of the extracted number string is located.
+	NextTargetStrIndex int    // The index of the next character in 'TargetStr' immediately following the extracted number string.
+	NumStrLen          int    // The length of the extracted number string.
+	NumStr             string // The number string extracted from 'TargetStr'.
 }
 
 // New - Creates and returns a new instance of NumStrProfileDto
@@ -199,43 +193,38 @@ func (exNumDto NumStrProfileDto) New() NumStrProfileDto {
 // related to an extracted data field string.
 //
 type DataFieldProfileDto struct {
-	TargetStr string //  The string from which the data field
-	//    is extracted.
-	TargetStrLength     int //  Length of 'TargetStr'
-	TargetStrStartIndex int //  The index with in 'TargetStr' from which
-	//    the search for a data field was initiated.
-	TargetStrLastGoodIndex int //  Last valid index in target string which is
-	//    less than the target string length and is
-	//    NOT an 'End Of Field' or 'End Of Line'
-	//    Delimiter
-	LeadingKeyWordDelimiter string //  The Leading Key Word Delimiter which is used
-	//    identify the beginning of the field search
-	LeadingKeyWordDelimiterIndex int    //  Index of the found Leading Key Word Delimiter
-	DataFieldStr                 string //  The extracted data field string
-	DataFieldIndex               int    //  The index in 'TargetStr' where the data field
-	//    begins.
-	DataFieldLength            int    //  The length of the extracted data field string.
-	DataFieldTrailingDelimiter string //  The trailing character which marked the end of
-	//    the data field. A zero value indicates end
-	//    of string encountered.
-	DataFieldTrailingDelimiterType DataFieldTrailingDelimiterType
-	//  A constant or enumeration type used to describe
-	//    the type of delimiter used to mark the end of
-	//    a data field.
-	NextTargetStrIndex int //  The index in 'TargetStr' immediately following
-	//    the extracted data field.
-	CommentDelimiter string //  If a Comment Delimiter is detected it is stored
-	//    here.
-	CommentDelimiterIndex int //  If a Comment Delimiter is detected, the string
-	//    index in 'TargetStr' showing its location is
-	//    stored here.
-	EndOfLineDelimiter string //  If an End-Of-Line Delimiter is detected it is
-	//    captured and stored here.
-	EndOfLineDelimiterIndex int //  If an End-Of-Line Delimiter is detected, the string
-	//    index in 'TargetStr' showing its location is
-	//    stored here.
+	TargetStr                      string                         //  The string from which the data field  is extracted.
+	TargetStrLength                int                            //  Length of 'TargetStr'.
+	TargetStrStartIndex            int                            //  The index with in 'TargetStr' from which the search for a data field was initiated.
+	TargetStrLastGoodIndex         int                            //  Last valid index in target string which is less than the target string length and is NOT an 'End Of Field' or 'End Of Line' Delimiter.
+	LeadingKeyWordDelimiter        string                         //  The Leading Key Word Delimiter which is used to identify the beginning of the field search.
+	LeadingKeyWordDelimiterIndex   int                            //  Index of the found Leading Key Word Delimiter
+	DataFieldStr                   string                         //  The extracted data field string
+	DataFieldIndex                 int                            //  The index in 'TargetStr' where the data field begins.
+	DataFieldLength                int                            //  The length of the extracted data field string.
+	DataFieldTrailingDelimiter     string                         //  The trailing character which marked the end of the data field. A zero value indicates end of string encountered.
+	DataFieldTrailingDelimiterType DataFieldTrailingDelimiterType //  A constant or enumeration type used to describe the type of delimiter used to mark the end of a data field.
+	NextTargetStrIndex             int                            //  The index in 'TargetStr' immediately following the extracted data field.
+	CommentDelimiter               string                         //  If a Comment Delimiter is detected it is stored here.
+	CommentDelimiterIndex          int                            //  If a Comment Delimiter is detected, the string index in 'TargetStr' showing its location is stored here.
+	EndOfLineDelimiter             string                         //  If an End-Of-Line Delimiter is detected it is captured and stored here.
+	EndOfLineDelimiterIndex        int                            //  If an End-Of-Line Delimiter is detected, the string index in 'TargetStr' showing its location is stored here.
 }
 
+// ConvertToErrorState - Prepares the current DataFieldProfileDto instance
+// for return as part of an error or null state condition. All references
+// to the data field are zeroed.
+//
+func (dfProfile DataFieldProfileDto) ConvertToErrorState() {
+	dfProfile.DataFieldStr = ""
+	dfProfile.DataFieldIndex = -1
+	dfProfile.DataFieldLength = 0
+	dfProfile.NextTargetStrIndex = -1
+
+}
+
+// New - Creates and returns a new instance of DataFieldProfileDto
+// containing properly initialized internal data fields.
 func (dfProfile DataFieldProfileDto) New() DataFieldProfileDto {
 	newDataDto := DataFieldProfileDto{}
 	newDataDto.TargetStr = ""
@@ -253,18 +242,6 @@ func (dfProfile DataFieldProfileDto) New() DataFieldProfileDto {
 	newDataDto.EndOfLineDelimiter = ""
 	newDataDto.EndOfLineDelimiterIndex = -1
 	return newDataDto
-}
-
-// ConvertToErrorState - Prepares the current DataFieldProfileDto instance
-// for return as part of an error or null state condition. All references
-// to the data field are zeroed.
-//
-func (dfProfile DataFieldProfileDto) ConvertToErrorState() {
-	dfProfile.DataFieldStr = ""
-	dfProfile.DataFieldIndex = -1
-	dfProfile.DataFieldLength = 0
-	dfProfile.NextTargetStrIndex = -1
-
 }
 
 // StrOps - encapsulates a collection of methods used to manage string
@@ -615,32 +592,44 @@ func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
 //
 // ------------------------------------------------------------------------
 //
-// Input Values
+//  Input Values
+//
+//  targetStr               string
+//  leadingKeyWordDelimiter string
+//  startIdx                int
+//  leadingFieldSeparators  []string
+//  trailingFieldSeparators []string
+//  commentDelimiters       []string
+//  endOfLineDelimiters     []string
+//
 //
 // ------------------------------------------------------------------------
 //
-// Return Values
+//  Return Values
 //
 //  DataFieldProfileDto - If successful, this method returns a structure containing
 //                        characteristics describing the extracted data field.
 //
-//          type DataFieldProfileDto struct {
-//             TargetStr               string    //  The string from which the data field
-//                                               //    is extracted.
-//             TargetStrLength         int       //  Length of 'TargetStr'
-//             TargetStrStartIndex              int       //  The index with in 'TargetStr' from which
-//                                               //    the search for a data field was initiated.
-//             LeadingKeyWordDelimiter string    //  The Leading Key Word Delimiter which is used
-//                                               //    identify the beginning of the field search
-//             DataFieldStr            string    //  The extracted data field string
-//             DataFieldIndex          int       //  The index in 'TargetStr' where the data field
-//                                               //    begins.
-//             DataFieldLength         int       //  The length of the extracted data field string.
-//             NextTargetStrIndex      int       //  The index in 'TargetStr' immediately following
-//                                               //    the extracted data field.
-//           }
+//    type DataFieldProfileDto struct {
+//       TargetStr                      string //  The string from which the data field is extracted.
+//       TargetStrLength                int    //  Length of 'TargetStr'
+//       TargetStrStartIndex            int    //  The index with in 'TargetStr' from which the search for a data field was initiated.
+//       TargetStrLastGoodIndex         int    //  Last valid index in target string which is less than the target string length and is NOT an 'End Of Field' or 'End Of Line' Delimiter.
+//       LeadingKeyWordDelimiter        string //  The Leading Key Word Delimiter which is used to identify the beginning of the field search.
+//       LeadingKeyWordDelimiterIndex   int    //  Index of the found Leading Key Word Delimiter.
+//       DataFieldStr                   string //  The extracted data field string.
+//       DataFieldIndex                 int    //  The index in 'TargetStr' where the data field begins.
+//       DataFieldLength                int    //  The length of the extracted data field string.
+//       DataFieldTrailingDelimiter     string //  The trailing character which marked the end of the data field. A zero value indicates end of string encountered.
+//       DataFieldTrailingDelimiterType DataFieldTrailingDelimiterType // A constant or enumeration type used to describe the type of delimiter used to mark the end of a data field.
+//       NextTargetStrIndex             int    //  The index in 'TargetStr' immediately following the extracted data field.
+//       CommentDelimiter               string //  If a Comment Delimiter is detected it is stored here.
+//       CommentDelimiterIndex          int    //  If a Comment Delimiter is detected, the string index in 'TargetStr' showing its location is stored here.
+//       EndOfLineDelimiter             string //  If an End-Of-Line Delimiter is detected it is captured and stored here.
+//       EndOfLineDelimiterIndex        int    //  If an End-Of-Line Delimiter is detected, the string index in 'TargetStr' showing its location is stored here.
+//     }
 //
-//  error               - If the method completes successfully and no errors are encountered
+//   error              - If the method completes successfully and no errors are encountered
 //                        this return value is set to 'nil'. Otherwise, if errors are encountered
 //                        this return value will contain an appropriate error message.
 //
