@@ -36,25 +36,43 @@ func TestStrOps_FindLastWord_14(t *testing.T) {
   }
 
 }
-/*
+
+
 func TestStrOps_ExtractDataField_01(t *testing.T) {
 
-  endOfLineRunes := []rune("\n#")
-  leadingRunes := []rune("\t \r\f\n\v")
-  trailingRunes := []rune("\t \r\f\n\v")
+  endOfLineDelimiters := []string{"\n"}
+  commentDelimiters := []string{"#"}
+  leadingFieldDelimiters := []string{
+    "\t",
+    "\r",
+    "\f",
+    "\v",
+    " "}
+
+  trailingFieldDelimiters := []string{
+    "\t",
+    "\r",
+    "\f",
+    "\v",
+    " "}
+
+  //("\t \r\f\n\v")
   targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
   lenTargetStr := len(targetStr)
   expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+  expectedEndOfLineDelimiterIdx := expectedLastGoodIdx
   expectedLastGoodIdx--
   startIdx := 0
   leadingKeyWordDelimiter := "Zone:"
   expectedDataFieldStr := "America/Chicago"
   expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
   expectedDataFieldLength := len(expectedDataFieldStr)
-  expectedDataFieldTrailingDelimiter := '\t'
+  expectedDataFieldTrailingDelimiter := "\t"
   expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfField()
-  
   expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, leadingKeyWordDelimiter)
+  expectedEndOfLineDelimiter := "\n"
+  expectedCommentDelimiter := ""
+  expectedCommentDelimiterIndex := -1
 
   expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
 
@@ -67,9 +85,10 @@ func TestStrOps_ExtractDataField_01(t *testing.T) {
     targetStr,
     leadingKeyWordDelimiter,
     startIdx,
-    leadingRunes,
-    trailingRunes,
-    endOfLineRunes)
+    leadingFieldDelimiters,
+    trailingFieldDelimiters,
+    commentDelimiters,
+    endOfLineDelimiters)
 
   if err != nil {
     t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
@@ -129,7 +148,8 @@ func TestStrOps_ExtractDataField_01(t *testing.T) {
   if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
     t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
       "Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
-      expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+      StrOps{}.ConvertNonPrintableCharacters([]rune(expectedDataFieldTrailingDelimiter), true),
+      StrOps{}.ConvertNonPrintableCharacters([]rune (datDto.DataFieldTrailingDelimiter), true))
   }
 
   if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
@@ -149,8 +169,36 @@ func TestStrOps_ExtractDataField_01(t *testing.T) {
       "Instead, datDto.NextTargetStrIndex='%v'.\n",
       expectedNextTargetIdx, datDto.NextTargetStrIndex)
   }
+
+  if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
+    t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
+      "Instead, datDto.EndOfLineDelimiter='%v'.\n",
+    StrOps{}.ConvertNonPrintableCharacters([]rune(expectedEndOfLineDelimiter), false),
+    StrOps{}.ConvertNonPrintableCharacters([]rune (datDto.EndOfLineDelimiter), false))
+  }
+
+  if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex  {
+    t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
+      "Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
+      expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
+  }
+
+  if expectedCommentDelimiter != datDto.CommentDelimiter {
+    t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
+      "Instead, datDto.CommentDelimiter='%v'.\n",
+    StrOps{}.ConvertNonPrintableCharacters([]rune(expectedCommentDelimiter), true),
+    StrOps{}.ConvertNonPrintableCharacters([]rune (datDto.CommentDelimiter), true))
+  }
+
+  if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex  {
+    t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
+      "Instead, datDto.CommentDelimiterIndex='%v'.\n",
+      expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
+  }
+
 }
 
+/*
 func TestStrOps_ExtractDataField_02(t *testing.T) {
 
   endOfLineRunes := []rune("\n#")
