@@ -130,6 +130,8 @@
 --- PASS: TestStrOps_FindLastWord_14 (0.00s)
 === RUN   TestStrOps_ExtractDataField_01
 --- PASS: TestStrOps_ExtractDataField_01 (0.00s)
+=== RUN   TestStrOps_ExtractDataField_02
+--- PASS: TestStrOps_ExtractDataField_02 (0.00s)
 === RUN   TestStrOps_ExtractNumericDigits_01
 --- PASS: TestStrOps_ExtractNumericDigits_01 (0.00s)
 === RUN   TestStrOps_ExtractNumericDigits_02
@@ -455,4 +457,4 @@
 === RUN   TestStrOps_Write_04
 --- PASS: TestStrOps_Write_04 (0.00s)
 PASS
-ok  	MikeAustin71/stringopsgo/strops/v2	4.827s
+ok  	github.com/MikeAustin71/stringopsgo/strops/v2	2.976s
