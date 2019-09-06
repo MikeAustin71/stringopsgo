@@ -1,7 +1,3 @@
-
-
-
-
 // Package strops - (string operations) provides string management
 // utilities designed to perform a variety of string operations
 // including string centering, justification, multiple replacements
@@ -13,14 +9,14 @@
 package strops
 
 import (
-  "errors"
-  "fmt"
-  "io"
-  "regexp"
-  "sort"
-  "strings"
-  "sync"
-  "unicode/utf8"
+	"errors"
+	"fmt"
+	"io"
+	"regexp"
+	"sort"
+	"strings"
+	"sync"
+	"unicode/utf8"
 )
 
 // SortStrLengthHighestToLowest - Uses to perform two level sort
@@ -67,7 +63,7 @@ type SortStrLengthHighestToLowest []string
 //   https://golang.org/pkg/sort/#Sort
 //
 func (sortStrLenHigh SortStrLengthHighestToLowest) Len() int {
-  return len(sortStrLenHigh)
+	return len(sortStrLenHigh)
 }
 
 // Swap - This is part of the sort.Interface. Reference the 'sort' package:
@@ -75,7 +71,7 @@ func (sortStrLenHigh SortStrLengthHighestToLowest) Len() int {
 //   https://golang.org/pkg/sort/#Sort
 //
 func (sortStrLenHigh SortStrLengthHighestToLowest) Swap(i, j int) {
-  sortStrLenHigh[i], sortStrLenHigh[j] = sortStrLenHigh[j], sortStrLenHigh[i]
+	sortStrLenHigh[i], sortStrLenHigh[j] = sortStrLenHigh[j], sortStrLenHigh[i]
 }
 
 // Less - This is part of the sort.Interface. Reference the 'sort' package:
@@ -84,13 +80,13 @@ func (sortStrLenHigh SortStrLengthHighestToLowest) Swap(i, j int) {
 //
 func (sortStrLenHigh SortStrLengthHighestToLowest) Less(i, j int) bool {
 
-  lenI := len(sortStrLenHigh[i])
-  lenJ := len(sortStrLenHigh[j])
-  if lenI == lenJ {
-    return sortStrLenHigh[i] > sortStrLenHigh[j]
-  }
+	lenI := len(sortStrLenHigh[i])
+	lenJ := len(sortStrLenHigh[j])
+	if lenI == lenJ {
+		return sortStrLenHigh[i] > sortStrLenHigh[j]
+	}
 
-  return lenI > lenJ
+	return lenI > lenJ
 }
 
 // SortStrLengthLowestToHighest - Uses to perform two level sort
@@ -136,7 +132,7 @@ type SortStrLengthLowestToHighest []string
 //   https://golang.org/pkg/sort/#Sort
 //
 func (sortStrLenLow SortStrLengthLowestToHighest) Len() int {
-  return len(sortStrLenLow)
+	return len(sortStrLenLow)
 }
 
 // Swap - This is part of the sort.Interface. Reference the 'sort' package:
@@ -144,7 +140,7 @@ func (sortStrLenLow SortStrLengthLowestToHighest) Len() int {
 //   https://golang.org/pkg/sort/#Sort
 //
 func (sortStrLenLow SortStrLengthLowestToHighest) Swap(i, j int) {
-  sortStrLenLow[i], sortStrLenLow[j] = sortStrLenLow[j], sortStrLenLow[i]
+	sortStrLenLow[i], sortStrLenLow[j] = sortStrLenLow[j], sortStrLenLow[i]
 }
 
 // Less - This is part of the sort.Interface. Reference the 'sort' package:
@@ -153,13 +149,13 @@ func (sortStrLenLow SortStrLengthLowestToHighest) Swap(i, j int) {
 //
 func (sortStrLenLow SortStrLengthLowestToHighest) Less(i, j int) bool {
 
-  lenI := len(sortStrLenLow[i])
-  lenJ := len(sortStrLenLow[j])
-  if lenI == lenJ {
-    return sortStrLenLow[i] < sortStrLenLow[j]
-  }
+	lenI := len(sortStrLenLow[i])
+	lenJ := len(sortStrLenLow[j])
+	if lenI == lenJ {
+		return sortStrLenLow[i] < sortStrLenLow[j]
+	}
 
-  return lenI < lenJ
+	return lenI < lenJ
 }
 
 // NumStrProfileDto - This type is used to encapsulate information
@@ -167,96 +163,96 @@ func (sortStrLenLow SortStrLengthLowestToHighest) Less(i, j int) bool {
 // strings.
 //
 type NumStrProfileDto struct {
-  TargetStr  string // The original target string which is scanned for a number string
-  StartIndex int    // The starting index in 'TargetStr' from which the number string
-  //    search was initiated.
-  LeadingSignIndex int //  The string index of a leading sign in 'NumStr' below. If a
-  //    leading sign character is NOT present in 'NumStr' this value
-  //    is set to -1
-  LeadingSignChar string //  If a leading sign character (plus '+' or minus '-') exists in
-  //    data field 'NumStr' (below), it is stored in this string.
-  FirstNumCharIndex int //  The index in 'TargetStr' (above) where the first character
-  //    of the extracted number string is located.
-  NextTargetStrIndex int //  The index of the next character in 'TargetStr' immediately
-  //    following the extracted number string.
-  NumStrLen int    //  The length of the extracted number string.
-  NumStr    string //  The number string extracted from 'TargetStr'.
+	TargetStr  string // The original target string which is scanned for a number string
+	StartIndex int    // The starting index in 'TargetStr' from which the number string
+	//    search was initiated.
+	LeadingSignIndex int //  The string index of a leading sign in 'NumStr' below. If a
+	//    leading sign character is NOT present in 'NumStr' this value
+	//    is set to -1
+	LeadingSignChar string //  If a leading sign character (plus '+' or minus '-') exists in
+	//    data field 'NumStr' (below), it is stored in this string.
+	FirstNumCharIndex int //  The index in 'TargetStr' (above) where the first character
+	//    of the extracted number string is located.
+	NextTargetStrIndex int //  The index of the next character in 'TargetStr' immediately
+	//    following the extracted number string.
+	NumStrLen int    //  The length of the extracted number string.
+	NumStr    string //  The number string extracted from 'TargetStr'.
 }
 
 // New - Creates and returns a new instance of NumStrProfileDto
 // which is properly initialized.
 func (exNumDto NumStrProfileDto) New() NumStrProfileDto {
 
-  newDto := NumStrProfileDto{}
-  newDto.TargetStr = ""
-  newDto.StartIndex = -1
-  newDto.LeadingSignIndex = -1
-  newDto.LeadingSignChar = ""
-  newDto.FirstNumCharIndex = -1
-  newDto.NextTargetStrIndex = -1
-  newDto.NumStrLen = 0
-  newDto.NumStr = ""
-  return newDto
+	newDto := NumStrProfileDto{}
+	newDto.TargetStr = ""
+	newDto.StartIndex = -1
+	newDto.LeadingSignIndex = -1
+	newDto.LeadingSignChar = ""
+	newDto.FirstNumCharIndex = -1
+	newDto.NextTargetStrIndex = -1
+	newDto.NumStrLen = 0
+	newDto.NumStr = ""
+	return newDto
 }
 
 // DataFieldProfileDto - This type is used to encapsulate information
 // related to an extracted data field string.
 //
 type DataFieldProfileDto struct {
-  TargetStr                     string  //  The string from which the data field
-                                        //    is extracted.
-  TargetStrLength               int     //  Length of 'TargetStr'
-  TargetStrStartIndex           int     //  The index with in 'TargetStr' from which
-                                        //    the search for a data field was initiated.
-  TargetStrLastGoodIndex        int     //  Last valid index in target string which is
-                                        //    less than the target string length and is
-                                        //    NOT an 'End Of Field' or 'End Of Line'
-                                        //    Delimiter
-  LeadingKeyWordDelimiter       string  //  The Leading Key Word Delimiter which is used
-                                        //    identify the beginning of the field search
-  LeadingKeyWordDelimiterIndex  int     //  Index of the found Leading Key Word Delimiter
-  DataFieldStr                  string  //  The extracted data field string
-  DataFieldIndex                int     //  The index in 'TargetStr' where the data field
-                                        //    begins.
-  DataFieldLength               int     //  The length of the extracted data field string.
-  DataFieldTrailingDelimiter    string  //  The trailing character which marked the end of
-                                        //    the data field. A zero value indicates end
-                                        //    of string encountered.
-  DataFieldTrailingDelimiterType  DataFieldTrailingDelimiterType
-                                        //  A constant or enumeration type used to describe
-                                        //    the type of delimiter used to mark the end of
-                                        //    a data field.
-  NextTargetStrIndex            int     //  The index in 'TargetStr' immediately following
-                                        //    the extracted data field.
-  CommentDelimiter              string  //  If a Comment Delimiter is detected it is stored
-                                        //    here.
-  CommentDelimiterIndex         int     //  If a Comment Delimiter is detected, the string
-                                        //    index in 'TargetStr' showing its location is
-                                        //    stored here.
-  EndOfLineDelimiter            string  //  If an End-Of-Line Delimiter is detected it is
-                                        //    captured and stored here.
-  EndOfLineDelimiterIndex       int     //  If an End-Of-Line Delimiter is detected, the string
-                                        //    index in 'TargetStr' showing its location is
-                                        //    stored here.
+	TargetStr string //  The string from which the data field
+	//    is extracted.
+	TargetStrLength     int //  Length of 'TargetStr'
+	TargetStrStartIndex int //  The index with in 'TargetStr' from which
+	//    the search for a data field was initiated.
+	TargetStrLastGoodIndex int //  Last valid index in target string which is
+	//    less than the target string length and is
+	//    NOT an 'End Of Field' or 'End Of Line'
+	//    Delimiter
+	LeadingKeyWordDelimiter string //  The Leading Key Word Delimiter which is used
+	//    identify the beginning of the field search
+	LeadingKeyWordDelimiterIndex int    //  Index of the found Leading Key Word Delimiter
+	DataFieldStr                 string //  The extracted data field string
+	DataFieldIndex               int    //  The index in 'TargetStr' where the data field
+	//    begins.
+	DataFieldLength            int    //  The length of the extracted data field string.
+	DataFieldTrailingDelimiter string //  The trailing character which marked the end of
+	//    the data field. A zero value indicates end
+	//    of string encountered.
+	DataFieldTrailingDelimiterType DataFieldTrailingDelimiterType
+	//  A constant or enumeration type used to describe
+	//    the type of delimiter used to mark the end of
+	//    a data field.
+	NextTargetStrIndex int //  The index in 'TargetStr' immediately following
+	//    the extracted data field.
+	CommentDelimiter string //  If a Comment Delimiter is detected it is stored
+	//    here.
+	CommentDelimiterIndex int //  If a Comment Delimiter is detected, the string
+	//    index in 'TargetStr' showing its location is
+	//    stored here.
+	EndOfLineDelimiter string //  If an End-Of-Line Delimiter is detected it is
+	//    captured and stored here.
+	EndOfLineDelimiterIndex int //  If an End-Of-Line Delimiter is detected, the string
+	//    index in 'TargetStr' showing its location is
+	//    stored here.
 }
 
 func (dfProfile DataFieldProfileDto) New() DataFieldProfileDto {
-  newDataDto := DataFieldProfileDto{}
-  newDataDto.TargetStr = ""
-  newDataDto.TargetStrStartIndex = -1
-  newDataDto.LeadingKeyWordDelimiter = ""
-  newDataDto.LeadingKeyWordDelimiterIndex = -1
-  newDataDto.DataFieldStr = ""
-  newDataDto.DataFieldIndex = -1
-  newDataDto.DataFieldLength = 0
-  newDataDto.DataFieldTrailingDelimiter = ""
-  newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.Unknown()
-  newDataDto.NextTargetStrIndex = -1
-  newDataDto.CommentDelimiter = ""
-  newDataDto.CommentDelimiterIndex = -1
-  newDataDto.EndOfLineDelimiter = ""
-  newDataDto.EndOfLineDelimiterIndex = -1
-  return newDataDto
+	newDataDto := DataFieldProfileDto{}
+	newDataDto.TargetStr = ""
+	newDataDto.TargetStrStartIndex = -1
+	newDataDto.LeadingKeyWordDelimiter = ""
+	newDataDto.LeadingKeyWordDelimiterIndex = -1
+	newDataDto.DataFieldStr = ""
+	newDataDto.DataFieldIndex = -1
+	newDataDto.DataFieldLength = 0
+	newDataDto.DataFieldTrailingDelimiter = ""
+	newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.Unknown()
+	newDataDto.NextTargetStrIndex = -1
+	newDataDto.CommentDelimiter = ""
+	newDataDto.CommentDelimiterIndex = -1
+	newDataDto.EndOfLineDelimiter = ""
+	newDataDto.EndOfLineDelimiterIndex = -1
+	return newDataDto
 }
 
 // ConvertToErrorState - Prepares the current DataFieldProfileDto instance
@@ -264,10 +260,10 @@ func (dfProfile DataFieldProfileDto) New() DataFieldProfileDto {
 // to the data field are zeroed.
 //
 func (dfProfile DataFieldProfileDto) ConvertToErrorState() {
-  dfProfile.DataFieldStr = ""
-  dfProfile.DataFieldIndex = -1
-  dfProfile.DataFieldLength = 0
-  dfProfile.NextTargetStrIndex = -1
+	dfProfile.DataFieldStr = ""
+	dfProfile.DataFieldIndex = -1
+	dfProfile.DataFieldLength = 0
+	dfProfile.NextTargetStrIndex = -1
 
 }
 
@@ -292,14 +288,14 @@ func (dfProfile DataFieldProfileDto) ConvertToErrorState() {
 // interfaces. All io.Reader and io.Writer operations utilize the private string
 // data element, 'StrOps.stringData'.
 type StrOps struct {
-  StrIn      string // public string variable available at user's discretion
-  StrOut     string // public string variable available at user's discretion
-  stringData string // private string variable accessed by StrOps.Read and
-  //	StrOps.Write. Accessed through methods
-  //	StrOps.GetStringData() and StrOps.SetStringData()
-  stringDataMutex sync.Mutex // Used internally to ensure thread safe operations
-  cntBytesRead    uint64     // Used internally to track Bytes Read by StrOps.Read()
-  cntBytesWritten uint64     // Used internally to track Bytes Written by StrOps.Write()
+	StrIn      string // public string variable available at user's discretion
+	StrOut     string // public string variable available at user's discretion
+	stringData string // private string variable accessed by StrOps.Read and
+	//	StrOps.Write. Accessed through methods
+	//	StrOps.GetStringData() and StrOps.SetStringData()
+	stringDataMutex sync.Mutex // Used internally to ensure thread safe operations
+	cntBytesRead    uint64     // Used internally to track Bytes Read by StrOps.Read()
+	cntBytesWritten uint64     // Used internally to track Bytes Written by StrOps.Write()
 }
 
 // BreakTextAtLineLength - Breaks string text into lines. Takes a string and inserts a
@@ -319,181 +315,181 @@ type StrOps struct {
 //
 func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineDelimiter rune) (string, error) {
 
-  ePrefix := "StrOps.BreakTextAtLineLength() "
+	ePrefix := "StrOps.BreakTextAtLineLength() "
 
-  targetLen := len(targetStr)
+	targetLen := len(targetStr)
 
-  if targetLen == 0 {
-    return "",
-      errors.New(ePrefix + "Error: Input parameter 'targetStr' is a ZERO LENGTH STRING!")
-  }
+	if targetLen == 0 {
+		return "",
+			errors.New(ePrefix + "Error: Input parameter 'targetStr' is a ZERO LENGTH STRING!")
+	}
 
-  if lineLength < 5 {
-    return "",
-      fmt.Errorf(ePrefix+"Error: Input parameter 'lineLength' is LESS THAN 5-CHARACTERS! "+
-        "lineLength='%v' ", lineLength)
-  }
+	if lineLength < 5 {
+		return "",
+			fmt.Errorf(ePrefix+"Error: Input parameter 'lineLength' is LESS THAN 5-CHARACTERS! "+
+				"lineLength='%v' ", lineLength)
+	}
 
-  if lineDelimiter == 0 {
-    return "",
-      errors.New(ePrefix + "Error: Input parameter 'lineDelimiter' is ZERO VALUE!")
-  }
+	if lineDelimiter == 0 {
+		return "",
+			errors.New(ePrefix + "Error: Input parameter 'lineDelimiter' is ZERO VALUE!")
+	}
 
-  if sops.IsEmptyOrWhiteSpace(targetStr) {
-    return "\n", nil
-  }
+	if sops.IsEmptyOrWhiteSpace(targetStr) {
+		return "\n", nil
+	}
 
-  var err error
+	var err error
 
-  var b strings.Builder
-  b.Grow(((targetLen / lineLength) * targetLen) + 50)
+	var b strings.Builder
+	b.Grow(((targetLen / lineLength) * targetLen) + 50)
 
-  var begIdx, endWrdIdx, actualLastIdx, beginWrdIdx int
-  var isAllOneWord, isAllSpaces bool
+	var begIdx, endWrdIdx, actualLastIdx, beginWrdIdx int
+	var isAllOneWord, isAllSpaces bool
 
-  for begIdx < targetLen && begIdx > -1 {
+	for begIdx < targetLen && begIdx > -1 {
 
-    // skip spaces at the beginning of the line
-    begIdx, err = sops.FindFirstNonSpaceChar(targetStr, begIdx, targetLen-1)
+		// skip spaces at the beginning of the line
+		begIdx, err = sops.FindFirstNonSpaceChar(targetStr, begIdx, targetLen-1)
 
-    if err != nil {
-      return "",
-        fmt.Errorf(ePrefix+
-          "Error returned by sops.FindFirstNonSpaceChar(targetStr, begIdx, actualLastIdx). "+
-          "targetStr='%v' begIdx='%v' actualLastIdx='%v'   Error='%v' ",
-          targetStr, begIdx, actualLastIdx, err.Error())
-    }
+		if err != nil {
+			return "",
+				fmt.Errorf(ePrefix+
+					"Error returned by sops.FindFirstNonSpaceChar(targetStr, begIdx, actualLastIdx). "+
+					"targetStr='%v' begIdx='%v' actualLastIdx='%v'   Error='%v' ",
+					targetStr, begIdx, actualLastIdx, err.Error())
+		}
 
-    if begIdx == -1 {
+		if begIdx == -1 {
 
-      if b.Len() == 0 {
-        b.WriteRune(lineDelimiter)
-      }
+			if b.Len() == 0 {
+				b.WriteRune(lineDelimiter)
+			}
 
-      break // Exit loop
-    }
+			break // Exit loop
+		}
 
-    if begIdx == targetLen-1 {
-      b.WriteByte(targetStr[begIdx])
-      b.WriteRune(lineDelimiter)
-      break
-    }
+		if begIdx == targetLen-1 {
+			b.WriteByte(targetStr[begIdx])
+			b.WriteRune(lineDelimiter)
+			break
+		}
 
-    actualLastIdx = begIdx + lineLength - 1
+		actualLastIdx = begIdx + lineLength - 1
 
-    if actualLastIdx >= targetLen {
-      actualLastIdx = targetLen - 1
-    }
+		if actualLastIdx >= targetLen {
+			actualLastIdx = targetLen - 1
+		}
 
-    // Find the last complete word in this string segment
-    beginWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err =
-      sops.FindLastWord(targetStr, begIdx, actualLastIdx)
+		// Find the last complete word in this string segment
+		beginWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err =
+			sops.FindLastWord(targetStr, begIdx, actualLastIdx)
 
-    if err != nil {
-      return "",
-        fmt.Errorf(ePrefix+
-          "Error returned by sops.FindLastWord(targetStr,begIdx, actualLastIdx). "+
-          "targetStr='%v' begIdx='%v' actualLastIdx='%v'   Error='%v' ",
-          targetStr, begIdx, actualLastIdx, err.Error())
-    }
+		if err != nil {
+			return "",
+				fmt.Errorf(ePrefix+
+					"Error returned by sops.FindLastWord(targetStr,begIdx, actualLastIdx). "+
+					"targetStr='%v' begIdx='%v' actualLastIdx='%v'   Error='%v' ",
+					targetStr, begIdx, actualLastIdx, err.Error())
+		}
 
-    if isAllSpaces {
-      // This string segment is all spaces
-      // write a line delimiter and continue
-      begIdx = actualLastIdx + 1
+		if isAllSpaces {
+			// This string segment is all spaces
+			// write a line delimiter and continue
+			begIdx = actualLastIdx + 1
 
-    } else if isAllOneWord {
-      // This string segment is all one word
-      // and contains NO spaces.
+		} else if isAllOneWord {
+			// This string segment is all one word
+			// and contains NO spaces.
 
-      if actualLastIdx+1 >= targetLen {
-        // If this is end of the main string,
-        // just write the remaining segment and
-        // exit.
-        //
-        b.WriteString(targetStr[begIdx:])
-        b.WriteRune(lineDelimiter)
-        break
+			if actualLastIdx+1 >= targetLen {
+				// If this is end of the main string,
+				// just write the remaining segment and
+				// exit.
+				//
+				b.WriteString(targetStr[begIdx:])
+				b.WriteRune(lineDelimiter)
+				break
 
-      } else if actualLastIdx-begIdx+1 <= lineLength {
-        // If this string segment is less than the specified
-        // line length, just write the entire line segment.
-        // Be careful, we may be at the end of the main
-        // string.
+			} else if actualLastIdx-begIdx+1 <= lineLength {
+				// If this string segment is less than the specified
+				// line length, just write the entire line segment.
+				// Be careful, we may be at the end of the main
+				// string.
 
-        if actualLastIdx+1 >= targetLen {
-          // This is the end of the main string,
-          // just exit.
-          b.WriteString(targetStr[begIdx:])
-          b.WriteRune(lineDelimiter)
-          break
+				if actualLastIdx+1 >= targetLen {
+					// This is the end of the main string,
+					// just exit.
+					b.WriteString(targetStr[begIdx:])
+					b.WriteRune(lineDelimiter)
+					break
 
-        } else {
+				} else {
 
-          b.WriteString(targetStr[begIdx : actualLastIdx+1])
-          begIdx = actualLastIdx + 1
-        }
+					b.WriteString(targetStr[begIdx : actualLastIdx+1])
+					begIdx = actualLastIdx + 1
+				}
 
-      } else {
-        // Out of options. Nothing left to do but hyphenate
-        // the word.
-        b.WriteString(targetStr[begIdx : actualLastIdx-1])
-        b.WriteRune('-')
-        begIdx = actualLastIdx
+			} else {
+				// Out of options. Nothing left to do but hyphenate
+				// the word.
+				b.WriteString(targetStr[begIdx : actualLastIdx-1])
+				b.WriteRune('-')
+				begIdx = actualLastIdx
 
-      }
+			}
 
-    } else {
-      // The segment is NOT All spaces nor is it all one word.
+		} else {
+			// The segment is NOT All spaces nor is it all one word.
 
-      if endWrdIdx+1 >= targetLen {
-        // Are we at the end of targetStr
-        b.WriteString(targetStr[begIdx:])
-        b.WriteRune(lineDelimiter)
-        break
+			if endWrdIdx+1 >= targetLen {
+				// Are we at the end of targetStr
+				b.WriteString(targetStr[begIdx:])
+				b.WriteRune(lineDelimiter)
+				break
 
-      } else if targetStr[endWrdIdx+1] != ' ' {
-        // This word crosses a line break boundary. Try not to split the word.
+			} else if targetStr[endWrdIdx+1] != ' ' {
+				// This word crosses a line break boundary. Try not to split the word.
 
-        // Find  the end of the last word.
-        idx, err := sops.FindLastNonSpaceChar(targetStr, begIdx, beginWrdIdx-1)
+				// Find  the end of the last word.
+				idx, err := sops.FindLastNonSpaceChar(targetStr, begIdx, beginWrdIdx-1)
 
-        if err != nil {
-          return "",
-            fmt.Errorf(ePrefix+
-              "Error returned by sops.FindLastNonSpaceChar(targetStr,begIdx, beginWrdIdx-1). "+
-              "targetStr='%v' begIdx='%v' actualLastIdx='%v'   Error='%v' ",
-              targetStr, begIdx, actualLastIdx, err.Error())
-        }
+				if err != nil {
+					return "",
+						fmt.Errorf(ePrefix+
+							"Error returned by sops.FindLastNonSpaceChar(targetStr,begIdx, beginWrdIdx-1). "+
+							"targetStr='%v' begIdx='%v' actualLastIdx='%v'   Error='%v' ",
+							targetStr, begIdx, actualLastIdx, err.Error())
+				}
 
-        if idx == -1 {
-          begIdx = beginWrdIdx
-          // Do not write end of line delimiter
-          // Set bigIdx to beginning of word and
-          // loop again
-          continue
+				if idx == -1 {
+					begIdx = beginWrdIdx
+					// Do not write end of line delimiter
+					// Set bigIdx to beginning of word and
+					// loop again
+					continue
 
-        } else {
-          // Success we found the end of the last word.
-          b.WriteString(targetStr[begIdx : idx+1])
-          begIdx = idx + 1
-        }
+				} else {
+					// Success we found the end of the last word.
+					b.WriteString(targetStr[begIdx : idx+1])
+					begIdx = idx + 1
+				}
 
-      } else {
-        // The word does not cross a line break boundary.
-        // The next character after the last word is a
-        // space.
+			} else {
+				// The word does not cross a line break boundary.
+				// The next character after the last word is a
+				// space.
 
-        b.WriteString(targetStr[begIdx : endWrdIdx+1])
-        begIdx = endWrdIdx + 1
-      }
-    }
+				b.WriteString(targetStr[begIdx : endWrdIdx+1])
+				begIdx = endWrdIdx + 1
+			}
+		}
 
-    b.WriteRune(lineDelimiter)
+		b.WriteRune(lineDelimiter)
 
-  }
+	}
 
-  return b.String(), nil
+	return b.String(), nil
 }
 
 // ConvertNonPrintableCharacters - Receives a string containing non-printable characters
@@ -503,57 +499,55 @@ func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineD
 // to "[SPACE]" in the returned string.
 //
 func (sops StrOps) ConvertNonPrintableCharacters(
-  nonPrintableChars []rune, convertSpace bool) (printableChars string) {
+	nonPrintableChars []rune, convertSpace bool) (printableChars string) {
 
-  lenNonPrintableChars := len(nonPrintableChars)
+	lenNonPrintableChars := len(nonPrintableChars)
 
-  if lenNonPrintableChars == 0 {
-    return "[EMPTY]"
-  }
+	if lenNonPrintableChars == 0 {
+		return "[EMPTY]"
+	}
 
+	var b strings.Builder
+	b.Grow(lenNonPrintableChars * 5)
 
-  var b strings.Builder
-  b.Grow(lenNonPrintableChars * 5)
+	for i := 0; i < lenNonPrintableChars; i++ {
+		cRune := nonPrintableChars[i]
 
+		switch cRune {
+		case '\a':
+			b.WriteString("\\a")
+		case '\b':
+			b.WriteString("\\b") // backspace
+		case '\f':
+			b.WriteString("\\f") // form feed
+		case '\n':
+			b.WriteString("\\n") // new line
+		case '\r':
+			b.WriteString("\\r") // carriage return
+		case '\t':
+			b.WriteString("\\t") // tab
+		case '\v':
+			b.WriteString("\\v") // vertical tab
+		case '\\':
+			b.WriteString("\\")
+		case 0:
+			b.WriteString("[NULL]")
+		case ' ':
 
-  for i:=0; i < lenNonPrintableChars; i++ {
-    cRune := nonPrintableChars[i]
+			if convertSpace {
+				b.WriteString("[SPACE]")
+			} else {
+				b.WriteRune(' ')
+			}
 
-    switch cRune {
-    case '\a' :
-      b.WriteString("\\a")
-    case '\b':
-      b.WriteString("\\b") // backspace
-    case '\f':
-      b.WriteString("\\f")  // form feed
-    case '\n':
-      b.WriteString("\\n")  // new line
-    case '\r':
-      b.WriteString("\\r")  // carriage return
-    case '\t':
-      b.WriteString("\\t")  // tab
-    case '\v':
-      b.WriteString("\\v")  // vertical tab
-    case '\\':
-      b.WriteString("\\")
-    case 0:
-      b.WriteString("[NULL]")
-    case ' ':
+		default:
+			b.WriteRune(cRune)
 
-      if convertSpace {
-        b.WriteString("[SPACE]")
-      } else {
-        b.WriteRune(' ')
-      }
+		}
 
-    default :
-      b.WriteRune(cRune)
+	}
 
-    }
-
-  }
-
-  return b.String()
+	return b.String()
 }
 
 // CopyIn - Copies string information from another StrOps
@@ -561,15 +555,15 @@ func (sops StrOps) ConvertNonPrintableCharacters(
 // StrOps instance.
 func (sops *StrOps) CopyIn(strops2 *StrOps) {
 
-  sops.StrIn = strops2.StrIn
-  sops.StrOut = strops2.StrOut
-  sops.stringDataMutex.Lock()
-  strops2.stringDataMutex.Lock()
-  sops.cntBytesWritten = 0
-  sops.cntBytesRead = 0
-  sops.stringData = strops2.stringData
-  strops2.stringDataMutex.Unlock()
-  sops.stringDataMutex.Unlock()
+	sops.StrIn = strops2.StrIn
+	sops.StrOut = strops2.StrOut
+	sops.stringDataMutex.Lock()
+	strops2.stringDataMutex.Lock()
+	sops.cntBytesWritten = 0
+	sops.cntBytesRead = 0
+	sops.stringData = strops2.stringData
+	strops2.stringDataMutex.Unlock()
+	sops.stringDataMutex.Unlock()
 
 }
 
@@ -578,14 +572,14 @@ func (sops *StrOps) CopyIn(strops2 *StrOps) {
 // new instance containing that copied information.
 func (sops *StrOps) CopyOut() *StrOps {
 
-  strops2 := StrOps{}
-  strops2.StrIn = sops.StrIn
-  strops2.StrOut = sops.StrOut
-  sops.stringDataMutex.Lock()
-  strops2.stringData = sops.stringData
-  sops.stringDataMutex.Unlock()
+	strops2 := StrOps{}
+	strops2.StrIn = sops.StrIn
+	strops2.StrOut = sops.StrOut
+	sops.stringDataMutex.Lock()
+	strops2.stringData = sops.stringData
+	sops.stringDataMutex.Unlock()
 
-  return &strops2
+	return &strops2
 }
 
 // DoesLastCharExist - returns true if the last character (rune) of
@@ -593,19 +587,19 @@ func (sops *StrOps) CopyOut() *StrOps {
 // is of type 'rune'.
 func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
 
-  testStrLen := len(testStr)
+	testStrLen := len(testStr)
 
-  if testStrLen == 0 {
-    return false
-  }
+	if testStrLen == 0 {
+		return false
+	}
 
-  strLastChar := rune(testStr[testStrLen-1])
+	strLastChar := rune(testStr[testStrLen-1])
 
-  if strLastChar == lastChar {
-    return true
-  }
+	if strLastChar == lastChar {
+		return true
+	}
 
-  return false
+	return false
 }
 
 // ExtractDataField - Extracts a data field string from a larger target string ('targetStr').
@@ -656,247 +650,246 @@ func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
 //                        parameters and must be populated with valid data.
 //
 func (sops StrOps) ExtractDataField(
-  targetStr string,
-  leadingKeyWordDelimiter string,
-  startIdx int,
-  leadingFieldSeparators []string,
-  trailingFieldSeparators []string,
-  commentDelimiters [] string,
-  endOfLineDelimiters []string) (DataFieldProfileDto, error) {
+	targetStr string,
+	leadingKeyWordDelimiter string,
+	startIdx int,
+	leadingFieldSeparators []string,
+	trailingFieldSeparators []string,
+	commentDelimiters []string,
+	endOfLineDelimiters []string) (DataFieldProfileDto, error) {
 
-  ePrefix := "StrOps.ExtractDataField() "
-  newDataDto := DataFieldProfileDto{}.New()
-  newDataDto.TargetStr = targetStr
-  newDataDto.TargetStrLength = len(targetStr)
-  newDataDto.TargetStrStartIndex = startIdx
-  newDataDto.LeadingKeyWordDelimiter = leadingKeyWordDelimiter
+	ePrefix := "StrOps.ExtractDataField() "
+	newDataDto := DataFieldProfileDto{}.New()
+	newDataDto.TargetStr = targetStr
+	newDataDto.TargetStrLength = len(targetStr)
+	newDataDto.TargetStrStartIndex = startIdx
+	newDataDto.LeadingKeyWordDelimiter = leadingKeyWordDelimiter
 
-  lenTargetStr := len(targetStr)
+	lenTargetStr := len(targetStr)
 
-  if lenTargetStr == 0 {
-    return newDataDto,
-      errors.New(ePrefix +
-        "ERROR: Input Parameter 'targetStr' is an EMPTY string!\n")
-  }
+	if lenTargetStr == 0 {
+		return newDataDto,
+			errors.New(ePrefix +
+				"ERROR: Input Parameter 'targetStr' is an EMPTY string!\n")
+	}
 
-  if startIdx < 0 {
-    return newDataDto,
-      fmt.Errorf(ePrefix + "ERROR: Input parameter 'startIdx' is less than zero!\n" +
-        "startIdx='%v'\n", startIdx)
-  }
+	if startIdx < 0 {
+		return newDataDto,
+			fmt.Errorf(ePrefix+"ERROR: Input parameter 'startIdx' is less than zero!\n"+
+				"startIdx='%v'\n", startIdx)
+	}
 
-  if startIdx >= lenTargetStr {
+	if startIdx >= lenTargetStr {
 
-    return newDataDto,
-      fmt.Errorf(ePrefix + "ERROR: Input Parameter 'startIdx' is out-of-bounds!\n" +
-        "startIdx='%v'\t\tLast TargetStr Index='%v'\n" +
-        "Length Of TargetStr='%v'\n",
-        startIdx, lenTargetStr -1, lenTargetStr)
-  }
+		return newDataDto,
+			fmt.Errorf(ePrefix+"ERROR: Input Parameter 'startIdx' is out-of-bounds!\n"+
+				"startIdx='%v'\t\tLast TargetStr Index='%v'\n"+
+				"Length Of TargetStr='%v'\n",
+				startIdx, lenTargetStr-1, lenTargetStr)
+	}
 
-  lenLeadingFieldSeparators := len(leadingFieldSeparators)
+	lenLeadingFieldSeparators := len(leadingFieldSeparators)
 
-  if lenLeadingFieldSeparators == 0 {
+	if lenLeadingFieldSeparators == 0 {
 
-    return newDataDto,
-      errors.New (ePrefix + "ERROR: Input Parameter 'leadingFieldSeparators' is a zero length array!\n" +
-        "'leadingFieldSeparators' are required!\n")
-  }
+		return newDataDto,
+			errors.New(ePrefix + "ERROR: Input Parameter 'leadingFieldSeparators' is a zero length array!\n" +
+				"'leadingFieldSeparators' are required!\n")
+	}
 
-  lenTrailingFieldSeparators := len(trailingFieldSeparators)
+	lenTrailingFieldSeparators := len(trailingFieldSeparators)
 
-  if lenTrailingFieldSeparators == 0 {
+	if lenTrailingFieldSeparators == 0 {
 
-    return newDataDto,
-      errors.New (ePrefix + "ERROR: Input Parameter 'trailingFieldSeparators' is a zero length array!\n" +
-        "'trailingFieldSeparators' are required!\n")
-  }
+		return newDataDto,
+			errors.New(ePrefix + "ERROR: Input Parameter 'trailingFieldSeparators' is a zero length array!\n" +
+				"'trailingFieldSeparators' are required!\n")
+	}
 
-  targetStrRunes := []rune(targetStr)
-  lenTargetStr = len(targetStrRunes)
-  lastGoodTargetStrIdx := lenTargetStr - 1
+	targetStrRunes := []rune(targetStr)
+	lenTargetStr = len(targetStrRunes)
+	lastGoodTargetStrIdx := lenTargetStr - 1
 
-  lenOfEndOfLineDelimiters := len(endOfLineDelimiters)
+	lenOfEndOfLineDelimiters := len(endOfLineDelimiters)
 
-  if lenOfEndOfLineDelimiters > 0 {
+	if lenOfEndOfLineDelimiters > 0 {
 
-    for b:=0; b < lenOfEndOfLineDelimiters; b++ {
-      eolDelimiterIdx := strings.Index(targetStr[startIdx:], endOfLineDelimiters[b])
+		for b := 0; b < lenOfEndOfLineDelimiters; b++ {
+			eolDelimiterIdx := strings.Index(targetStr[startIdx:], endOfLineDelimiters[b])
 
-      if eolDelimiterIdx == -1 {
-        continue
-      }
+			if eolDelimiterIdx == -1 {
+				continue
+			}
 
-      eolDelimiterIdx += startIdx
+			eolDelimiterIdx += startIdx
 
-      newDataDto.EndOfLineDelimiter = endOfLineDelimiters[b]
-      newDataDto.EndOfLineDelimiterIndex = eolDelimiterIdx
+			newDataDto.EndOfLineDelimiter = endOfLineDelimiters[b]
+			newDataDto.EndOfLineDelimiterIndex = eolDelimiterIdx
 
-      if eolDelimiterIdx > lastGoodTargetStrIdx {
-        continue
-      }
+			if eolDelimiterIdx > lastGoodTargetStrIdx {
+				continue
+			}
 
-      // End-Of-Line Index is less than or equal to 'lastGoodTargetStrIds'
-      newDataDto.DataFieldTrailingDelimiter = endOfLineDelimiters[b]
-      newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfLine()
+			// End-Of-Line Index is less than or equal to 'lastGoodTargetStrIds'
+			newDataDto.DataFieldTrailingDelimiter = endOfLineDelimiters[b]
+			newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfLine()
 
-      eolDelimiterIdx--
-      lastGoodTargetStrIdx = eolDelimiterIdx
+			eolDelimiterIdx--
+			lastGoodTargetStrIdx = eolDelimiterIdx
 
-      break
-    }
+			break
+		}
 
-  }
+	}
 
-  if startIdx > lastGoodTargetStrIdx ||
-    lastGoodTargetStrIdx < 0 {
+	if startIdx > lastGoodTargetStrIdx ||
+		lastGoodTargetStrIdx < 0 {
 
-    newDataDto.TargetStrLastGoodIndex = lastGoodTargetStrIdx
+		newDataDto.TargetStrLastGoodIndex = lastGoodTargetStrIdx
 
-    return newDataDto, nil
-  }
+		return newDataDto, nil
+	}
 
-  lenCommentDelimiters := len(commentDelimiters)
+	lenCommentDelimiters := len(commentDelimiters)
 
-  if lenCommentDelimiters > 0 {
+	if lenCommentDelimiters > 0 {
 
-    for b:=0; b < lenCommentDelimiters; b++ {
+		for b := 0; b < lenCommentDelimiters; b++ {
 
-      commentIdx := strings.Index(targetStr[startIdx:], commentDelimiters[b])
+			commentIdx := strings.Index(targetStr[startIdx:], commentDelimiters[b])
 
-      if commentIdx == -1 {
-        continue
-      }
+			if commentIdx == -1 {
+				continue
+			}
 
-      commentIdx += startIdx
+			commentIdx += startIdx
 
-      newDataDto.CommentDelimiter = commentDelimiters[b]
-      newDataDto.CommentDelimiterIndex = commentIdx
+			newDataDto.CommentDelimiter = commentDelimiters[b]
+			newDataDto.CommentDelimiterIndex = commentIdx
 
-      if commentIdx > lastGoodTargetStrIdx {
-        continue
-      }
+			if commentIdx > lastGoodTargetStrIdx {
+				continue
+			}
 
-      // Comment Index is less than or equal to 'lastGoodTargetStrIds'
-      newDataDto.DataFieldTrailingDelimiter = commentDelimiters[b]
-      newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.Comment()
+			// Comment Index is less than or equal to 'lastGoodTargetStrIds'
+			newDataDto.DataFieldTrailingDelimiter = commentDelimiters[b]
+			newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.Comment()
 
-      commentIdx--
-      lastGoodTargetStrIdx = commentIdx
+			commentIdx--
+			lastGoodTargetStrIdx = commentIdx
 
-      break
-    }
+			break
+		}
 
-  }
+	}
 
-  newDataDto.TargetStrLastGoodIndex = lastGoodTargetStrIdx
+	newDataDto.TargetStrLastGoodIndex = lastGoodTargetStrIdx
 
-  if startIdx > lastGoodTargetStrIdx ||
-    lastGoodTargetStrIdx < 0 {
+	if startIdx > lastGoodTargetStrIdx ||
+		lastGoodTargetStrIdx < 0 {
 
-    newDataDto.ConvertToErrorState()
+		newDataDto.ConvertToErrorState()
 
-    return newDataDto, nil
-  }
+		return newDataDto, nil
+	}
 
-  lenLeadingKeyWordDelimiter := len(leadingKeyWordDelimiter)
+	lenLeadingKeyWordDelimiter := len(leadingKeyWordDelimiter)
 
-  if lenLeadingKeyWordDelimiter > 0 {
+	if lenLeadingKeyWordDelimiter > 0 {
 
-    keyWordIdx := strings.Index(targetStr[startIdx:], leadingKeyWordDelimiter)
+		keyWordIdx := strings.Index(targetStr[startIdx:], leadingKeyWordDelimiter)
 
-    if keyWordIdx == -1 {
-      return newDataDto, nil
-    }
+		if keyWordIdx == -1 {
+			return newDataDto, nil
+		}
 
-    keyWordIdx += startIdx
-    newDataDto.LeadingKeyWordDelimiterIndex = keyWordIdx
+		keyWordIdx += startIdx
 
-    if keyWordIdx >= lastGoodTargetStrIdx {
-      return newDataDto, nil
-    }
+		if keyWordIdx >= lastGoodTargetStrIdx {
+			return newDataDto, nil
+		}
 
-    startIdx =  lenLeadingKeyWordDelimiter + keyWordIdx
-  }
+		newDataDto.LeadingKeyWordDelimiterIndex = keyWordIdx
 
+		startIdx = lenLeadingKeyWordDelimiter + keyWordIdx
+	}
 
-  fieldDataRunes := make([]rune, 0, 20)
-  firstDataFieldIdx := -1
+	fieldDataRunes := make([]rune, 0, 20)
+	firstDataFieldIdx := -1
 
-  i:= startIdx
+	i := startIdx
 
-  for i <= lastGoodTargetStrIdx {
+	for i <= lastGoodTargetStrIdx {
 
-    if firstDataFieldIdx == -1 {
+		if firstDataFieldIdx == -1 {
 
-      for j:=0; j < lenLeadingFieldSeparators; j++ {
+			for j := 0; j < lenLeadingFieldSeparators; j++ {
 
-        idxLeadingFieldSep := strings.Index(targetStr[i:], leadingFieldSeparators[j])
+				idxLeadingFieldSep := strings.Index(targetStr[i:], leadingFieldSeparators[j])
 
-        if idxLeadingFieldSep != 0 {
-          continue
-        }
+				if idxLeadingFieldSep != 0 {
+					continue
+				}
 
-        // Found a leading Field Separator - skip it
-        i += len(leadingFieldSeparators[j])
+				// Found a leading Field Separator - skip it
+				i += len(leadingFieldSeparators[j])
 
-        goto cycleMainTargetLoop
-      }
+				goto cycleMainTargetLoop
+			}
 
-    } else {
+		} else {
 
-      for k:=0; k < lenTrailingFieldSeparators; k++ {
+			for k := 0; k < lenTrailingFieldSeparators; k++ {
 
-        idxTrailingFieldSep := strings.Index(targetStr[i:], trailingFieldSeparators[k])
+				idxTrailingFieldSep := strings.Index(targetStr[i:], trailingFieldSeparators[k])
 
-        if idxTrailingFieldSep != 0 {
-          continue
-        }
+				if idxTrailingFieldSep != 0 {
+					continue
+				}
 
-        newDataDto.DataFieldTrailingDelimiter = trailingFieldSeparators[k]
+				newDataDto.DataFieldTrailingDelimiter = trailingFieldSeparators[k]
 
-        newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfField()
+				newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfField()
 
-        goto exitMainTargetLoop
-      }
+				goto exitMainTargetLoop
+			}
 
-    }
+		}
 
-    if firstDataFieldIdx == -1 {
-      firstDataFieldIdx = i
-    }
+		if firstDataFieldIdx == -1 {
+			firstDataFieldIdx = i
+		}
 
-    fieldDataRunes = append(fieldDataRunes, targetStrRunes[i])
+		fieldDataRunes = append(fieldDataRunes, targetStrRunes[i])
 
-    i++
+		i++
 
-  cycleMainTargetLoop:
+	cycleMainTargetLoop:
+	}
 
-  }
+exitMainTargetLoop:
 
-  exitMainTargetLoop:
+	if len(fieldDataRunes) == 0 {
+		return newDataDto, nil
+	}
 
-  if len(fieldDataRunes) == 0 {
-    return newDataDto, nil
-  }
+	if newDataDto.DataFieldTrailingDelimiterType == DfTrailDelimiter.Unknown() {
+		newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfString()
+	}
 
-  if newDataDto.DataFieldTrailingDelimiterType == DfTrailDelimiter.Unknown() {
-    newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfString()
-  }
+	newDataDto.DataFieldStr = string(fieldDataRunes)
+	newDataDto.DataFieldLength = len(newDataDto.DataFieldStr)
+	newDataDto.DataFieldIndex = firstDataFieldIdx
+	newDataDto.TargetStrLastGoodIndex = lastGoodTargetStrIdx
+	nextIdx := newDataDto.DataFieldIndex + newDataDto.DataFieldLength
 
-  newDataDto.DataFieldStr = string(fieldDataRunes)
-  newDataDto.DataFieldLength = len(newDataDto.DataFieldStr)
-  newDataDto.DataFieldIndex = firstDataFieldIdx
-  newDataDto.TargetStrLastGoodIndex = lastGoodTargetStrIdx
-  nextIdx := newDataDto.DataFieldIndex + newDataDto.DataFieldLength
+	if nextIdx > lastGoodTargetStrIdx {
+		newDataDto.NextTargetStrIndex = -1
+	} else {
+		newDataDto.NextTargetStrIndex = nextIdx
+	}
 
-  if nextIdx > lastGoodTargetStrIdx {
-    newDataDto.NextTargetStrIndex = -1
-  } else {
-    newDataDto.NextTargetStrIndex = nextIdx
-  }
-
-  return newDataDto, nil
+	return newDataDto, nil
 }
 
 // ExtractNumericDigits - Examines an input parameter 'targetStr' to identify and extract the
@@ -1029,308 +1022,307 @@ func (sops StrOps) ExtractDataField(
 //                        this value is set to 'nil'.
 //
 func (sops StrOps) ExtractNumericDigits(
-  targetStr string,
-  startIndex int,
-  keepLeadingChars string,
-  keepInteriorChars string,
-  keepTrailingChars string) (NumStrProfileDto,	error) {
+	targetStr string,
+	startIndex int,
+	keepLeadingChars string,
+	keepInteriorChars string,
+	keepTrailingChars string) (NumStrProfileDto, error) {
 
-  nStrDto := NumStrProfileDto{}.New()
-  nStrDto.TargetStr = targetStr
-  nStrDto.StartIndex = startIndex
+	nStrDto := NumStrProfileDto{}.New()
+	nStrDto.TargetStr = targetStr
+	nStrDto.StartIndex = startIndex
 
-  var err error = nil
+	var err error = nil
 
-  ePrefix := "StrOps.ExtractNumericDigits() "
+	ePrefix := "StrOps.ExtractNumericDigits() "
 
-  lenTargetStr := len(targetStr)
+	lenTargetStr := len(targetStr)
 
-  if lenTargetStr == 0 {
-    return nStrDto, err
-  }
+	if lenTargetStr == 0 {
+		return nStrDto, err
+	}
 
-  if startIndex < 0 {
-    err = fmt.Errorf(ePrefix+
-      "ERROR: Input parameter 'startIndex' is less than zero!\n"+
-      "startIndex='%v'", startIndex)
+	if startIndex < 0 {
+		err = fmt.Errorf(ePrefix+
+			"ERROR: Input parameter 'startIndex' is less than zero!\n"+
+			"startIndex='%v'", startIndex)
 
-    return nStrDto, err
-  }
+		return nStrDto, err
+	}
 
-  if startIndex >= lenTargetStr {
-    err = fmt.Errorf(ePrefix+
-      "ERROR: Input parameter 'startIndex' is INVALID!\n"+
-      "'startIndex' exceeds the last character index in 'targetStr'\n"+
-      "startIndex='%v'\tlast character index='%v'\n"+
-      "targetStr='%v'", startIndex, lenTargetStr-1, targetStr)
+	if startIndex >= lenTargetStr {
+		err = fmt.Errorf(ePrefix+
+			"ERROR: Input parameter 'startIndex' is INVALID!\n"+
+			"'startIndex' exceeds the last character index in 'targetStr'\n"+
+			"startIndex='%v'\tlast character index='%v'\n"+
+			"targetStr='%v'", startIndex, lenTargetStr-1, targetStr)
 
-    return nStrDto, err
-  }
+		return nStrDto, err
+	}
 
-  targetRunes := []rune(targetStr)
-  lenTargetStr = len(targetRunes)
+	targetRunes := []rune(targetStr)
+	lenTargetStr = len(targetRunes)
 
-  keepLeadingRunes := make([]rune, 0)
-  lenKeepLeadingRunes := 0
+	keepLeadingRunes := make([]rune, 0)
+	lenKeepLeadingRunes := 0
 
-  keepInteriorRunes := make([]rune, 0)
-  lenKeepInteriorRunes := 0
+	keepInteriorRunes := make([]rune, 0)
+	lenKeepInteriorRunes := 0
 
-  keepTrailingRunes := make([]rune, 0)
-  lenKeepTrailingRunes := 0
+	keepTrailingRunes := make([]rune, 0)
+	lenKeepTrailingRunes := 0
 
-  if len(keepLeadingChars) > 0 {
+	if len(keepLeadingChars) > 0 {
 
-    // Remove any numeric characters
-    for a := 0; a < len(keepLeadingChars); a++ {
+		// Remove any numeric characters
+		for a := 0; a < len(keepLeadingChars); a++ {
 
-      if keepLeadingChars[a] >= '0' &&
-        keepLeadingChars[a] <= '9' {
-        continue
-      }
+			if keepLeadingChars[a] >= '0' &&
+				keepLeadingChars[a] <= '9' {
+				continue
+			}
 
-      keepLeadingRunes = append(keepLeadingRunes, rune(keepLeadingChars[a]))
+			keepLeadingRunes = append(keepLeadingRunes, rune(keepLeadingChars[a]))
 
-    }
+		}
 
-    lenKeepLeadingRunes = len(keepLeadingRunes)
-  }
+		lenKeepLeadingRunes = len(keepLeadingRunes)
+	}
 
-  if len(keepInteriorChars) > 0 {
+	if len(keepInteriorChars) > 0 {
 
-    // Remove any numeric characters
-    for a := 0; a < len(keepInteriorChars); a++ {
+		// Remove any numeric characters
+		for a := 0; a < len(keepInteriorChars); a++ {
 
-      if keepInteriorChars[a] >= '0' &&
-        keepInteriorChars[a] <= '9' {
-        continue
-      }
+			if keepInteriorChars[a] >= '0' &&
+				keepInteriorChars[a] <= '9' {
+				continue
+			}
 
-      keepInteriorRunes = append(keepInteriorRunes, rune(keepInteriorChars[a]))
+			keepInteriorRunes = append(keepInteriorRunes, rune(keepInteriorChars[a]))
 
-    }
+		}
 
-    lenKeepInteriorRunes = len(keepInteriorRunes)
-  }
+		lenKeepInteriorRunes = len(keepInteriorRunes)
+	}
 
-  if len(keepTrailingChars) > 0 {
+	if len(keepTrailingChars) > 0 {
 
-    // Remove any numeric characters
-    for a := 0; a < len(keepTrailingChars); a++ {
+		// Remove any numeric characters
+		for a := 0; a < len(keepTrailingChars); a++ {
 
-      if keepTrailingChars[a] >= '0' &&
-        keepTrailingChars[a] <= '9' {
-        continue
-      }
+			if keepTrailingChars[a] >= '0' &&
+				keepTrailingChars[a] <= '9' {
+				continue
+			}
 
-      keepTrailingRunes = append(keepTrailingRunes, rune(keepTrailingChars[a]))
+			keepTrailingRunes = append(keepTrailingRunes, rune(keepTrailingChars[a]))
 
-    }
+		}
 
-    lenKeepTrailingRunes = len(keepTrailingRunes)
-  }
+		lenKeepTrailingRunes = len(keepTrailingRunes)
+	}
 
-  numberRunesCaptured := make([]rune, 0, 20)
-  lenNumberRunesCaptured := 0
+	numberRunesCaptured := make([]rune, 0, 20)
+	lenNumberRunesCaptured := 0
 
-  leadingCharRunesCaptured := make([]rune, 0, 20)
-  lenLeadingCharRunesCaptured := 0
+	leadingCharRunesCaptured := make([]rune, 0, 20)
+	lenLeadingCharRunesCaptured := 0
 
-  firstNumericDigitIdx := -1
+	firstNumericDigitIdx := -1
 
-  for e := startIndex; e < lenTargetStr; e++ {
+	for e := startIndex; e < lenTargetStr; e++ {
 
-    if targetRunes[e] >= '0' &&
-      targetRunes[e] <= '9' &&
-      firstNumericDigitIdx == -1 {
-      // Target has at least one numeric
-      // digit - and we found it.
-      firstNumericDigitIdx = e
-      break
-    }
-  }
+		if targetRunes[e] >= '0' &&
+			targetRunes[e] <= '9' &&
+			firstNumericDigitIdx == -1 {
+			// Target has at least one numeric
+			// digit - and we found it.
+			firstNumericDigitIdx = e
+			break
+		}
+	}
 
-  if firstNumericDigitIdx == -1 {
-    // There are no numeric digits
-    // in this target string.
-    // EXIT HERE!!!
-    return nStrDto, err
-  }
+	if firstNumericDigitIdx == -1 {
+		// There are no numeric digits
+		// in this target string.
+		// EXIT HERE!!!
+		return nStrDto, err
+	}
 
-  firstNumStrCharIdx := -1
-  leadingSignChar := ""
+	firstNumStrCharIdx := -1
+	leadingSignChar := ""
 
-  // Check for leading non-numeric characters that
-  // need to be retained at the front of the number
-  // string.
-  if lenKeepLeadingRunes > 0 &&
-    startIndex < firstNumericDigitIdx {
+	// Check for leading non-numeric characters that
+	// need to be retained at the front of the number
+	// string.
+	if lenKeepLeadingRunes > 0 &&
+		startIndex < firstNumericDigitIdx {
 
-    for f := firstNumericDigitIdx - 1; f >= startIndex; f-- {
+		for f := firstNumericDigitIdx - 1; f >= startIndex; f-- {
 
-      for g := 0; g < lenKeepLeadingRunes; g++ {
+			for g := 0; g < lenKeepLeadingRunes; g++ {
 
-        if keepLeadingRunes[g] == targetRunes[f] {
+				if keepLeadingRunes[g] == targetRunes[f] {
 
-          if keepLeadingRunes[g] == '+' ||
-            keepLeadingRunes[g] == '-' {
+					if keepLeadingRunes[g] == '+' ||
+						keepLeadingRunes[g] == '-' {
 
-            // This is a leading sign char
-            leadingSignChar = string(targetRunes[f])
+						// This is a leading sign char
+						leadingSignChar = string(targetRunes[f])
 
-            leadingCharRunesCaptured = append(leadingCharRunesCaptured, targetRunes[f])
-            // Delete Leading Sign character. It will not be repeated in
-            // future searches. Only one leading sign char per number string.
+						leadingCharRunesCaptured = append(leadingCharRunesCaptured, targetRunes[f])
+						// Delete Leading Sign character. It will not be repeated in
+						// future searches. Only one leading sign char per number string.
 
-            keepLeadingRunes = append(keepLeadingRunes[0:g], keepLeadingRunes[g+1:]...)
-            lenKeepLeadingRunes--
+						keepLeadingRunes = append(keepLeadingRunes[0:g], keepLeadingRunes[g+1:]...)
+						lenKeepLeadingRunes--
 
-            firstNumStrCharIdx = f
+						firstNumStrCharIdx = f
 
-            // Now delete the alternative leading sign character.
-            // There are only two - plus or minus
-            nextSignChar := '-'
+						// Now delete the alternative leading sign character.
+						// There are only two - plus or minus
+						nextSignChar := '-'
 
-            if leadingSignChar == "-" {
-              nextSignChar = '+'
-            }
+						if leadingSignChar == "-" {
+							nextSignChar = '+'
+						}
 
-            // Leading sign char has been found. Now delete the
-            // alternative lead sign char to avoid duplications
-            for m := 0; m < lenKeepLeadingRunes; m++ {
-              if keepLeadingRunes[m] == nextSignChar {
-                keepLeadingRunes = append(keepLeadingRunes[0:m], keepLeadingRunes[m+1:]...)
-                lenKeepLeadingRunes--
-              }
-            }
+						// Leading sign char has been found. Now delete the
+						// alternative lead sign char to avoid duplications
+						for m := 0; m < lenKeepLeadingRunes; m++ {
+							if keepLeadingRunes[m] == nextSignChar {
+								keepLeadingRunes = append(keepLeadingRunes[0:m], keepLeadingRunes[m+1:]...)
+								lenKeepLeadingRunes--
+							}
+						}
 
-            break
+						break
 
-          } else {
+					} else {
 
-            // Standard Keep Leading Rune character found
-            leadingCharRunesCaptured = append(leadingCharRunesCaptured, targetRunes[f])
-            // Delete Leading Rune character. It will not be repeated in
-            // future searches
+						// Standard Keep Leading Rune character found
+						leadingCharRunesCaptured = append(leadingCharRunesCaptured, targetRunes[f])
+						// Delete Leading Rune character. It will not be repeated in
+						// future searches
 
-            firstNumStrCharIdx = f
+						firstNumStrCharIdx = f
 
-            keepLeadingRunes = append(keepLeadingRunes[0:g], keepLeadingRunes[g+1:]...)
-            lenKeepLeadingRunes--
-            break
-          }
-        }
-      }
+						keepLeadingRunes = append(keepLeadingRunes[0:g], keepLeadingRunes[g+1:]...)
+						lenKeepLeadingRunes--
+						break
+					}
+				}
+			}
 
-      t := len(leadingCharRunesCaptured)
+			t := len(leadingCharRunesCaptured)
 
-      if t > lenLeadingCharRunesCaptured {
-        lenLeadingCharRunesCaptured = t
-        continue
-      }
+			if t > lenLeadingCharRunesCaptured {
+				lenLeadingCharRunesCaptured = t
+				continue
+			}
 
-      break
-    }
-  }
+			break
+		}
+	}
 
-  leadingSignIndex := -1
+	leadingSignIndex := -1
 
-  if lenLeadingCharRunesCaptured > 0 {
+	if lenLeadingCharRunesCaptured > 0 {
 
-    for h := lenLeadingCharRunesCaptured - 1; h >= 0; h-- {
+		for h := lenLeadingCharRunesCaptured - 1; h >= 0; h-- {
 
-      if leadingCharRunesCaptured[h] == '+' ||
-        leadingCharRunesCaptured[h] == '-' {
+			if leadingCharRunesCaptured[h] == '+' ||
+				leadingCharRunesCaptured[h] == '-' {
 
-        numberRunesCaptured = append(numberRunesCaptured, leadingCharRunesCaptured[h])
-        leadingSignIndex = lenNumberRunesCaptured
-        lenNumberRunesCaptured++
+				numberRunesCaptured = append(numberRunesCaptured, leadingCharRunesCaptured[h])
+				leadingSignIndex = lenNumberRunesCaptured
+				lenNumberRunesCaptured++
 
-      } else {
-        numberRunesCaptured = append(numberRunesCaptured, leadingCharRunesCaptured[h])
-        lenNumberRunesCaptured++
-      }
-    }
-  }
+			} else {
+				numberRunesCaptured = append(numberRunesCaptured, leadingCharRunesCaptured[h])
+				lenNumberRunesCaptured++
+			}
+		}
+	}
 
-  // Main Number String Extraction Loop
-  isEndOfNumStr := false
+	// Main Number String Extraction Loop
+	isEndOfNumStr := false
 
-  for i := firstNumericDigitIdx; i < lenTargetStr; i++ {
+	for i := firstNumericDigitIdx; i < lenTargetStr; i++ {
 
-    if !isEndOfNumStr {
+		if !isEndOfNumStr {
 
-      if targetRunes[i] >= '0' && targetRunes[i] <= '9' {
+			if targetRunes[i] >= '0' && targetRunes[i] <= '9' {
 
-        numberRunesCaptured = append(numberRunesCaptured, targetRunes[i])
-        continue
-      }
+				numberRunesCaptured = append(numberRunesCaptured, targetRunes[i])
+				continue
+			}
 
-      for j := 0; j < lenKeepInteriorRunes; j++ {
+			for j := 0; j < lenKeepInteriorRunes; j++ {
 
-        if targetRunes[i] == keepInteriorRunes[j] {
+				if targetRunes[i] == keepInteriorRunes[j] {
 
-          if i+1 >= lenTargetStr ||
-            (targetRunes[i+1] < '0' || targetRunes[i+1] > '9'){
-            // We are either at the end of string or the next char
-            // is NOT a numeric character.
-            goto trailChar
-          }
+					if i+1 >= lenTargetStr ||
+						(targetRunes[i+1] < '0' || targetRunes[i+1] > '9') {
+						// We are either at the end of string or the next char
+						// is NOT a numeric character.
+						goto trailChar
+					}
 
+					numberRunesCaptured = append(numberRunesCaptured, targetRunes[i])
 
-          numberRunesCaptured = append(numberRunesCaptured, targetRunes[i])
+					goto numDigitLoop
+				}
+			}
 
-          goto numDigitLoop
-        }
-      }
+		}
 
-    }
+	trailChar:
+		isEndOfNumStr = true
 
-    trailChar:
-    isEndOfNumStr = true
+		for k := 0; k < lenKeepTrailingRunes; k++ {
 
-    for k := 0; k < lenKeepTrailingRunes; k++ {
+			if targetRunes[i] == keepTrailingRunes[k] {
+				numberRunesCaptured = append(numberRunesCaptured, targetRunes[i])
+				// Only one instance of a keep trailing rune character is captured.
+				// Delete the keep trailing rune character to prevent repeat captures.
+				keepTrailingRunes = append(keepLeadingRunes[0:k], keepTrailingRunes[k+1:]...)
+				lenKeepTrailingRunes--
+				goto numDigitLoop
+			}
 
-      if targetRunes[i] == keepTrailingRunes[k] {
-        numberRunesCaptured = append(numberRunesCaptured, targetRunes[i])
-        // Only one instance of a keep trailing rune character is captured.
-        // Delete the keep trailing rune character to prevent repeat captures.
-        keepTrailingRunes = append(keepLeadingRunes[0:k], keepTrailingRunes[k+1:]...)
-        lenKeepTrailingRunes--
-        goto numDigitLoop
-      }
+		}
 
-    }
+		// Non-numeric character and Non-Trailing Character: Exit the Loop
+		break
 
-    // Non-numeric character and Non-Trailing Character: Exit the Loop
-    break
+	numDigitLoop:
+	}
 
-  numDigitLoop:
-  }
+	if len(numberRunesCaptured) > 0 {
+		nStrDto.NumStr = string(numberRunesCaptured)
 
-  if len(numberRunesCaptured) > 0 {
-    nStrDto.NumStr = string(numberRunesCaptured)
+		if firstNumStrCharIdx > -1 {
+			nStrDto.FirstNumCharIndex = firstNumStrCharIdx
+		} else {
+			nStrDto.FirstNumCharIndex = firstNumericDigitIdx
+		}
 
-    if firstNumStrCharIdx > -1 {
-      nStrDto.FirstNumCharIndex = firstNumStrCharIdx
-    } else {
-      nStrDto.FirstNumCharIndex = firstNumericDigitIdx
-    }
+		nStrDto.NumStrLen = len(nStrDto.NumStr)
+		nStrDto.LeadingSignChar = leadingSignChar
+		nStrDto.LeadingSignIndex = leadingSignIndex
+		nStrDto.NextTargetStrIndex =
+			nStrDto.FirstNumCharIndex + nStrDto.NumStrLen
 
-    nStrDto.NumStrLen = len(nStrDto.NumStr)
-    nStrDto.LeadingSignChar = leadingSignChar
-    nStrDto.LeadingSignIndex = leadingSignIndex
-    nStrDto.NextTargetStrIndex =
-      nStrDto.FirstNumCharIndex + nStrDto.NumStrLen
+		if nStrDto.NextTargetStrIndex >= len(targetStr) {
+			nStrDto.NextTargetStrIndex = -1
+		}
+	}
 
-    if nStrDto.NextTargetStrIndex >= len(targetStr) {
-      nStrDto.NextTargetStrIndex = -1
-    }
-  }
+	err = nil
 
-  err = nil
-
-  return nStrDto, err
+	return nStrDto, err
 }
 
 // FindFirstNonSpaceChar - Returns the string index of the first non-space character in
@@ -1351,47 +1343,47 @@ func (sops StrOps) ExtractNumericDigits(
 //	this method returns a value of -1.
 func (sops StrOps) FindFirstNonSpaceChar(targetStr string, startIndex, endIndex int) (int, error) {
 
-  ePrefix := "StrOps.FindFirstNonSpaceChar() "
+	ePrefix := "StrOps.FindFirstNonSpaceChar() "
 
-  targetStrLen := len(targetStr)
+	targetStrLen := len(targetStr)
 
-  if targetStrLen == 0 {
-    return -1, nil
-  }
+	if targetStrLen == 0 {
+		return -1, nil
+	}
 
-  if startIndex < 0 {
-    return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIndex' is LESS THAN ZERO! "+
-      "startIndex='%v' ", startIndex)
-  }
+	if startIndex < 0 {
+		return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIndex' is LESS THAN ZERO! "+
+			"startIndex='%v' ", startIndex)
+	}
 
-  if endIndex < 0 {
-    return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'endIndex' is LESS THAN ZERO! "+
-      "startIndex='%v' ", startIndex)
-  }
+	if endIndex < 0 {
+		return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'endIndex' is LESS THAN ZERO! "+
+			"startIndex='%v' ", startIndex)
+	}
 
-  if endIndex >= targetStrLen {
-    return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'endIndex' is greater than "+
-      "target string length. INDEX OUT OF RANGE! endIndex='%v' target string length='%v' ",
-      endIndex, targetStrLen)
-  }
+	if endIndex >= targetStrLen {
+		return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'endIndex' is greater than "+
+			"target string length. INDEX OUT OF RANGE! endIndex='%v' target string length='%v' ",
+			endIndex, targetStrLen)
+	}
 
-  if startIndex > endIndex {
-    return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIndex' is GREATER THAN 'endIndex' "+
-      "startIndex='%v' endIndex='%v' ", startIndex, endIndex)
-  }
+	if startIndex > endIndex {
+		return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIndex' is GREATER THAN 'endIndex' "+
+			"startIndex='%v' endIndex='%v' ", startIndex, endIndex)
+	}
 
-  idx := startIndex
+	idx := startIndex
 
-  for idx <= endIndex {
+	for idx <= endIndex {
 
-    if targetStr[idx] != ' ' {
-      return idx, nil
-    }
+		if targetStr[idx] != ' ' {
+			return idx, nil
+		}
 
-    idx++
-  }
+		idx++
+	}
 
-  return -1, nil
+	return -1, nil
 }
 
 // FindLastNonSpaceChar - Returns the string index of the last non-space character in a
@@ -1412,48 +1404,48 @@ func (sops StrOps) FindFirstNonSpaceChar(targetStr string, startIndex, endIndex 
 // of 'endIdx' are invalid, an error will be returned.
 func (sops StrOps) FindLastNonSpaceChar(targetStr string, startIdx, endIdx int) (int, error) {
 
-  ePrefix := "StrOps.FindLastNonSpaceChar() "
+	ePrefix := "StrOps.FindLastNonSpaceChar() "
 
-  targetStrLen := len(targetStr)
+	targetStrLen := len(targetStr)
 
-  if targetStrLen == 0 {
-    return -1, errors.New(ePrefix +
-      "ERROR: Invalid input parameter. 'targetStr' is a ZERO LENGTH STRING! ")
-  }
+	if targetStrLen == 0 {
+		return -1, errors.New(ePrefix +
+			"ERROR: Invalid input parameter. 'targetStr' is a ZERO LENGTH STRING! ")
+	}
 
-  if startIdx < 0 {
-    return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIdx' is LESS THAN ZERO! "+
-      "startIdx='%v' ", startIdx)
-  }
+	if startIdx < 0 {
+		return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIdx' is LESS THAN ZERO! "+
+			"startIdx='%v' ", startIdx)
+	}
 
-  if endIdx < 0 {
-    return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'endIdx' is LESS THAN ZERO! "+
-      "startIdx='%v' ", startIdx)
-  }
+	if endIdx < 0 {
+		return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'endIdx' is LESS THAN ZERO! "+
+			"startIdx='%v' ", startIdx)
+	}
 
-  if endIdx >= targetStrLen {
-    return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'endIdx' is greater than "+
-      "target string length. INDEX OUT OF RANGE! endIdx='%v' target string length='%v' ",
-      endIdx, targetStrLen)
-  }
+	if endIdx >= targetStrLen {
+		return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'endIdx' is greater than "+
+			"target string length. INDEX OUT OF RANGE! endIdx='%v' target string length='%v' ",
+			endIdx, targetStrLen)
+	}
 
-  if startIdx > endIdx {
-    return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIdx' is GREATER THAN 'endIdx' "+
-      "startIdx='%v' endIdx='%v' ", startIdx, endIdx)
-  }
+	if startIdx > endIdx {
+		return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIdx' is GREATER THAN 'endIdx' "+
+			"startIdx='%v' endIdx='%v' ", startIdx, endIdx)
+	}
 
-  floor := startIdx - 1
+	floor := startIdx - 1
 
-  for endIdx > floor {
+	for endIdx > floor {
 
-    if targetStr[endIdx] != ' ' {
-      return endIdx, nil
-    }
+		if targetStr[endIdx] != ' ' {
+			return endIdx, nil
+		}
 
-    endIdx--
-  }
+		endIdx--
+	}
 
-  return -1, nil
+	return -1, nil
 }
 
 // FindLastSpace - Returns a string index indicating the last space character (' ') in
@@ -1472,46 +1464,46 @@ func (sops StrOps) FindLastNonSpaceChar(targetStr string, startIdx, endIdx int) 
 // of 'endIdx' are invalid, an error will be returned.
 func (sops StrOps) FindLastSpace(targetStr string, startIdx, endIdx int) (int, error) {
 
-  ePrefix := "StrOps.FindLastSpace() "
+	ePrefix := "StrOps.FindLastSpace() "
 
-  targetStrLen := len(targetStr)
+	targetStrLen := len(targetStr)
 
-  if targetStrLen == 0 {
-    return -1, errors.New(ePrefix +
-      "ERROR: Invalid input parameter. 'targetStr' is a ZERO LENGTH STRING! ")
-  }
+	if targetStrLen == 0 {
+		return -1, errors.New(ePrefix +
+			"ERROR: Invalid input parameter. 'targetStr' is a ZERO LENGTH STRING! ")
+	}
 
-  if startIdx < 0 {
-    return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIdx' is LESS THAN ZERO! "+
-      "startIdx='%v' ", startIdx)
-  }
+	if startIdx < 0 {
+		return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIdx' is LESS THAN ZERO! "+
+			"startIdx='%v' ", startIdx)
+	}
 
-  if endIdx < 0 {
-    return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'endIdx' is LESS THAN ZERO! "+
-      "startIdx='%v' ", startIdx)
-  }
+	if endIdx < 0 {
+		return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'endIdx' is LESS THAN ZERO! "+
+			"startIdx='%v' ", startIdx)
+	}
 
-  if endIdx >= targetStrLen {
-    return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'endIdx' is greater than "+
-      "target string length. INDEX OUT OF RANGE! endIdx='%v' target string length='%v' ",
-      endIdx, targetStrLen)
-  }
+	if endIdx >= targetStrLen {
+		return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'endIdx' is greater than "+
+			"target string length. INDEX OUT OF RANGE! endIdx='%v' target string length='%v' ",
+			endIdx, targetStrLen)
+	}
 
-  if startIdx > endIdx {
-    return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIdx' is GREATER THAN 'endIdx' "+
-      "startIdx='%v' endIdx='%v' ", startIdx, endIdx)
-  }
+	if startIdx > endIdx {
+		return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIdx' is GREATER THAN 'endIdx' "+
+			"startIdx='%v' endIdx='%v' ", startIdx, endIdx)
+	}
 
-  for endIdx >= startIdx {
+	for endIdx >= startIdx {
 
-    if targetStr[endIdx] == ' ' {
-      return endIdx, nil
-    }
+		if targetStr[endIdx] == ' ' {
+			return endIdx, nil
+		}
 
-    endIdx--
-  }
+		endIdx--
+	}
 
-  return -1, nil
+	return -1, nil
 }
 
 // FindLastWord - Returns the beginning and ending indexes of
@@ -1600,172 +1592,172 @@ func (sops StrOps) FindLastSpace(targetStr string, startIdx, endIdx int) (int, e
 //					an error is returned. If the method completes successfully,
 //					err = nil.
 func (sops StrOps) FindLastWord(
-  targetStr string,
-  startIndex,
-  endIndex int) (beginWrdIdx,
-  endWrdIdx int,
-  isAllOneWord,
-  isAllSpaces bool,
-  err error) {
+	targetStr string,
+	startIndex,
+	endIndex int) (beginWrdIdx,
+	endWrdIdx int,
+	isAllOneWord,
+	isAllSpaces bool,
+	err error) {
 
-  ePrefix := "StrOps.FindLastWord() "
-  beginWrdIdx = -1
-  endWrdIdx = -1
-  isAllOneWord = false
-  isAllSpaces = false
+	ePrefix := "StrOps.FindLastWord() "
+	beginWrdIdx = -1
+	endWrdIdx = -1
+	isAllOneWord = false
+	isAllSpaces = false
 
-  targetStrLen := len(targetStr)
+	targetStrLen := len(targetStr)
 
-  if targetStrLen == 0 {
+	if targetStrLen == 0 {
 
-    err = fmt.Errorf(ePrefix + "Error: Input parameter 'targetStr' is an EMPTY STRING!")
-    return beginWrdIdx,
-      endWrdIdx,
-      isAllOneWord,
-      isAllSpaces,
-      err
-  }
+		err = fmt.Errorf(ePrefix + "Error: Input parameter 'targetStr' is an EMPTY STRING!")
+		return beginWrdIdx,
+			endWrdIdx,
+			isAllOneWord,
+			isAllSpaces,
+			err
+	}
 
-  if startIndex < 0 {
+	if startIndex < 0 {
 
-    err = fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIndex' is LESS THAN ZERO! "+
-      "startIndex='%v' ", startIndex)
+		err = fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIndex' is LESS THAN ZERO! "+
+			"startIndex='%v' ", startIndex)
 
-    return beginWrdIdx,
-      endWrdIdx,
-      isAllOneWord,
-      isAllSpaces,
-      err
-  }
+		return beginWrdIdx,
+			endWrdIdx,
+			isAllOneWord,
+			isAllSpaces,
+			err
+	}
 
-  if endIndex < 0 {
-    err = fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'endIndex' is LESS THAN ZERO! "+
-      "startIndex='%v' ", startIndex)
+	if endIndex < 0 {
+		err = fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'endIndex' is LESS THAN ZERO! "+
+			"startIndex='%v' ", startIndex)
 
-    return beginWrdIdx,
-      endWrdIdx,
-      isAllOneWord,
-      isAllSpaces,
-      err
-  }
+		return beginWrdIdx,
+			endWrdIdx,
+			isAllOneWord,
+			isAllSpaces,
+			err
+	}
 
-  if endIndex >= targetStrLen {
+	if endIndex >= targetStrLen {
 
-    err = fmt.Errorf(ePrefix+
-      "ERROR: Invalid input parameter. 'endIndex' is greater than "+
-      "target string length. INDEX OUT OF RANGE! endIndex='%v' "+
-      "target string length='%v' ",
-      endIndex, targetStrLen)
+		err = fmt.Errorf(ePrefix+
+			"ERROR: Invalid input parameter. 'endIndex' is greater than "+
+			"target string length. INDEX OUT OF RANGE! endIndex='%v' "+
+			"target string length='%v' ",
+			endIndex, targetStrLen)
 
-    return beginWrdIdx,
-      endWrdIdx,
-      isAllOneWord,
-      isAllSpaces,
-      err
-  }
+		return beginWrdIdx,
+			endWrdIdx,
+			isAllOneWord,
+			isAllSpaces,
+			err
+	}
 
-  if startIndex > endIndex {
-    err = fmt.Errorf(ePrefix+
-      "ERROR: Invalid input parameter. 'startIndex' is GREATER THAN 'endIndex'. "+
-      "startIndex='%v' endIndex='%v' ", startIndex, endIndex)
+	if startIndex > endIndex {
+		err = fmt.Errorf(ePrefix+
+			"ERROR: Invalid input parameter. 'startIndex' is GREATER THAN 'endIndex'. "+
+			"startIndex='%v' endIndex='%v' ", startIndex, endIndex)
 
-    return beginWrdIdx,
-      endWrdIdx,
-      isAllOneWord,
-      isAllSpaces,
-      err
-  }
+		return beginWrdIdx,
+			endWrdIdx,
+			isAllOneWord,
+			isAllSpaces,
+			err
+	}
 
-  beginWrdIdx = startIndex
-  endWrdIdx = endIndex
+	beginWrdIdx = startIndex
+	endWrdIdx = endIndex
 
-  idx := endIndex
+	idx := endIndex
 
-  var endingIdxFound bool
+	var endingIdxFound bool
 
-  isAllSpaces = true
-  isAllOneWord = true
+	isAllSpaces = true
+	isAllOneWord = true
 
-  if startIndex == endIndex {
+	if startIndex == endIndex {
 
-    beginWrdIdx = startIndex
-    endWrdIdx = startIndex
+		beginWrdIdx = startIndex
+		endWrdIdx = startIndex
 
-    if targetStr[startIndex] == ' ' {
-      isAllSpaces = true
-      isAllOneWord = false
-    } else {
-      isAllSpaces = false
-      isAllOneWord = true
-    }
+		if targetStr[startIndex] == ' ' {
+			isAllSpaces = true
+			isAllOneWord = false
+		} else {
+			isAllSpaces = false
+			isAllOneWord = true
+		}
 
-    err = nil
+		err = nil
 
-    return beginWrdIdx,
-      endWrdIdx,
-      isAllOneWord,
-      isAllSpaces,
-      err
-  }
+		return beginWrdIdx,
+			endWrdIdx,
+			isAllOneWord,
+			isAllSpaces,
+			err
+	}
 
-  for idx >= startIndex {
+	for idx >= startIndex {
 
-    if targetStr[idx] != ' ' {
-      isAllSpaces = false
-    } else {
-      isAllOneWord = false
-    }
+		if targetStr[idx] != ' ' {
+			isAllSpaces = false
+		} else {
+			isAllOneWord = false
+		}
 
-    if !endingIdxFound &&
-      targetStr[idx] != ' ' {
+		if !endingIdxFound &&
+			targetStr[idx] != ' ' {
 
-      endWrdIdx = idx
-      endingIdxFound = true
-      idx--
-      continue
-    }
+			endWrdIdx = idx
+			endingIdxFound = true
+			idx--
+			continue
+		}
 
-    if endingIdxFound &&
-      targetStr[idx] == ' ' {
+		if endingIdxFound &&
+			targetStr[idx] == ' ' {
 
-      beginWrdIdx = idx + 1
-      break
-    }
+			beginWrdIdx = idx + 1
+			break
+		}
 
-    idx--
-  }
+		idx--
+	}
 
-  if isAllSpaces {
-    isAllOneWord = false
-    beginWrdIdx = -1
-    endWrdIdx = -1
-    err = nil
-    return beginWrdIdx,
-      endWrdIdx,
-      isAllOneWord,
-      isAllSpaces,
-      err
-  }
+	if isAllSpaces {
+		isAllOneWord = false
+		beginWrdIdx = -1
+		endWrdIdx = -1
+		err = nil
+		return beginWrdIdx,
+			endWrdIdx,
+			isAllOneWord,
+			isAllSpaces,
+			err
+	}
 
-  if isAllOneWord {
-    beginWrdIdx = startIndex
-    endWrdIdx = endIndex
-    isAllSpaces = false
-    err = nil
-    return beginWrdIdx,
-      endWrdIdx,
-      isAllOneWord,
-      isAllSpaces,
-      err
-  }
+	if isAllOneWord {
+		beginWrdIdx = startIndex
+		endWrdIdx = endIndex
+		isAllSpaces = false
+		err = nil
+		return beginWrdIdx,
+			endWrdIdx,
+			isAllOneWord,
+			isAllSpaces,
+			err
+	}
 
-  err = nil
+	err = nil
 
-  return beginWrdIdx,
-    endWrdIdx,
-    isAllOneWord,
-    isAllSpaces,
-    err
+	return beginWrdIdx,
+		endWrdIdx,
+		isAllOneWord,
+		isAllSpaces,
+		err
 }
 
 // FindRegExIndex - returns a two-element slice of integers defining the location
@@ -1781,9 +1773,9 @@ func (sops StrOps) FindLastWord(
 //	signals that no match was found.
 func (sops StrOps) FindRegExIndex(targetStr string, regex string) []int {
 
-  re := regexp.MustCompile(regex)
+	re := regexp.MustCompile(regex)
 
-  return re.FindStringIndex(targetStr)
+	return re.FindStringIndex(targetStr)
 
 }
 
@@ -1793,13 +1785,13 @@ func (sops StrOps) FindRegExIndex(targetStr string, regex string) []int {
 // method StrOps.Read().
 func (sops *StrOps) GetCountBytesRead() uint64 {
 
-  var bytesRead uint64
+	var bytesRead uint64
 
-  sops.stringDataMutex.Lock()
-  bytesRead = sops.cntBytesRead
-  sops.stringDataMutex.Unlock()
+	sops.stringDataMutex.Lock()
+	bytesRead = sops.cntBytesRead
+	sops.stringDataMutex.Unlock()
 
-  return bytesRead
+	return bytesRead
 }
 
 // GetCountBytesWritten - Returns private member variable
@@ -1808,43 +1800,43 @@ func (sops *StrOps) GetCountBytesRead() uint64 {
 // through method StrOps.Write().
 func (sops *StrOps) GetCountBytesWritten() uint64 {
 
-  var bytesWritten uint64
+	var bytesWritten uint64
 
-  sops.stringDataMutex.Lock()
-  bytesWritten = sops.cntBytesWritten
-  sops.stringDataMutex.Unlock()
+	sops.stringDataMutex.Lock()
+	bytesWritten = sops.cntBytesWritten
+	sops.stringDataMutex.Unlock()
 
-  return bytesWritten
+	return bytesWritten
 }
 
 // GetReader - Returns an io.Reader which will read the private
 // member data element StrOps.stringData.
 func (sops *StrOps) GetReader() io.Reader {
-  var stringData string
+	var stringData string
 
-  sops.stringDataMutex.Lock()
-  stringData = sops.stringData
-  sops.stringDataMutex.Unlock()
-  return strings.NewReader(stringData)
+	sops.stringDataMutex.Lock()
+	stringData = sops.stringData
+	sops.stringDataMutex.Unlock()
+	return strings.NewReader(stringData)
 }
 
 // GetSoftwareVersion - Returns the software version for package 'strops'.
 func (sops StrOps) GetSoftwareVersion() string {
-  return "2.0.4"
+	return "2.0.4"
 }
 
 // GetStringData - Returns the current value of internal
 // member string, StrOps.stringData
 func (sops *StrOps) GetStringData() string {
-  var output string
+	var output string
 
-  sops.stringDataMutex.Lock()
-  output = sops.stringData
-  sops.cntBytesWritten = 0
-  sops.cntBytesRead = 0
-  sops.stringDataMutex.Unlock()
+	sops.stringDataMutex.Lock()
+	output = sops.stringData
+	sops.cntBytesWritten = 0
+	sops.cntBytesRead = 0
+	sops.stringDataMutex.Unlock()
 
-  return output
+	return output
 }
 
 // GetValidBytes - Receives an array of 'targetBytes' which will be examined to determine
@@ -1881,36 +1873,36 @@ func (sops *StrOps) GetStringData() string {
 //		errors include a zero length 'targetBytes array or 'validBytes' array.
 func (sops StrOps) GetValidBytes(targetBytes, validBytes []byte) ([]byte, error) {
 
-  ePrefix := "StrOps.GetValidBytes() "
+	ePrefix := "StrOps.GetValidBytes() "
 
-  lenTargetBytes := len(targetBytes)
+	lenTargetBytes := len(targetBytes)
 
-  output := make([]byte, 0, lenTargetBytes+10)
+	output := make([]byte, 0, lenTargetBytes+10)
 
-  if lenTargetBytes == 0 {
-    return output,
-      errors.New(ePrefix + "Error: Input parameter 'targetBytes' is a ZERO LENGTH ARRAY!")
-  }
+	if lenTargetBytes == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'targetBytes' is a ZERO LENGTH ARRAY!")
+	}
 
-  lenValidBytes := len(validBytes)
+	lenValidBytes := len(validBytes)
 
-  if lenValidBytes == 0 {
-    return output,
-      errors.New(ePrefix + "Error: Input parameter 'validBytes' is a ZERO LENGTH ARRAY!")
-  }
+	if lenValidBytes == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'validBytes' is a ZERO LENGTH ARRAY!")
+	}
 
-  for i := 0; i < lenTargetBytes; i++ {
+	for i := 0; i < lenTargetBytes; i++ {
 
-    for j := 0; j < lenValidBytes; j++ {
-      if targetBytes[i] == validBytes[j] {
-        output = append(output, targetBytes[i])
-        break
-      }
-    }
+		for j := 0; j < lenValidBytes; j++ {
+			if targetBytes[i] == validBytes[j] {
+				output = append(output, targetBytes[i])
+				break
+			}
+		}
 
-  }
+	}
 
-  return output, nil
+	return output, nil
 }
 
 // GetValidRunes - Receives an array of 'targetRunes' which will be examined to determine
@@ -1947,36 +1939,36 @@ func (sops StrOps) GetValidBytes(targetBytes, validBytes []byte) ([]byte, error)
 //		errors include a zero length 'targetRunes array or 'validRunes' array.
 func (sops StrOps) GetValidRunes(targetRunes []rune, validRunes []rune) ([]rune, error) {
 
-  ePrefix := "StrOps.GetValidRunes() "
+	ePrefix := "StrOps.GetValidRunes() "
 
-  lenTargetRunes := len(targetRunes)
+	lenTargetRunes := len(targetRunes)
 
-  output := make([]rune, 0, lenTargetRunes+10)
+	output := make([]rune, 0, lenTargetRunes+10)
 
-  if lenTargetRunes == 0 {
-    return output,
-      errors.New(ePrefix + "Error: Input parameter 'targetRunes' is a ZERO LENGTH ARRAY!")
-  }
+	if lenTargetRunes == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'targetRunes' is a ZERO LENGTH ARRAY!")
+	}
 
-  lenValidRunes := len(validRunes)
+	lenValidRunes := len(validRunes)
 
-  if lenValidRunes == 0 {
-    return output,
-      errors.New(ePrefix + "Error: Input parameter 'validRunes' is a ZERO LENGTH ARRAY!")
-  }
+	if lenValidRunes == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'validRunes' is a ZERO LENGTH ARRAY!")
+	}
 
-  for i := 0; i < lenTargetRunes; i++ {
+	for i := 0; i < lenTargetRunes; i++ {
 
-    for j := 0; j < lenValidRunes; j++ {
-      if targetRunes[i] == validRunes[j] {
-        output = append(output, targetRunes[i])
-        break
-      }
-    }
+		for j := 0; j < lenValidRunes; j++ {
+			if targetRunes[i] == validRunes[j] {
+				output = append(output, targetRunes[i])
+				break
+			}
+		}
 
-  }
+	}
 
-  return output, nil
+	return output, nil
 }
 
 // GetValidString - Validates the individual characters in input parameter string,
@@ -2011,28 +2003,28 @@ func (sops StrOps) GetValidRunes(targetRunes []rune, validRunes []rune) ([]rune,
 //		'validRunes' array.
 func (sops StrOps) GetValidString(targetStr string, validRunes []rune) (string, error) {
 
-  ePrefix := "StrOps.GetValidString() "
+	ePrefix := "StrOps.GetValidString() "
 
-  if len(targetStr) == 0 {
-    return "",
-      errors.New(ePrefix + "Error: Input parameter 'targetStr' is a ZERO LENGTH STRING!")
-  }
+	if len(targetStr) == 0 {
+		return "",
+			errors.New(ePrefix + "Error: Input parameter 'targetStr' is a ZERO LENGTH STRING!")
+	}
 
-  if len(validRunes) == 0 {
-    return "",
-      errors.New(ePrefix + "Error: Input parameter 'validRunes' is a ZERO LENGTH ARRAY!")
-  }
+	if len(validRunes) == 0 {
+		return "",
+			errors.New(ePrefix + "Error: Input parameter 'validRunes' is a ZERO LENGTH ARRAY!")
+	}
 
-  validRunes, err := sops.GetValidRunes([]rune(targetStr), validRunes)
+	validRunes, err := sops.GetValidRunes([]rune(targetStr), validRunes)
 
-  if err != nil {
-    return "",
-      fmt.Errorf(ePrefix+
-        "Error returned by sops.GetValidRunes([]rune(targetStr), validRunes). "+
-        "Error='%v' ", err.Error())
-  }
+	if err != nil {
+		return "",
+			fmt.Errorf(ePrefix+
+				"Error returned by sops.GetValidRunes([]rune(targetStr), validRunes). "+
+				"Error='%v' ", err.Error())
+	}
 
-  return string(validRunes), nil
+	return string(validRunes), nil
 }
 
 // IsEmptyOrWhiteSpace - If a string is zero length or consists solely of
@@ -2041,51 +2033,51 @@ func (sops StrOps) GetValidString(targetStr string, validRunes []rune) (string, 
 // Otherwise, a value of false is returned.
 func (sops StrOps) IsEmptyOrWhiteSpace(targetStr string) bool {
 
-  targetLen := len(targetStr)
+	targetLen := len(targetStr)
 
-  for i := 0; i < targetLen; i++ {
-    if targetStr[i] != ' ' {
-      return false
-    }
-  }
+	for i := 0; i < targetLen; i++ {
+		if targetStr[i] != ' ' {
+			return false
+		}
+	}
 
-  return true
+	return true
 }
 
 // LowerCaseFirstLetter - Finds the first alphabetic character
 // in a string (a-z A-Z) and converts it to lower case.
 func (sops StrOps) LowerCaseFirstLetter(str string) string {
 
-  if len(str) == 0 {
-    return str
-  }
+	if len(str) == 0 {
+		return str
+	}
 
-  runeStr := []rune(str)
+	runeStr := []rune(str)
 
-  for i := 0; i < len(runeStr); i++ {
+	for i := 0; i < len(runeStr); i++ {
 
-    if runeStr[i] == ' ' {
-      continue
-    }
+		if runeStr[i] == ' ' {
+			continue
+		}
 
-    if runeStr[i] >= 'A' &&
+		if runeStr[i] >= 'A' &&
 
-      runeStr[i] <= 'Z' {
+			runeStr[i] <= 'Z' {
 
-      runeStr[i] += 32
+			runeStr[i] += 32
 
-      break
+			break
 
-    } else if runeStr[i] >= 'a' &&
+		} else if runeStr[i] >= 'a' &&
 
-      runeStr[i] <= 'z' {
+			runeStr[i] <= 'z' {
 
-      break
-    }
+			break
+		}
 
-  }
+	}
 
-  return string(runeStr)
+	return string(runeStr)
 }
 
 // MakeSingleCharString - Creates a string of length 'strLen' consisting of
@@ -2093,36 +2085,36 @@ func (sops StrOps) LowerCaseFirstLetter(str string) string {
 // 'rune'.
 func (sops StrOps) MakeSingleCharString(charRune rune, strLen int) (string, error) {
 
-  ePrefix := "StrOps.MakeSingleCharString() "
+	ePrefix := "StrOps.MakeSingleCharString() "
 
-  if strLen < 1 {
-    return "",
-      fmt.Errorf(ePrefix+"Error: Input parameter 'strLen' MUST BE GREATER THAN '1'. "+
-        "strLen='%v' ", strLen)
-  }
+	if strLen < 1 {
+		return "",
+			fmt.Errorf(ePrefix+"Error: Input parameter 'strLen' MUST BE GREATER THAN '1'. "+
+				"strLen='%v' ", strLen)
+	}
 
-  if charRune == 0 {
-    return "",
-      fmt.Errorf(ePrefix+"Error: Input parameter 'charRune' IS INVALID! "+
-        "charRune='%v' ", charRune)
-  }
+	if charRune == 0 {
+		return "",
+			fmt.Errorf(ePrefix+"Error: Input parameter 'charRune' IS INVALID! "+
+				"charRune='%v' ", charRune)
+	}
 
-  var b strings.Builder
-  b.Grow(strLen + 1)
+	var b strings.Builder
+	b.Grow(strLen + 1)
 
-  for i := 0; i < strLen; i++ {
+	for i := 0; i < strLen; i++ {
 
-    _, err := b.WriteRune(charRune)
+		_, err := b.WriteRune(charRune)
 
-    if err != nil {
-      return "",
-        fmt.Errorf(ePrefix+
-          "Error returned by  b.WriteRune(charRune). "+
-          "charRune='%v' Error='%v' ", charRune, err.Error())
-    }
-  }
+		if err != nil {
+			return "",
+				fmt.Errorf(ePrefix+
+					"Error returned by  b.WriteRune(charRune). "+
+					"charRune='%v' Error='%v' ", charRune, err.Error())
+		}
+	}
 
-  return b.String(), nil
+	return b.String(), nil
 }
 
 // NewPtr - Returns a pointer to a new instance of
@@ -2130,9 +2122,9 @@ func (sops StrOps) MakeSingleCharString(charRune rune, strLen int) (string, erro
 // and io.Writer.
 func (sops StrOps) NewPtr() *StrOps {
 
-  sopsNew := StrOps{}
+	sopsNew := StrOps{}
 
-  return &sopsNew
+	return &sopsNew
 }
 
 // Read - Implements io.Reader interface. Read reads up to len(p)
@@ -2146,70 +2138,70 @@ func (sops StrOps) NewPtr() *StrOps {
 //
 func (sops *StrOps) Read(p []byte) (n int, err error) {
 
-  ePrefix := "StrOps.Read() "
+	ePrefix := "StrOps.Read() "
 
-  n = len(p)
-  err = io.EOF
+	n = len(p)
+	err = io.EOF
 
-  sops.stringDataMutex.Lock()
+	sops.stringDataMutex.Lock()
 
-  if n == 0 {
-    sops.cntBytesRead = 0
-    sops.stringDataMutex.Unlock()
-    err = errors.New(ePrefix + "Error: Input byte array 'p' is zero length!")
-    return 0, err
-  }
+	if n == 0 {
+		sops.cntBytesRead = 0
+		sops.stringDataMutex.Unlock()
+		err = errors.New(ePrefix + "Error: Input byte array 'p' is zero length!")
+		return 0, err
+	}
 
-  strData := sops.stringData
+	strData := sops.stringData
 
-  w := []byte(strData)
+	w := []byte(strData)
 
-  lenW := uint64(len(w))
+	lenW := uint64(len(w))
 
-  cntBytesRead := sops.cntBytesRead
+	cntBytesRead := sops.cntBytesRead
 
-  if lenW == 0 ||
-    cntBytesRead >= lenW {
-    sops.cntBytesRead = 0
-    n = 0
-    sops.stringDataMutex.Unlock()
-    return n, err
-  }
+	if lenW == 0 ||
+		cntBytesRead >= lenW {
+		sops.cntBytesRead = 0
+		n = 0
+		sops.stringDataMutex.Unlock()
+		return n, err
+	}
 
-  sops.stringDataMutex.Unlock()
+	sops.stringDataMutex.Unlock()
 
-  startReadIdx := cntBytesRead
+	startReadIdx := cntBytesRead
 
-  remainingBytesToRead := lenW - cntBytesRead
+	remainingBytesToRead := lenW - cntBytesRead
 
-  if uint64(n) < remainingBytesToRead {
-    remainingBytesToRead = startReadIdx + uint64(n)
-    err = nil
-  } else {
-    remainingBytesToRead += startReadIdx
-    err = io.EOF
-  }
+	if uint64(n) < remainingBytesToRead {
+		remainingBytesToRead = startReadIdx + uint64(n)
+		err = nil
+	} else {
+		remainingBytesToRead += startReadIdx
+		err = io.EOF
+	}
 
-  n = 0
+	n = 0
 
-  for i := startReadIdx; i < remainingBytesToRead; i++ {
-    p[n] = w[i]
-    n++
-  }
+	for i := startReadIdx; i < remainingBytesToRead; i++ {
+		p[n] = w[i]
+		n++
+	}
 
-  cntBytesRead += uint64(n)
+	cntBytesRead += uint64(n)
 
-  sops.stringDataMutex.Lock()
+	sops.stringDataMutex.Lock()
 
-  if cntBytesRead >= lenW {
-    sops.cntBytesRead = 0
-  } else {
-    sops.cntBytesRead = cntBytesRead
-  }
+	if cntBytesRead >= lenW {
+		sops.cntBytesRead = 0
+	} else {
+		sops.cntBytesRead = cntBytesRead
+	}
 
-  sops.stringDataMutex.Unlock()
+	sops.stringDataMutex.Unlock()
 
-  return n, err
+	return n, err
 }
 
 // ReadStringFromBytes - Receives a byte array and retrieves a string. The beginning of
@@ -2245,67 +2237,67 @@ func (sops *StrOps) Read(p []byte) (n int, err error) {
 //	                        the byte array, 'nextStartIdx' will be set to -1.
 //
 func (sops StrOps) ReadStringFromBytes(
-  bytes []byte,
-  startIdx int) (extractedStr string, nextStartIdx int) {
+	bytes []byte,
+	startIdx int) (extractedStr string, nextStartIdx int) {
 
-  extractedStr = ""
-  nextStartIdx = -1
+	extractedStr = ""
+	nextStartIdx = -1
 
-  bLen := len(bytes)
+	bLen := len(bytes)
 
-  if bLen == 0 {
-    return extractedStr, nextStartIdx
-  }
+	if bLen == 0 {
+		return extractedStr, nextStartIdx
+	}
 
-  if startIdx >= bLen || startIdx < 0 {
-    return extractedStr, nextStartIdx
-  }
+	if startIdx >= bLen || startIdx < 0 {
+		return extractedStr, nextStartIdx
+	}
 
-  nextStartIdx = -1
+	nextStartIdx = -1
 
-  runeAry := make([]rune, 0, bLen+5)
+	runeAry := make([]rune, 0, bLen+5)
 
-  for i := startIdx; i < bLen; i++ {
+	for i := startIdx; i < bLen; i++ {
 
-    if bytes[i] == '\r' ||
-      bytes[i] == '\n' ||
-      bytes[i] == '\v' {
+		if bytes[i] == '\r' ||
+			bytes[i] == '\n' ||
+			bytes[i] == '\v' {
 
-      if i+1 < bLen {
+			if i+1 < bLen {
 
-        j := 0
+				j := 0
 
-        for j = i + 1; j < bLen; j++ {
-          if bytes[j] == '\r' ||
-            bytes[j] == '\v' ||
-            bytes[j] == '\n' {
-            continue
-          } else {
-            break
-          }
-        }
+				for j = i + 1; j < bLen; j++ {
+					if bytes[j] == '\r' ||
+						bytes[j] == '\v' ||
+						bytes[j] == '\n' {
+						continue
+					} else {
+						break
+					}
+				}
 
-        if j >= bLen {
-          nextStartIdx = -1
-        } else {
-          nextStartIdx = j
-        }
+				if j >= bLen {
+					nextStartIdx = -1
+				} else {
+					nextStartIdx = j
+				}
 
-        break
+				break
 
-      } else {
-        nextStartIdx = -1
-      }
+			} else {
+				nextStartIdx = -1
+			}
 
-      break
-    }
+			break
+		}
 
-    runeAry = append(runeAry, rune(bytes[i]))
-  }
+		runeAry = append(runeAry, rune(bytes[i]))
+	}
 
-  extractedStr = string(runeAry)
+	extractedStr = string(runeAry)
 
-  return extractedStr, nextStartIdx
+	return extractedStr, nextStartIdx
 }
 
 // ReplaceBytes - Replaces characters in a target array of bytes ([]bytes) with those specified in
@@ -2342,59 +2334,59 @@ func (sops StrOps) ReadStringFromBytes(
 //
 func (sops StrOps) ReplaceBytes(targetBytes []byte, replacementBytes [][]byte) ([]byte, error) {
 
-  ePrefix := "StrOps.ReplaceBytes() "
+	ePrefix := "StrOps.ReplaceBytes() "
 
-  output := make([]byte, 0, 100)
+	output := make([]byte, 0, 100)
 
-  targetLen := len(targetBytes)
+	targetLen := len(targetBytes)
 
-  if targetLen == 0 {
-    return output,
-      errors.New(ePrefix + "Error: Input parameter 'targetBytes' is a zero length array!")
-  }
+	if targetLen == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'targetBytes' is a zero length array!")
+	}
 
-  baseReplaceLen := len(replacementBytes)
+	baseReplaceLen := len(replacementBytes)
 
-  if baseReplaceLen == 0 {
-    return output,
-      errors.New(ePrefix + "Error: Input parameter 'replacementBytes' is a zero length array!")
-  }
+	if baseReplaceLen == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'replacementBytes' is a zero length array!")
+	}
 
-  for h := 0; h < baseReplaceLen; h++ {
+	for h := 0; h < baseReplaceLen; h++ {
 
-    if len(replacementBytes[h]) < 2 {
-      return output,
-        fmt.Errorf(ePrefix+
-          "Error: Invalid Replacement Array Element. replacementBytes[%v] has "+
-          "a length less than two. ", h)
-    }
+		if len(replacementBytes[h]) < 2 {
+			return output,
+				fmt.Errorf(ePrefix+
+					"Error: Invalid Replacement Array Element. replacementBytes[%v] has "+
+					"a length less than two. ", h)
+		}
 
-  }
+	}
 
-  for i := 0; i < targetLen; i++ {
+	for i := 0; i < targetLen; i++ {
 
-    foundReplacement := false
+		foundReplacement := false
 
-    for k := 0; k < baseReplaceLen; k++ {
+		for k := 0; k < baseReplaceLen; k++ {
 
-      if targetBytes[i] == replacementBytes[k][0] {
+			if targetBytes[i] == replacementBytes[k][0] {
 
-        if replacementBytes[k][1] != 0 {
-          output = append(output, replacementBytes[k][1])
-        }
+				if replacementBytes[k][1] != 0 {
+					output = append(output, replacementBytes[k][1])
+				}
 
-        foundReplacement = true
-        break
-      }
-    }
+				foundReplacement = true
+				break
+			}
+		}
 
-    if !foundReplacement {
-      output = append(output, targetBytes[i])
-    }
+		if !foundReplacement {
+			output = append(output, targetBytes[i])
+		}
 
-  }
+	}
 
-  return output, nil
+	return output, nil
 }
 
 // ReplaceMultipleStrs - Replaces all instances of string replaceArray[i][0] with
@@ -2407,35 +2399,35 @@ func (sops StrOps) ReplaceBytes(targetBytes []byte, replacementBytes [][]byte) (
 // error will be returned.
 func (sops StrOps) ReplaceMultipleStrs(targetStr string, replaceArray [][]string) (string, error) {
 
-  ePrefix := "StrOps.ReplaceMultipleStrs() "
+	ePrefix := "StrOps.ReplaceMultipleStrs() "
 
-  if targetStr == "" {
-    return targetStr,
-      errors.New(ePrefix + "Input parameter 'targetStr' is an EMPTY STRING.")
-  }
+	if targetStr == "" {
+		return targetStr,
+			errors.New(ePrefix + "Input parameter 'targetStr' is an EMPTY STRING.")
+	}
 
-  if len(replaceArray) == 0 {
-    return "",
-      errors.New(ePrefix +
-        "Length of first dimension [X][] in two dimensional array 'replaceArray' is ZERO!")
-  }
+	if len(replaceArray) == 0 {
+		return "",
+			errors.New(ePrefix +
+				"Length of first dimension [X][] in two dimensional array 'replaceArray' is ZERO!")
+	}
 
-  newString := targetStr
+	newString := targetStr
 
-  for aIdx, aVal := range replaceArray {
+	for aIdx, aVal := range replaceArray {
 
-    if len(aVal) < 2 {
-      return "",
-        fmt.Errorf(ePrefix+
-          "Length of second dimension [][X] in two dimensional array 'replaceArray' is Less Than 2! "+
-          "replaceArray[%v][]", aIdx)
-    }
+		if len(aVal) < 2 {
+			return "",
+				fmt.Errorf(ePrefix+
+					"Length of second dimension [][X] in two dimensional array 'replaceArray' is Less Than 2! "+
+					"replaceArray[%v][]", aIdx)
+		}
 
-    newString = strings.Replace(newString, replaceArray[aIdx][0], replaceArray[aIdx][1], -1)
+		newString = strings.Replace(newString, replaceArray[aIdx][0], replaceArray[aIdx][1], -1)
 
-  }
+	}
 
-  return newString, nil
+	return newString, nil
 }
 
 // ReplaceNewLines - Replaces New Line characters from string. If the specified
@@ -2444,7 +2436,7 @@ func (sops StrOps) ReplaceMultipleStrs(targetStr string, replaceArray [][]string
 //
 func (sops StrOps) ReplaceNewLines(targetStr string, replacement string) string {
 
-  return strings.Replace(targetStr, "\n", replacement, -1)
+	return strings.Replace(targetStr, "\n", replacement, -1)
 }
 
 // ReplaceRunes - Replaces characters in a target array of runes ([]rune) with those specified in
@@ -2480,59 +2472,59 @@ func (sops StrOps) ReplaceNewLines(targetStr string, replacement string) string 
 //		a length less than two, an error will be returned.
 func (sops StrOps) ReplaceRunes(targetRunes []rune, replacementRunes [][]rune) ([]rune, error) {
 
-  ePrefix := "StrOps.ReplaceRunes() "
+	ePrefix := "StrOps.ReplaceRunes() "
 
-  output := make([]rune, 0, 100)
+	output := make([]rune, 0, 100)
 
-  targetLen := len(targetRunes)
+	targetLen := len(targetRunes)
 
-  if targetLen == 0 {
-    return output,
-      errors.New(ePrefix + "Error: Input parameter 'targetRunes' is a zero length array!")
-  }
+	if targetLen == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'targetRunes' is a zero length array!")
+	}
 
-  baseReplaceLen := len(replacementRunes)
+	baseReplaceLen := len(replacementRunes)
 
-  if baseReplaceLen == 0 {
-    return output,
-      errors.New(ePrefix + "Error: Input parameter 'replacementRunes' is a zero length array!")
-  }
+	if baseReplaceLen == 0 {
+		return output,
+			errors.New(ePrefix + "Error: Input parameter 'replacementRunes' is a zero length array!")
+	}
 
-  for h := 0; h < baseReplaceLen; h++ {
+	for h := 0; h < baseReplaceLen; h++ {
 
-    if len(replacementRunes[h]) < 2 {
-      return output,
-        fmt.Errorf(ePrefix+
-          "Error: Invalid Replacement Array Element. replacementRunes[%v] has "+
-          "a length less than two. ", h)
-    }
+		if len(replacementRunes[h]) < 2 {
+			return output,
+				fmt.Errorf(ePrefix+
+					"Error: Invalid Replacement Array Element. replacementRunes[%v] has "+
+					"a length less than two. ", h)
+		}
 
-  }
+	}
 
-  for i := 0; i < targetLen; i++ {
+	for i := 0; i < targetLen; i++ {
 
-    foundReplacement := false
+		foundReplacement := false
 
-    for k := 0; k < baseReplaceLen; k++ {
+		for k := 0; k < baseReplaceLen; k++ {
 
-      if targetRunes[i] == replacementRunes[k][0] {
+			if targetRunes[i] == replacementRunes[k][0] {
 
-        if replacementRunes[k][1] != 0 {
-          output = append(output, replacementRunes[k][1])
-        }
+				if replacementRunes[k][1] != 0 {
+					output = append(output, replacementRunes[k][1])
+				}
 
-        foundReplacement = true
-        break
-      }
-    }
+				foundReplacement = true
+				break
+			}
+		}
 
-    if !foundReplacement {
-      output = append(output, targetRunes[i])
-    }
+		if !foundReplacement {
+			output = append(output, targetRunes[i])
+		}
 
-  }
+	}
 
-  return output, nil
+	return output, nil
 }
 
 // ReplaceStringChars - Replaces string characters in a target string ('targetStr') with those
@@ -2567,30 +2559,30 @@ func (sops StrOps) ReplaceRunes(targetRunes []rune, replacementRunes [][]rune) (
 //		In addition, if any of the replacementRunes[][x] 2nd dimension elements have
 //		a length less than two, an error will be returned.
 func (sops StrOps) ReplaceStringChars(
-  targetStr string,
-  replacementRunes [][]rune) (string, error) {
+	targetStr string,
+	replacementRunes [][]rune) (string, error) {
 
-  ePrefix := "StrOps.ReplaceStringChars() "
+	ePrefix := "StrOps.ReplaceStringChars() "
 
-  if len(targetStr) == 0 {
-    return "",
-      errors.New(ePrefix + "Error: Input parameter 'targetStr' is an EMPTY STRING!")
-  }
+	if len(targetStr) == 0 {
+		return "",
+			errors.New(ePrefix + "Error: Input parameter 'targetStr' is an EMPTY STRING!")
+	}
 
-  if len(replacementRunes) == 0 {
-    return "",
-      errors.New(ePrefix + "Error: Input parameter 'replacementRunes' is an EMPTY STRING!")
-  }
+	if len(replacementRunes) == 0 {
+		return "",
+			errors.New(ePrefix + "Error: Input parameter 'replacementRunes' is an EMPTY STRING!")
+	}
 
-  outputStr, err := sops.ReplaceRunes([]rune(targetStr), replacementRunes)
+	outputStr, err := sops.ReplaceRunes([]rune(targetStr), replacementRunes)
 
-  if err != nil {
-    return "",
-      fmt.Errorf(ePrefix+"Error returned by ReplaceRunes([]rune(targetStr), replacementRunes). "+
-        "Error='%v' ", err.Error())
-  }
+	if err != nil {
+		return "",
+			fmt.Errorf(ePrefix+"Error returned by ReplaceRunes([]rune(targetStr), replacementRunes). "+
+				"Error='%v' ", err.Error())
+	}
 
-  return string(outputStr), nil
+	return string(outputStr), nil
 }
 
 // ResetBytesReadCounter - Resets the internal 'Bytes Read' counter
@@ -2600,9 +2592,9 @@ func (sops StrOps) ReplaceStringChars(
 //
 // This method sets StrOps.cntBytesRead equal to zero.
 func (sops *StrOps) ResetBytesReadCounter() {
-  sops.stringDataMutex.Lock()
-  sops.cntBytesRead = 0
-  sops.stringDataMutex.Unlock()
+	sops.stringDataMutex.Lock()
+	sops.cntBytesRead = 0
+	sops.stringDataMutex.Unlock()
 }
 
 // ResetBytesWrittenCounter - Resets the internal 'Bytes Written' counter
@@ -2612,19 +2604,19 @@ func (sops *StrOps) ResetBytesReadCounter() {
 //
 // This method sets StrOps.cntBytesWritten equal to zero.
 func (sops *StrOps) ResetBytesWrittenCounter() {
-  sops.stringDataMutex.Lock()
-  sops.cntBytesWritten = 0
-  sops.stringDataMutex.Unlock()
+	sops.stringDataMutex.Lock()
+	sops.cntBytesWritten = 0
+	sops.stringDataMutex.Unlock()
 }
 
 // SetStringData - Sets the value of internal
 // string data element, StrOps.stringData.
 func (sops *StrOps) SetStringData(str string) {
-  sops.stringDataMutex.Lock()
-  sops.stringData = str
-  sops.cntBytesWritten = 0
-  sops.cntBytesRead = 0
-  sops.stringDataMutex.Unlock()
+	sops.stringDataMutex.Lock()
+	sops.stringData = str
+	sops.cntBytesWritten = 0
+	sops.cntBytesRead = 0
+	sops.stringDataMutex.Unlock()
 }
 
 // StrCenterInStrLeft - returns a string which includes
@@ -2635,24 +2627,24 @@ func (sops *StrOps) SetStringData(str string) {
 // center the original string is a field of specified length.
 func (sops StrOps) StrCenterInStrLeft(strToCenter string, fieldLen int) (string, error) {
 
-  ePrefix := "StrOps.StrCenterInStrLeft() "
+	ePrefix := "StrOps.StrCenterInStrLeft() "
 
-  if sops.IsEmptyOrWhiteSpace(strToCenter) {
-    return strToCenter,
-      errors.New(ePrefix +
-        "Error: Input parameter 'strToCenter' is All White Space or an EMPTY String!")
-  }
+	if sops.IsEmptyOrWhiteSpace(strToCenter) {
+		return strToCenter,
+			errors.New(ePrefix +
+				"Error: Input parameter 'strToCenter' is All White Space or an EMPTY String!")
+	}
 
-  pad, err := sops.StrPadLeftToCenter(strToCenter, fieldLen)
+	pad, err := sops.StrPadLeftToCenter(strToCenter, fieldLen)
 
-  if err != nil {
-    return "",
-      fmt.Errorf(ePrefix+
-        "Error returned by sops.StrPadLeftToCenter(strToCenter, fieldLen). "+
-        "Error='%v'", err.Error())
-  }
+	if err != nil {
+		return "",
+			fmt.Errorf(ePrefix+
+				"Error returned by sops.StrPadLeftToCenter(strToCenter, fieldLen). "+
+				"Error='%v'", err.Error())
+	}
 
-  return pad + strToCenter, nil
+	return pad + strToCenter, nil
 
 }
 
@@ -2663,54 +2655,54 @@ func (sops StrOps) StrCenterInStrLeft(strToCenter string, fieldLen int) (string,
 // specified length ('fieldLen').
 func (sops StrOps) StrCenterInStr(strToCenter string, fieldLen int) (string, error) {
 
-  ePrefix := "StrOps.StrCenterInStr() "
+	ePrefix := "StrOps.StrCenterInStr() "
 
-  if sops.IsEmptyOrWhiteSpace(strToCenter) {
-    return strToCenter,
-      errors.New(ePrefix +
-        "Error: Input parameter 'strToCenter' is All White Space or an EMPTY String!")
-  }
+	if sops.IsEmptyOrWhiteSpace(strToCenter) {
+		return strToCenter,
+			errors.New(ePrefix +
+				"Error: Input parameter 'strToCenter' is All White Space or an EMPTY String!")
+	}
 
-  sLen := len(strToCenter)
+	sLen := len(strToCenter)
 
-  if sLen > fieldLen {
-    return strToCenter,
-      fmt.Errorf(ePrefix+
-        "Error: 'fieldLen' = '%v' strToCenter Length= '%v'. "+
-        "'fieldLen is shorter than strToCenter Length!", fieldLen, sLen)
-  }
+	if sLen > fieldLen {
+		return strToCenter,
+			fmt.Errorf(ePrefix+
+				"Error: 'fieldLen' = '%v' strToCenter Length= '%v'. "+
+				"'fieldLen is shorter than strToCenter Length!", fieldLen, sLen)
+	}
 
-  if sLen == fieldLen {
-    return strToCenter, nil
-  }
+	if sLen == fieldLen {
+		return strToCenter, nil
+	}
 
-  leftPadCnt := (fieldLen - sLen) / 2
+	leftPadCnt := (fieldLen - sLen) / 2
 
-  leftPadStr := strings.Repeat(" ", leftPadCnt)
+	leftPadStr := strings.Repeat(" ", leftPadCnt)
 
-  rightPadCnt := fieldLen - sLen - leftPadCnt
+	rightPadCnt := fieldLen - sLen - leftPadCnt
 
-  rightPadStr := ""
+	rightPadStr := ""
 
-  if rightPadCnt > 0 {
-    rightPadStr = strings.Repeat(" ", rightPadCnt)
-  }
+	if rightPadCnt > 0 {
+		rightPadStr = strings.Repeat(" ", rightPadCnt)
+	}
 
-  return leftPadStr + strToCenter + rightPadStr, nil
+	return leftPadStr + strToCenter + rightPadStr, nil
 }
 
 // StrGetRuneCnt - Uses utf8 Rune Count
 // function to return the number of characters
 // in a string.
 func (sops StrOps) StrGetRuneCnt(targetStr string) int {
-  return utf8.RuneCountInString(targetStr)
+	return utf8.RuneCountInString(targetStr)
 }
 
 // StrGetCharCnt - Uses the 'len' method to
 // return the number of rune characters in a
 // string.
 func (sops StrOps) StrGetCharCnt(targetStr string) int {
-  return len([]rune(targetStr))
+	return len([]rune(targetStr))
 }
 
 // StripBadChars - Removes/deletes specified characters from a string.
@@ -2721,71 +2713,71 @@ func (sops StrOps) StrGetCharCnt(targetStr string) int {
 // string. The target string is passed through input parameter, 'targetStr'.
 //
 func (sops StrOps) StripBadChars(
-  targetStr string,
-  badChars []string) (cleanStr string, strLen int) {
+	targetStr string,
+	badChars []string) (cleanStr string, strLen int) {
 
-  cleanStr = targetStr
-  strLen = len(cleanStr)
+	cleanStr = targetStr
+	strLen = len(cleanStr)
 
-  if strLen == 0 {
-    return cleanStr, strLen
-  }
+	if strLen == 0 {
+		return cleanStr, strLen
+	}
 
-  lenBadChars := len(badChars)
+	lenBadChars := len(badChars)
 
-  if lenBadChars == 0 {
-    return cleanStr, strLen
-  }
+	if lenBadChars == 0 {
+		return cleanStr, strLen
+	}
 
-  sort.Sort(SortStrLengthHighestToLowest(badChars))
+	sort.Sort(SortStrLengthHighestToLowest(badChars))
 
-  cycleWhereStringRemoved := 0
-  k := -1
+	cycleWhereStringRemoved := 0
+	k := -1
 
-  for {
+	for {
 
-    k++
+		k++
 
-    for i := 0; i < lenBadChars; i++ {
+		for i := 0; i < lenBadChars; i++ {
 
-      for {
+			for {
 
-        badCharIdx := strings.Index(cleanStr, badChars[i])
+				badCharIdx := strings.Index(cleanStr, badChars[i])
 
-        if badCharIdx == -1 {
-          break
-        }
+				if badCharIdx == -1 {
+					break
+				}
 
-        lastCleanStrIdx := strLen - 1
-        lChar := len(badChars[i])
-        nextIdx := badCharIdx + lChar
+				lastCleanStrIdx := strLen - 1
+				lChar := len(badChars[i])
+				nextIdx := badCharIdx + lChar
 
-        if nextIdx > lastCleanStrIdx {
-          cleanStr = cleanStr[0:badCharIdx]
+				if nextIdx > lastCleanStrIdx {
+					cleanStr = cleanStr[0:badCharIdx]
 
-        } else {
+				} else {
 
-          cleanStr = cleanStr[0:badCharIdx] + cleanStr[nextIdx:]
-        }
+					cleanStr = cleanStr[0:badCharIdx] + cleanStr[nextIdx:]
+				}
 
-        cycleWhereStringRemoved = k
-      }
+				cycleWhereStringRemoved = k
+			}
 
-      strLen = len(cleanStr)
+			strLen = len(cleanStr)
 
-      if strLen == 0 {
-        goto Done
-      }
-    }
+			if strLen == 0 {
+				goto Done
+			}
+		}
 
-    if k-cycleWhereStringRemoved > 3 || k > 1000000 {
-      goto Done
-    }
-  }
+		if k-cycleWhereStringRemoved > 3 || k > 1000000 {
+			goto Done
+		}
+	}
 
 Done:
 
-  return cleanStr, strLen
+	return cleanStr, strLen
 }
 
 // StripLeadingChars - Strips or deletes characters specified by
@@ -2796,59 +2788,59 @@ Done:
 // is also returned.
 //
 func (sops StrOps) StripLeadingChars(
-  targetStr string,
-  badChars []string) (cleanStr string, strLen int) {
+	targetStr string,
+	badChars []string) (cleanStr string, strLen int) {
 
-  cleanStr = targetStr
-  strLen = len(cleanStr)
+	cleanStr = targetStr
+	strLen = len(cleanStr)
 
-  lenBadChars := len(badChars)
+	lenBadChars := len(badChars)
 
-  if lenBadChars == 0 {
-    return cleanStr, strLen
-  }
+	if lenBadChars == 0 {
+		return cleanStr, strLen
+	}
 
-  if strLen == 0 {
-    return cleanStr, strLen
-  }
+	if strLen == 0 {
+		return cleanStr, strLen
+	}
 
-  sort.Sort(SortStrLengthHighestToLowest(badChars))
+	sort.Sort(SortStrLengthHighestToLowest(badChars))
 
-  cycleWhereStringRemoved := 0
-  k := -1
+	cycleWhereStringRemoved := 0
+	k := -1
 
-  for {
+	for {
 
-    k++
+		k++
 
-    for i := 0; i < lenBadChars; i++ {
+		for i := 0; i < lenBadChars; i++ {
 
-      for {
+			for {
 
-        if !strings.HasPrefix(cleanStr, badChars[i]) {
-          break
-        }
+				if !strings.HasPrefix(cleanStr, badChars[i]) {
+					break
+				}
 
-        cleanStr = cleanStr[len(badChars[i]):]
+				cleanStr = cleanStr[len(badChars[i]):]
 
-        cycleWhereStringRemoved = k
-      }
+				cycleWhereStringRemoved = k
+			}
 
-      strLen = len(cleanStr)
+			strLen = len(cleanStr)
 
-      if strLen == 0 {
-        goto Done
-      }
-    }
+			if strLen == 0 {
+				goto Done
+			}
+		}
 
-    if k-cycleWhereStringRemoved > 3 || k > 1000000 {
-      goto Done
-    }
-  }
+		if k-cycleWhereStringRemoved > 3 || k > 1000000 {
+			goto Done
+		}
+	}
 
 Done:
 
-  return cleanStr, strLen
+	return cleanStr, strLen
 }
 
 // StripTrailingChars - Strips or deletes bad characters from the
@@ -2861,65 +2853,65 @@ Done:
 // at the end of 'targetStr'.
 //
 func (sops StrOps) StripTrailingChars(
-  targetStr string,
-  badChars []string) (cleanStr string, strLen int) {
+	targetStr string,
+	badChars []string) (cleanStr string, strLen int) {
 
-  cleanStr = targetStr
-  strLen = len(cleanStr)
+	cleanStr = targetStr
+	strLen = len(cleanStr)
 
-  lenBadChars := len(badChars)
+	lenBadChars := len(badChars)
 
-  if lenBadChars == 0 {
-    return cleanStr, strLen
-  }
+	if lenBadChars == 0 {
+		return cleanStr, strLen
+	}
 
-  if strLen == 0 {
-    return cleanStr, strLen
-  }
+	if strLen == 0 {
+		return cleanStr, strLen
+	}
 
-  k := -1
-  cycleWhereStringRemoved := 0
+	k := -1
+	cycleWhereStringRemoved := 0
 
-  for {
+	for {
 
-    k++
+		k++
 
-    for i := 0; i < lenBadChars; i++ {
+		for i := 0; i < lenBadChars; i++ {
 
-      for {
+			for {
 
-        if !strings.HasSuffix(cleanStr, badChars[i]) {
-          break
-        }
+				if !strings.HasSuffix(cleanStr, badChars[i]) {
+					break
+				}
 
-        strLen = len(cleanStr) - len(badChars[i])
+				strLen = len(cleanStr) - len(badChars[i])
 
-        cleanStr = cleanStr[0:strLen]
+				cleanStr = cleanStr[0:strLen]
 
-        cycleWhereStringRemoved = k
+				cycleWhereStringRemoved = k
 
-      }
+			}
 
-      if len(cleanStr) == 0 {
-        goto Done
-      }
-    }
+			if len(cleanStr) == 0 {
+				goto Done
+			}
+		}
 
-    strLen = len(cleanStr)
+		strLen = len(cleanStr)
 
-    if strLen == 0 {
-      goto Done
-    }
+		if strLen == 0 {
+			goto Done
+		}
 
-    if k-cycleWhereStringRemoved > 3 || k > 1000000 {
-      goto Done
-    }
+		if k-cycleWhereStringRemoved > 3 || k > 1000000 {
+			goto Done
+		}
 
-  }
+	}
 
 Done:
 
-  return cleanStr, strLen
+	return cleanStr, strLen
 }
 
 // StrLeftJustify - Creates a new string with a total length equal to input parameter
@@ -2938,32 +2930,32 @@ Done:
 //
 func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, error) {
 
-  ePrefix := "StrOps.StrLeftJustify() "
+	ePrefix := "StrOps.StrLeftJustify() "
 
-  if sops.IsEmptyOrWhiteSpace(strToJustify) {
-    return strToJustify,
-      errors.New(ePrefix +
-        "Error: Input parameter 'strToJustify' is All White Space or an EMPTY String!")
-  }
+	if sops.IsEmptyOrWhiteSpace(strToJustify) {
+		return strToJustify,
+			errors.New(ePrefix +
+				"Error: Input parameter 'strToJustify' is All White Space or an EMPTY String!")
+	}
 
-  strLen := len(strToJustify)
+	strLen := len(strToJustify)
 
-  if fieldLen == strLen {
-    return strToJustify, nil
-  }
+	if fieldLen == strLen {
+		return strToJustify, nil
+	}
 
-  if fieldLen < strLen {
-    return strToJustify,
-      fmt.Errorf(ePrefix+
-        "Error: Length of string to left justify is '%v'. "+
-        "'fieldLen' is less. 'fieldLen'= '%v'", strLen, fieldLen)
-  }
+	if fieldLen < strLen {
+		return strToJustify,
+			fmt.Errorf(ePrefix+
+				"Error: Length of string to left justify is '%v'. "+
+				"'fieldLen' is less. 'fieldLen'= '%v'", strLen, fieldLen)
+	}
 
-  rightPadLen := fieldLen - strLen
+	rightPadLen := fieldLen - strLen
 
-  rightPadStr := strings.Repeat(" ", rightPadLen)
+	rightPadStr := strings.Repeat(" ", rightPadLen)
 
-  return strToJustify + rightPadStr, nil
+	return strToJustify + rightPadStr, nil
 
 }
 
@@ -2980,30 +2972,30 @@ func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, er
 //
 func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string, error) {
 
-  ePrefix := "StrOps.StrPadLeftToCenter() "
+	ePrefix := "StrOps.StrPadLeftToCenter() "
 
-  if sops.IsEmptyOrWhiteSpace(strToCenter) {
-    return strToCenter,
-      errors.New(ePrefix +
-        "Error: Input parameter 'strToCenter' is All White Space or an EMPTY String!")
-  }
+	if sops.IsEmptyOrWhiteSpace(strToCenter) {
+		return strToCenter,
+			errors.New(ePrefix +
+				"Error: Input parameter 'strToCenter' is All White Space or an EMPTY String!")
+	}
 
-  sLen := sops.StrGetRuneCnt(strToCenter)
+	sLen := sops.StrGetRuneCnt(strToCenter)
 
-  if sLen > fieldLen {
-    return "",
-      errors.New(ePrefix +
-        "Error: Input Parameter String To Center ('strToCenter') " +
-        "is longer than Field Length")
-  }
+	if sLen > fieldLen {
+		return "",
+			errors.New(ePrefix +
+				"Error: Input Parameter String To Center ('strToCenter') " +
+				"is longer than Field Length")
+	}
 
-  if sLen == fieldLen {
-    return "", nil
-  }
+	if sLen == fieldLen {
+		return "", nil
+	}
 
-  margin := (fieldLen - sLen) / 2
+	margin := (fieldLen - sLen) / 2
 
-  return strings.Repeat(" ", margin), nil
+	return strings.Repeat(" ", margin), nil
 }
 
 // StrRightJustify - Returns a string where input parameter
@@ -3018,34 +3010,34 @@ func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string,
 //
 func (sops StrOps) StrRightJustify(strToJustify string, fieldLen int) (string, error) {
 
-  ePrefix := "StrOps.StrRightJustify() "
+	ePrefix := "StrOps.StrRightJustify() "
 
-  if sops.IsEmptyOrWhiteSpace(strToJustify) {
-    return strToJustify,
-      errors.New(ePrefix +
-        "Error: Input parameter 'strToJustify' is All White Space or an EMPTY String!")
-  }
+	if sops.IsEmptyOrWhiteSpace(strToJustify) {
+		return strToJustify,
+			errors.New(ePrefix +
+				"Error: Input parameter 'strToJustify' is All White Space or an EMPTY String!")
+	}
 
-  strLen := len(strToJustify)
+	strLen := len(strToJustify)
 
-  if fieldLen == strLen {
-    return strToJustify, nil
-  }
+	if fieldLen == strLen {
+		return strToJustify, nil
+	}
 
-  if fieldLen < strLen {
-    return strToJustify,
-      fmt.Errorf(ePrefix+
-        "Error: Length of string to "+
-        "right justify is '%v'. 'fieldLen' is less. 'fieldLen'= '%v'",
-        strLen, fieldLen)
-  }
+	if fieldLen < strLen {
+		return strToJustify,
+			fmt.Errorf(ePrefix+
+				"Error: Length of string to "+
+				"right justify is '%v'. 'fieldLen' is less. 'fieldLen'= '%v'",
+				strLen, fieldLen)
+	}
 
-  // fieldLen must be greater than strLen
-  lefPadCnt := fieldLen - strLen
+	// fieldLen must be greater than strLen
+	lefPadCnt := fieldLen - strLen
 
-  leftPadStr := strings.Repeat(" ", lefPadCnt)
+	leftPadStr := strings.Repeat(" ", lefPadCnt)
 
-  return leftPadStr + strToJustify, nil
+	return leftPadStr + strToJustify, nil
 }
 
 // SwapRune - Swaps all instances of 'oldRune' character with 'newRune'
@@ -3053,21 +3045,21 @@ func (sops StrOps) StrRightJustify(strToJustify string, fieldLen int) (string, e
 //
 func (sops StrOps) SwapRune(targetStr string, oldRune rune, newRune rune) (string, error) {
 
-  if targetStr == "" {
-    return targetStr, nil
-  }
+	if targetStr == "" {
+		return targetStr, nil
+	}
 
-  rStr := []rune(targetStr)
+	rStr := []rune(targetStr)
 
-  lrStr := len(rStr)
+	lrStr := len(rStr)
 
-  for i := 0; i < lrStr; i++ {
-    if rStr[i] == oldRune {
-      rStr[i] = newRune
-    }
-  }
+	for i := 0; i < lrStr; i++ {
+		if rStr[i] == oldRune {
+			rStr[i] = newRune
+		}
+	}
 
-  return string(rStr), nil
+	return string(rStr), nil
 }
 
 // TrimMultipleChars - Performs the following operations on strings:
@@ -3083,62 +3075,62 @@ func (sops StrOps) SwapRune(targetStr string, oldRune rune, newRune rune) (strin
 //	returned string (rStr) = "Hello World"
 //
 func (sops StrOps) TrimMultipleChars(
-  targetStr string,
-  trimChar rune) (rStr string, err error) {
+	targetStr string,
+	trimChar rune) (rStr string, err error) {
 
-  ePrefix := "StrOps.TrimMultipleChars() "
+	ePrefix := "StrOps.TrimMultipleChars() "
 
-  rStr = ""
-  err = nil
+	rStr = ""
+	err = nil
 
-  if targetStr == "" {
-    err = errors.New(ePrefix + "Error: Input parameter 'targetStr' is an EMPTY STRING!")
-    return rStr, err
-  }
+	if targetStr == "" {
+		err = errors.New(ePrefix + "Error: Input parameter 'targetStr' is an EMPTY STRING!")
+		return rStr, err
+	}
 
-  if trimChar == 0 {
-    err = errors.New(ePrefix + "Error: Input parameter 'trimChar' is ZERO!")
-    return rStr, err
-  }
+	if trimChar == 0 {
+		err = errors.New(ePrefix + "Error: Input parameter 'trimChar' is ZERO!")
+		return rStr, err
+	}
 
-  fStr := []rune(targetStr)
-  lenTargetStr := len(fStr)
-  outputStr := make([]rune, lenTargetStr)
-  lenTargetStr--
-  idx := lenTargetStr
-  foundFirstChar := false
+	fStr := []rune(targetStr)
+	lenTargetStr := len(fStr)
+	outputStr := make([]rune, lenTargetStr)
+	lenTargetStr--
+	idx := lenTargetStr
+	foundFirstChar := false
 
-  for i := lenTargetStr; i >= 0; i-- {
+	for i := lenTargetStr; i >= 0; i-- {
 
-    if !foundFirstChar && fStr[i] == trimChar {
-      continue
-    }
+		if !foundFirstChar && fStr[i] == trimChar {
+			continue
+		}
 
-    if i > 0 && fStr[i] == trimChar && fStr[i-1] == trimChar {
-      continue
-    }
+		if i > 0 && fStr[i] == trimChar && fStr[i-1] == trimChar {
+			continue
+		}
 
-    if i == 0 && fStr[i] == trimChar {
-      continue
-    }
+		if i == 0 && fStr[i] == trimChar {
+			continue
+		}
 
-    foundFirstChar = true
-    outputStr[idx] = fStr[i]
-    idx--
-  }
+		foundFirstChar = true
+		outputStr[idx] = fStr[i]
+		idx--
+	}
 
-  if idx != lenTargetStr {
-    idx++
-  }
+	if idx != lenTargetStr {
+		idx++
+	}
 
-  if outputStr[idx] == trimChar {
-    idx++
-  }
+	if outputStr[idx] == trimChar {
+		idx++
+	}
 
-  rStr = string(outputStr[idx:])
-  err = nil
+	rStr = string(outputStr[idx:])
+	err = nil
 
-  return rStr, err
+	return rStr, err
 }
 
 // TrimStringEnds - Removes all instances of input
@@ -3146,70 +3138,70 @@ func (sops StrOps) TrimMultipleChars(
 // of input parameter string 'targetStr'.
 //
 func (sops StrOps) TrimStringEnds(
-  targetStr string,
-  trimChar rune) (rStr string, err error) {
+	targetStr string,
+	trimChar rune) (rStr string, err error) {
 
-  ePrefix := "StrOps.TrimStringEnds() "
-  rStr = ""
-  err = nil
+	ePrefix := "StrOps.TrimStringEnds() "
+	rStr = ""
+	err = nil
 
-  targetStrLen := len(targetStr)
+	targetStrLen := len(targetStr)
 
-  if targetStrLen == 0 {
-    err = errors.New(ePrefix + "Error: Input parameter 'targetStr' is an EMPTY STRING!")
-    return rStr, err
-  }
+	if targetStrLen == 0 {
+		err = errors.New(ePrefix + "Error: Input parameter 'targetStr' is an EMPTY STRING!")
+		return rStr, err
+	}
 
-  if trimChar == 0 {
-    err = errors.New(ePrefix + "Error: Input parameter 'trimChar' is ZERO!")
-    return rStr, err
-  }
+	if trimChar == 0 {
+		err = errors.New(ePrefix + "Error: Input parameter 'trimChar' is ZERO!")
+		return rStr, err
+	}
 
-  foundGoodChar := false
-  firstIdx := 0
+	foundGoodChar := false
+	firstIdx := 0
 
-  for !foundGoodChar {
+	for !foundGoodChar {
 
-    if rune(targetStr[firstIdx]) == trimChar {
-      firstIdx++
-    } else {
-      foundGoodChar = true
-    }
+		if rune(targetStr[firstIdx]) == trimChar {
+			firstIdx++
+		} else {
+			foundGoodChar = true
+		}
 
-    if firstIdx >= targetStrLen {
-      rStr = ""
-      return rStr, err
-    }
-  }
+		if firstIdx >= targetStrLen {
+			rStr = ""
+			return rStr, err
+		}
+	}
 
-  if firstIdx >= targetStrLen {
+	if firstIdx >= targetStrLen {
 
-    rStr = targetStr
+		rStr = targetStr
 
-    return rStr, err
-  }
+		return rStr, err
+	}
 
-  foundGoodChar = false
-  lastIdx := targetStrLen - 1
+	foundGoodChar = false
+	lastIdx := targetStrLen - 1
 
-  for !foundGoodChar {
+	for !foundGoodChar {
 
-    if rune(targetStr[lastIdx]) == trimChar {
-      lastIdx--
-    } else {
-      foundGoodChar = true
-    }
-  }
+		if rune(targetStr[lastIdx]) == trimChar {
+			lastIdx--
+		} else {
+			foundGoodChar = true
+		}
+	}
 
-  if lastIdx < 0 {
-    rStr = targetStr[firstIdx:]
-    return rStr, err
-  }
+	if lastIdx < 0 {
+		rStr = targetStr[firstIdx:]
+		return rStr, err
+	}
 
-  lastIdx++
-  rStr = targetStr[firstIdx:lastIdx]
+	lastIdx++
+	rStr = targetStr[firstIdx:lastIdx]
 
-  return rStr, err
+	return rStr, err
 }
 
 // UpperCaseFirstLetter - Finds the first alphabetic character in a string
@@ -3217,33 +3209,33 @@ func (sops StrOps) TrimStringEnds(
 //
 func (sops StrOps) UpperCaseFirstLetter(str string) string {
 
-  if len(str) == 0 {
-    return str
-  }
+	if len(str) == 0 {
+		return str
+	}
 
-  runesStr := []rune(str)
+	runesStr := []rune(str)
 
-  for i := 0; i < len(runesStr); i++ {
+	for i := 0; i < len(runesStr); i++ {
 
-    // Skip leading spaces
-    if runesStr[i] == ' ' {
-      continue
-    }
+		// Skip leading spaces
+		if runesStr[i] == ' ' {
+			continue
+		}
 
-    // Find the first alphabetic character and
-    // convert to upper case.
-    if runesStr[i] >= 'a' && runesStr[i] <= 'z' {
+		// Find the first alphabetic character and
+		// convert to upper case.
+		if runesStr[i] >= 'a' && runesStr[i] <= 'z' {
 
-      runesStr[i] -= 32
-      break
+			runesStr[i] -= 32
+			break
 
-    } else if runesStr[i] >= 'A' && runesStr[i] <= 'Z' {
-      break
-    }
+		} else if runesStr[i] >= 'A' && runesStr[i] <= 'Z' {
+			break
+		}
 
-  }
+	}
 
-  return string(runesStr)
+	return string(runesStr)
 }
 
 // Write - Implements the io.Writer interface.
@@ -3259,61 +3251,61 @@ func (sops StrOps) UpperCaseFirstLetter(str string) string {
 //
 func (sops *StrOps) Write(p []byte) (n int, err error) {
 
-  ePrefix := "StrOps.Write() "
-  n = 0
-  err = nil
+	ePrefix := "StrOps.Write() "
+	n = 0
+	err = nil
 
-  sops.stringDataMutex.Lock()
+	sops.stringDataMutex.Lock()
 
-  if sops.cntBytesWritten == 0 {
-    sops.stringData = ""
-  }
+	if sops.cntBytesWritten == 0 {
+		sops.stringData = ""
+	}
 
-  n = len(p)
+	n = len(p)
 
-  if n == 0 {
+	if n == 0 {
 
-    sops.cntBytesWritten = 0
+		sops.cntBytesWritten = 0
 
-    sops.stringDataMutex.Unlock()
+		sops.stringDataMutex.Unlock()
 
-    err = fmt.Errorf(ePrefix + "Error: Input byte array 'p' is ZERO LENGTH!")
+		err = fmt.Errorf(ePrefix + "Error: Input byte array 'p' is ZERO LENGTH!")
 
-    return n, err
-  }
+		return n, err
+	}
 
-  sops.stringDataMutex.Unlock()
+	sops.stringDataMutex.Unlock()
 
-  w := strings.Builder{}
-  w.Grow(n + 5)
-  cnt := 0
+	w := strings.Builder{}
+	w.Grow(n + 5)
+	cnt := 0
 
-  endOfString := false
+	endOfString := false
 
-  for i := 0; i < n; i++ {
+	for i := 0; i < n; i++ {
 
-    if p[i] == 0 {
-      endOfString = true
-      break
-    }
+		if p[i] == 0 {
+			endOfString = true
+			break
+		}
 
-    w.WriteByte(p[i])
-    cnt++
-  }
+		w.WriteByte(p[i])
+		cnt++
+	}
 
-  n = cnt
+	n = cnt
 
-  sops.stringDataMutex.Lock()
+	sops.stringDataMutex.Lock()
 
-  sops.stringData += w.String()
+	sops.stringData += w.String()
 
-  if endOfString {
-    sops.cntBytesWritten = 0
-  } else {
-    sops.cntBytesWritten += uint64(n)
-  }
+	if endOfString {
+		sops.cntBytesWritten = 0
+	} else {
+		sops.cntBytesWritten += uint64(n)
+	}
 
-  sops.stringDataMutex.Unlock()
+	sops.stringDataMutex.Unlock()
 
-  return n, err
+	return n, err
 }
