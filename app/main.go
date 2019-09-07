@@ -8,7 +8,7 @@ func main() {
 
   mt := examples.MainTest{}
 
-  mt.ExampleExtractDataField02()
+  mt.ExampleExtractNumStr02()
 
 }
 

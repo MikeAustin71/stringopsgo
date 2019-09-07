@@ -592,7 +592,6 @@ func (mt MainTest) ExampleExtractDataField03() {
 
 }
 
-
 func (mt MainTest) ExampleExtractNumStr01() {
   // Etc/GMT-4
   // "Etc/GMT+11"
@@ -616,6 +615,8 @@ func (mt MainTest) ExampleExtractNumStr01() {
   if expectedNextTargetStrIdx >= len(targetStr) {
     expectedNextTargetStrIdx = -1
   }
+  var startTime, endTime  time.Time
+  startTime = time.Now()
 
   nStrDto,
   err := strops.StrOps{}.ExtractNumericDigits(
@@ -624,6 +625,8 @@ func (mt MainTest) ExampleExtractNumStr01() {
     keepLeadingChars,
     keepInteriorChars,
     keepTrailingChars)
+
+  endTime = time.Now()
 
   if err != nil {
     fmt.Printf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
@@ -675,6 +678,10 @@ func (mt MainTest) ExampleExtractNumStr01() {
     isError = true
   }
 
+  totalNanoSecs,
+  elapsedTime := mt.Timer(startTime, endTime)
+
+
   fmt.Println("  mainTest.ExampleExtractNumStr01()  ")
   fmt.Println("-------------------------------------")
   if isError {
@@ -704,8 +711,137 @@ func (mt MainTest) ExampleExtractNumStr01() {
   fmt.Println(" Leading Sign Index: ", nStrDto.LeadingSignIndex)
   fmt.Println("      Number String: ", nStrDto.NumStr)
   fmt.Println("Target Str Next Idx: ", nStrDto.NextTargetStrIndex)
+  fmt.Println("-------------------------------------")
+  fmt.Println("       Elapsed Time: ", elapsedTime)
+  fmt.Println("  Total NanoSeconds: ", totalNanoSecs)
+  fmt.Println("-------------------------------------")
+
 }
 
+func (mt MainTest) ExampleExtractNumStr02() {
+  // Etc/GMT-4
+  // "Etc/GMT+11"
+  // "November 12, 2016 1:6:3pm -(+0000) UTC"
+  // "Hello World! Your bank account =$(1,250,364.33).44 What do you think?"
+  targetStr := "Hello World! 1234 ?"
+
+  expectedNumStr := "1234"
+  expectedLeadingSignChar := ""
+  startIndex := 0
+  keepLeadingChars := ""
+  keepInteriorChars := ""
+  keepTrailingChars := ""
+
+  expectedLeadingSignIndex := -1
+
+  expectedNumStrLen := len(expectedNumStr)
+  expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+  expectedNextTargetStrIdx := expectedNumIdx + expectedNumStrLen
+
+  if expectedNextTargetStrIdx >= len(targetStr) {
+    expectedNextTargetStrIdx = -1
+  }
+
+  var startTime, endTime  time.Time
+  startTime = time.Now()
+
+  nStrDto,
+  err := strops.StrOps{}.ExtractNumericDigits(
+    targetStr,
+    startIndex,
+    keepLeadingChars,
+    keepInteriorChars,
+    keepTrailingChars)
+
+  endTime = time.Now()
+
+  if err != nil {
+    fmt.Printf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+      "targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+    return
+  }
+
+  totalNanoSeconds,
+  elapsedTime := mt.Timer(startTime, endTime)
+
+  isError := false
+
+  if expectedNumIdx != nStrDto.FirstNumCharIndex {
+    fmt.Printf("Expected starting numeric index='%v'\n"+
+      "Instead, staring numeric index='%v'\n",
+      expectedNumIdx, nStrDto.FirstNumCharIndex)
+    isError = true
+  }
+
+  if expectedNumStr != nStrDto.NumStr {
+    fmt.Printf("Expected number string ='%v'\n"+
+      "Instead, number string ='%v'\n",
+      expectedNumStr, nStrDto.NumStr)
+    isError = true
+  }
+
+  if expectedNumStrLen != nStrDto.NumStrLen {
+    fmt.Printf("Expected number string length ='%v'\n"+
+      "Instead, number string length ='%v'\n",
+      expectedNumStrLen, nStrDto.NumStrLen)
+    isError = true
+  }
+
+  if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+    fmt.Printf("Expected leading sign char ='%v'\n"+
+      "Instead, leading sign char ='%v'\n",
+      expectedLeadingSignChar, nStrDto.LeadingSignChar)
+    isError = true
+  }
+
+  if expectedLeadingSignIndex != nStrDto.LeadingSignIndex {
+    fmt.Printf("Expected leading sign index ='%v'\n"+
+      "Instead, leading sign index ='%v'\n",
+      expectedLeadingSignIndex, nStrDto.LeadingSignIndex)
+    isError = true
+  }
+
+  if expectedNextTargetStrIdx != nStrDto.NextTargetStrIndex {
+    fmt.Printf("Expected Next TargetStr Char Index ='%v'\n"+
+      "Instead, Next TargetStr Char Index ='%v'\n",
+      expectedNextTargetStrIdx, nStrDto.NextTargetStrIndex)
+    isError = true
+  }
+
+  fmt.Println("  mainTest.ExampleExtractNumStr02()  ")
+  fmt.Println("-------------------------------------")
+  if isError {
+    fmt.Println("     @@@@@  FAILURE @@@@@@           ")
+  } else {
+    fmt.Println("          SUCCESS!!!")
+  }
+
+  fmt.Println("-------------------------------------")
+  fmt.Println("          TargetStr: ", targetStr)
+  fmt.Println("           startIdx: ", startIndex)
+  fmt.Println("-------------------------------------")
+  fmt.Println("           Expected                  ")
+  fmt.Println("-------------------------------------")
+  fmt.Println("       Number Index: ", expectedNumIdx)
+  fmt.Println("         Num Length: ", expectedNumStrLen)
+  fmt.Println("  Leading Sign Char: ", expectedLeadingSignChar)
+  fmt.Println(" Leading Sign Index: ", expectedLeadingSignIndex)
+  fmt.Println("      Number String: ", expectedNumStr)
+  fmt.Println(" Next TargetStr Idx: ", expectedNextTargetStrIdx)
+  fmt.Println("-------------------------------------")
+  fmt.Println("            Results                  ")
+  fmt.Println("-------------------------------------")
+  fmt.Println("        NumberIndex: ", nStrDto.FirstNumCharIndex)
+  fmt.Println("         Num Length: ", nStrDto.NumStrLen)
+  fmt.Println("  Leading Sign Char: ", nStrDto.LeadingSignChar)
+  fmt.Println(" Leading Sign Index: ", nStrDto.LeadingSignIndex)
+  fmt.Println("      Number String: ", nStrDto.NumStr)
+  fmt.Println("Target Str Next Idx: ", nStrDto.NextTargetStrIndex)
+  fmt.Println("-------------------------------------")
+  fmt.Println("       Elapsed Time: ", elapsedTime)
+  fmt.Println("  Total NanoSeconds: ", totalNanoSeconds)
+  fmt.Println("-------------------------------------")
+}
 
 func (mt MainTest) ExampleStripLeadingChars01() {
 

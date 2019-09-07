@@ -163,14 +163,14 @@ func (sortStrLenLow SortStrLengthLowestToHighest) Less(i, j int) bool {
 // strings.
 //
 type NumStrProfileDto struct {
-	TargetStr          string // The original target string which is scanned for a number string.
-	StartIndex         int    // The starting index in 'TargetStr' from which the number string search was initiated.
-	LeadingSignIndex   int    // The string index of a leading sign in 'NumStr' below. If a leading sign character is NOT present in 'NumStr' this value is set to -1.
-	LeadingSignChar    string // If a leading sign character (plus '+' or minus '-') exists in data field 'NumStr' (below), it is stored in this string.
-	FirstNumCharIndex  int    // The index in 'TargetStr' (above) where the first character of the extracted number string is located.
-	NextTargetStrIndex int    // The index of the next character in 'TargetStr' immediately following the extracted number string.
-	NumStrLen          int    // The length of the extracted number string.
-	NumStr             string // The number string extracted from 'TargetStr'.
+	TargetStr          string //  The original target string which is scanned for a number string.
+	StartIndex         int    //  The starting index in 'TargetStr' from which the number string search was initiated.
+	LeadingSignIndex   int    //  The string index of a leading sign in 'NumStr' below. If a leading sign character is NOT present in 'NumStr' this value is set to -1.
+	LeadingSignChar    string //  If a leading sign character (plus '+' or minus '-') exists in data field 'NumStr' (below), it is stored in this string.
+	FirstNumCharIndex  int    //  The index in 'TargetStr' (above) where the first character of the extracted number string is located.
+	NextTargetStrIndex int    //  The index of the next character in 'TargetStr' immediately following the extracted number string. If no number string is identified or the next index in 'TargetStr' is invalid, the value is set to -1.
+	NumStrLen          int    //  The length of the extracted number string. If a number string is not located, this value is set to -1.
+	NumStr             string //  The number string extracted from 'TargetStr'.
 }
 
 // New - Creates and returns a new instance of NumStrProfileDto
@@ -475,6 +475,9 @@ func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineD
 // If the input parameter 'convertSpace' is set to 'true' then all spaces are converted
 // to "[SPACE]" in the returned string.
 //
+// Reference:
+//    https://www.juniper.net/documentation/en_US/idp5.1/topics/reference/general/intrusion-detection-prevention-custom-attack-object-extended-ascii.html
+//
 func (sops StrOps) ConvertNonPrintableCharacters(
 	nonPrintableChars []rune, convertSpace bool) (printableChars string) {
 
@@ -491,26 +494,38 @@ func (sops StrOps) ConvertNonPrintableCharacters(
 		cRune := nonPrintableChars[i]
 
 		switch cRune {
-		case '\a':
-			b.WriteString("\\a")
-		case '\b':
-			b.WriteString("\\b") // backspace
-		case '\f':
-			b.WriteString("\\f") // form feed
-		case '\n':
-			b.WriteString("\\n") // new line
-		case '\r':
-			b.WriteString("\\r") // carriage return
-		case '\t':
-			b.WriteString("\\t") // tab
-		case '\v':
-			b.WriteString("\\v") // vertical tab
-		case '\\':
-			b.WriteString("\\")
 		case 0:
-			b.WriteString("[NULL]")
+			b.WriteString("[NULL]") // 0x00 NULL
+		case 1:
+			b.WriteString("[SOH]") // 0x01 State of Heading
+		case 2:
+			b.WriteString("[STX]") // 0x02 State of Text
+		case 3:
+			b.WriteString("[ETX]") // 0x03 End of Text
+		case 4:
+			b.WriteString("[EOT]") // 0X04 End of Transmission
+		case 5:
+			b.WriteString("[ENQ]") // 0x05 Enquiry
+		case 6:
+			b.WriteString("[ACK]") // 0x06 Acknowledge
+		case '\a':
+			b.WriteString("\\a") // U+0007 alert or bell
+		case '\b':
+			b.WriteString("\\b") // U+0008 backspace
+		case '\f':
+			b.WriteString("\\f") // U+000C form feed
+		case '\n':
+			b.WriteString("\\n") // U+000A line feed or newline
+		case '\r':
+			b.WriteString("\\r") // U+000D carriage return
+		case '\t':
+			b.WriteString("\\t") // U+0009 horizontal tab
+		case '\v':
+			b.WriteString("\\v") // U+000b vertical tab
+		case '\\':
+			b.WriteString("\\") // U+005c backslash
 		case ' ':
-
+			                      // 0X20 Space character
 			if convertSpace {
 				b.WriteString("[SPACE]")
 			} else {
@@ -581,31 +596,54 @@ func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
 
 // ExtractDataField - Extracts a data field string from a larger target string ('targetStr').
 // The target string is searched for a data field. If the 'leadingKeyWordDelimiter' parameter
-// is populated, the data field MUST contain this leading key word. The search for the data
-// field begins at a string index in target string which is designated by input parameter,
-// 'startIdx'.
+// is populated, the data field MUST contain this leading key word, otherwise an empty data field
+// is returned.
+//
+// If 'leadingKeyWordDelimiter' is an empty string, the search for the data field will begin at
+// 'targetStr' index, 'startIdx'.
+//
+// The returned data field must occur in 'targetStr' prior to a comment or End-Of-Line character.
 //
 // The extracted data field MUST be preceded by one of the characters specified in input
 // parameter, 'leadingFieldSeparators'. In addition, the data field must be immediately
-// followed by one of the characters in input parameter 'trailingFieldSeparators'.
-//
-//
-// ------------------------------------------------------------------------
-//
-//  Input Values
-//
-//  targetStr               string
-//  leadingKeyWordDelimiter string
-//  startIdx                int
-//  leadingFieldSeparators  []string
-//  trailingFieldSeparators []string
-//  commentDelimiters       []string
-//  endOfLineDelimiters     []string
-//
+// followed by one of the characters in input parameter 'trailingFieldSeparators' or a comment
+// or an End-Of-Line character.
 //
 // ------------------------------------------------------------------------
 //
-//  Return Values
+// Input Values
+//
+//  targetStr               string   - The target string from which the data field will be extracted.
+//
+//  leadingKeyWordDelimiter string   - The Key Word or character which identifies and immediately precedes
+//                                       the data field. If this parameter is populated, the search
+//                                       for a data field will begin immediately after the found data
+//                                       string. If this Key Word is NOT located in 'targetStr', an
+//                                       empty string will be returned for data field.
+//
+//                                       If this parameter is an empty string, the search for data field
+//                                       will begin at the string index designated by parameter, 'startIdx'.
+//
+//  startIdx                int      - The string index in parameter 'targetStr' from which the search for
+//                                       a data field will begin.
+//
+//  leadingFieldSeparators  []string - An array of characters or groups of characters which delimit the
+//                                       leading edge of the data field.
+//
+//  trailingFieldSeparators []string - An array of characters or groups of characters which delimit the
+//                                       end of a data field.
+//
+//  commentDelimiters       []string - Comments effectively terminate the search for a data field. This
+//                                       array stores comment characters or phrases which signal the beginning
+//                                       of a comment.
+//
+//  endOfLineDelimiters     []string - Those characters or groups of characters which mark the end of a line.
+//                                       Generally this includes characters like 'new line' or 'carriage return'.
+//                                       End of line characters will terminate the search for a data field.
+//
+// ------------------------------------------------------------------------
+//
+// Return Values
 //
 //  DataFieldProfileDto - If successful, this method returns a structure containing
 //                        characteristics describing the extracted data field.
@@ -682,7 +720,8 @@ func (sops StrOps) ExtractDataField(
 	if lenLeadingFieldSeparators == 0 {
 
 		return newDataDto,
-			errors.New(ePrefix + "ERROR: Input Parameter 'leadingFieldSeparators' is a zero length array!\n" +
+			errors.New(ePrefix +
+				"ERROR: Input Parameter 'leadingFieldSeparators' is a zero length array!\n" +
 				"'leadingFieldSeparators' are required!\n")
 	}
 
@@ -939,6 +978,10 @@ exitMainTargetLoop:
 //                                  '123789' because 'keepLeadingChars' characters must immediately
 //                                  precede the string of numeric digits in 'targetStr'.
 //
+//                                  Leading characters will not be repeated. If for some reason you
+//                                  wanted to retain two leading currency symbols ("$$") it would be
+//                                  necessary to include two currency characters in 'keepLeadingChars'.
+//
 //  keepInteriorChars   string    - This string contains non-numeric characters which will be retained
 //                                  as valid characters within the final extracted number string. The
 //                                  characters must exist withing the first instance of a number string
@@ -962,6 +1005,10 @@ exitMainTargetLoop:
 //                                  elects to use parameter 'keepTrailingChars' to retain non-numeric
 //                                  characters such as a trailing right-parenthesis, then those non-numeric
 //                                  characters will be retained in the final extracted number string.
+//
+//                                  Trailing characters will not be repeated. If for some reason you
+//                                  wanted to retain two closing parentheses symbols ("))") it would be
+//                                  necessary to include closing parentheses characters in 'keepTrailingChars'.
 //
 //                                  It should be emphasized that 'keepTrailingChars' must immediately
 //                                  follow the first instance of a number string in parameter, 'targetStr'.
@@ -988,22 +1035,32 @@ exitMainTargetLoop:
 //                        populated with the extracted number string and additional profile
 //                        information related to the extracted number string.
 //
-//					type NumStrProfileDto struct {
-//								TargetStr        string   // The original target string which is scanned for a number string
-//								TargetStrStartIndex          int   // The starting index in 'TargetStr' from which the number string
-//																			    //    search was initiated.
-//								LeadingSignIndex    int   //  The string index of a leading sign in 'NumStr' below. If a
-//																			    //    leading sign character is NOT present in 'NumStr' this value
-//                                          //    is set to -1
-//                LeadingSignChar  string   //  If a leading sign character (plus '+' or minus '-') exists in
-//                                          //    data field 'NumStr' (below), it is stored in this string.
-//                FirstNumCharIndex   int   //  The index in 'TargetStr' (above) where the first character
-//                                          //    of the extracted number string is located.
-//                NextTargetStrIndex  int   //  The index of the next character in 'TargetStr' immediately
-//                                          //    following the extracted number string.
-//                NumStrLen           int   //  The length of the extracted number string.
-//                NumStr           string   //  The number string extracted from 'TargetStr'.
-//          }
+//     type NumStrProfileDto struct {
+//
+//           TargetStr            string   //  The original target string which is scanned for a
+//                                         //    number string
+//
+//           TargetStrStartIndex  int      //  The starting index in 'TargetStr' from which the
+//                                         //    number string search was initiated.
+//
+//           LeadingSignIndex     int      //  The string index of a leading sign in 'NumStr' below. If a
+//                                         //    leading sign character is NOT present in 'NumStr' this
+//                                         ..    value is set to -1
+//
+//           LeadingSignChar      string   //  If a leading sign character (plus '+' or minus '-')
+//                                         //    exists in data field 'NumStr' (below), it is stored
+//                                         //    in this string.
+//
+//           FirstNumCharIndex    int      //  The index in 'TargetStr' (above) where the first character
+//                                         //    of the extracted number string is located.
+//
+//           NextTargetStrIndex   int      //  The index of the next character in 'TargetStr' immediately
+//                                         //    following the extracted number string.
+//
+//           NumStrLen            int      //  The length of the extracted number string.
+//
+//           NumStr               string   //  The number string extracted from 'TargetStr'.
+//     }
 //
 //
 //  error               - If 'startIndex' is less than zero or if 'startIndex' exceeds the last character
