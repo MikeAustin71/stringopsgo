@@ -204,6 +204,12 @@
 --- PASS: TestStrOps_ExtractNumericDigits_16 (0.00s)
 === RUN   TestStrOps_ExtractNumericDigits_17
 --- PASS: TestStrOps_ExtractNumericDigits_17 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_18
+--- PASS: TestStrOps_ExtractNumericDigits_18 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_19
+--- PASS: TestStrOps_ExtractNumericDigits_19 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_20
+--- PASS: TestStrOps_ExtractNumericDigits_20 (0.00s)
 === RUN   TestStrOps_FindRegExIndex_01
 --- PASS: TestStrOps_FindRegExIndex_01 (0.00s)
 === RUN   TestStrOps_GetReader_01
@@ -495,5 +501,5 @@
 === RUN   TestStrOps_Write_04
 --- PASS: TestStrOps_Write_04 (0.00s)
 PASS
-coverage: 88.2% of statements
-ok  	github.com/MikeAustin71/stringopsgo/strops/v2	2.780s
+coverage: 88.5% of statements
+ok  	github.com/MikeAustin71/stringopsgo/strops/v2	2.678s

@@ -780,14 +780,7 @@ func TestStrOps_ExtractNumericDigits_12(t *testing.T) {
 	keepInteriorChars := ",."
 	keepTrailingChars := ""
 
-	expectedNumStr := ""
-	expectedLeadingSignChar := ""
-	expectedLeadingSignCharIndex := -1
-	expectedNumStrLen := 0
-	expectedNumIdx := -1
-	expectedNextTargetStrIndex := -1
-
-	nStrDto,
+	_,
 	err := StrOps{}.ExtractNumericDigits(
 		targetStr,
 		startIndex,
@@ -795,46 +788,11 @@ func TestStrOps_ExtractNumericDigits_12(t *testing.T) {
 		keepInteriorChars,
 		keepTrailingChars)
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
-			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+	if err == nil {
+		t.Error("Expected an error return from StrOps{}.ExtractNumericDigits(targetStr, 0)\n" +
+			"because input parameter 'targetStr' is an empty string.\n" +
+			"However, NO ERROR WAS RETURNED!!")
 		return
-	}
-
-	if expectedNumIdx != nStrDto.FirstNumCharIndex {
-		t.Errorf("Expected starting numeric index='%v'\n"+
-			"Instead, staring numeric index='%v'\n",
-			expectedNumIdx, nStrDto.FirstNumCharIndex)
-	}
-
-	if expectedNumStr != nStrDto.NumStr {
-		t.Errorf("Expected number string ='%v'\n"+
-			"Instead, number string ='%v'\n",
-			expectedNumStr, nStrDto.NumStr)
-	}
-
-	if expectedNumStrLen != nStrDto.NumStrLen {
-		t.Errorf("Expected number string length ='%v'\n"+
-			"Instead, number string length ='%v'\n",
-			expectedNumStrLen, nStrDto.NumStrLen)
-	}
-
-	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
-		t.Errorf("Expected leading sign char ='%v'\n"+
-			"Instead, leading sign char ='%v'\n",
-			expectedLeadingSignChar, nStrDto.LeadingSignChar)
-	}
-
-	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
-		t.Errorf("Expected leading sign char index ='%v'\n"+
-			"Instead, leading sign char index ='%v'\n",
-			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
-	}
-
-	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
-		t.Errorf("Expected next target index after number string ='%v'\n"+
-			"Instead, next target string index ='%v'\n",
-			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
 	}
 }
 
@@ -1185,6 +1143,77 @@ func TestStrOps_ExtractNumericDigits_17(t *testing.T) {
 		t.Errorf("Expected next target index after number string ='%v'\n"+
 			"Instead, next target string index ='%v'\n",
 			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
+	}
+}
+
+func TestStrOps_ExtractNumericDigits_18(t *testing.T) {
+
+	targetStr := ""
+	startIndex := 0
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
+
+
+	_,
+	err := StrOps{}.ExtractNumericDigits(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err == nil {
+		t.Error("Expected an error return from StrOps{}.ExtractNumericDigits()\n" +
+			"because input parameter 'targetStr' is an empty string.\n" +
+			"However, NO ERROR WAS RETURNED!!\n")
+	}
+}
+
+func TestStrOps_ExtractNumericDigits_19(t *testing.T) {
+
+	targetStr := "November 12, 2016 1:6:3pm +0000 UTC"
+	startIndex := -1
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
+
+	_,
+	err := StrOps{}.ExtractNumericDigits(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+
+	if err == nil {
+		t.Error("Expected an error return from StrOps{}.ExtractNumericDigits()\n" +
+			"because input parameter 'startIdx' is less than zero.\n" +
+			"However, NO ERROR WAS RETURNED!!\n")
+	}
+}
+
+func TestStrOps_ExtractNumericDigits_20(t *testing.T) {
+
+	targetStr := "November 12, 2016 1:6:3pm +0000 UTC"
+	startIndex := 999
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
+
+	_,
+	err := StrOps{}.ExtractNumericDigits(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err == nil {
+		t.Error("Expected an error return from StrOps{}.ExtractNumericDigits()\n" +
+			"because input parameter 'startIdx' is beyond the maximum boundary for 'targetStr'.\n" +
+			"However, NO ERROR WAS RETURNED!!\n")
 	}
 }
 

@@ -1082,32 +1082,28 @@ func (sops StrOps) ExtractNumericDigits(
 	nStrDto.TargetStr = targetStr
 	nStrDto.StartIndex = startIndex
 
-	var err error = nil
 
 	ePrefix := "StrOps.ExtractNumericDigits() "
 
 	lenTargetStr := len(targetStr)
 
 	if lenTargetStr == 0 {
-		return nStrDto, err
+		return nStrDto, errors.New(ePrefix+
+			"ERROR: Input parameter 'targetStr' is an empty string!\n")
 	}
 
 	if startIndex < 0 {
-		err = fmt.Errorf(ePrefix+
+		return nStrDto, fmt.Errorf(ePrefix+
 			"ERROR: Input parameter 'startIndex' is less than zero!\n"+
 			"startIndex='%v'", startIndex)
-
-		return nStrDto, err
 	}
 
 	if startIndex >= lenTargetStr {
-		err = fmt.Errorf(ePrefix+
+		return nStrDto, fmt.Errorf(ePrefix+
 			"ERROR: Input parameter 'startIndex' is INVALID!\n"+
 			"'startIndex' exceeds the last character index in 'targetStr'\n"+
 			"startIndex='%v'\tlast character index='%v'\n"+
 			"targetStr='%v'", startIndex, lenTargetStr-1, targetStr)
-
-		return nStrDto, err
 	}
 
 	targetRunes := []rune(targetStr)
@@ -1197,7 +1193,7 @@ func (sops StrOps) ExtractNumericDigits(
 		// There are no numeric digits
 		// in this target string.
 		// EXIT HERE!!!
-		return nStrDto, err
+		return nStrDto, nil
 	}
 
 	firstNumStrCharIdx := -1
@@ -1370,9 +1366,7 @@ func (sops StrOps) ExtractNumericDigits(
 		}
 	}
 
-	err = nil
-
-	return nStrDto, err
+	return nStrDto, nil
 }
 
 // FindFirstNonSpaceChar - Returns the string index of the first non-space character in
