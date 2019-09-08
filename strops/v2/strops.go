@@ -512,16 +512,20 @@ func (sops StrOps) ConvertNonPrintableCharacters(
 			b.WriteString("\\a") // U+0007 alert or bell
 		case '\b':
 			b.WriteString("\\b") // U+0008 backspace
-		case '\f':
-			b.WriteString("\\f") // U+000C form feed
-		case '\n':
-			b.WriteString("\\n") // U+000A line feed or newline
-		case '\r':
-			b.WriteString("\\r") // U+000D carriage return
 		case '\t':
 			b.WriteString("\\t") // U+0009 horizontal tab
+		case '\n':
+			b.WriteString("\\n") // U+000A line feed or newline
 		case '\v':
-			b.WriteString("\\v") // U+000b vertical tab
+			b.WriteString("\\v") // U+000B vertical tab
+		case '\f':
+			b.WriteString("\\f") // U+000C form feed
+		case '\r':
+			b.WriteString("\\r") // U+000D carriage return
+		case 14:
+			b.WriteString("[SO]") // U+000E Shift Out
+		case 15:
+			b.WriteString("[SI]") // U+000F Shift In
 		case '\\':
 			b.WriteString("\\") // U+005c backslash
 		case ' ':
