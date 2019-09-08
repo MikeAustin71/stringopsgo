@@ -14,6 +14,20 @@
 --- PASS: TestStrOps_BreakTextAtLineLength_07 (0.00s)
 === RUN   TestStrOps_BreakTextAtLineLength_08
 --- PASS: TestStrOps_BreakTextAtLineLength_08 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableCharacters_01
+--- PASS: TestStrOps_ConvertNonPrintableCharacters_01 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableCharacters_02
+--- PASS: TestStrOps_ConvertNonPrintableCharacters_02 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableCharacters_03
+--- PASS: TestStrOps_ConvertNonPrintableCharacters_03 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableCharacters_04
+--- PASS: TestStrOps_ConvertNonPrintableCharacters_04 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableCharacters_05
+--- PASS: TestStrOps_ConvertNonPrintableCharacters_05 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableCharacters_06
+--- PASS: TestStrOps_ConvertNonPrintableCharacters_06 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableCharacters_07
+--- PASS: TestStrOps_ConvertNonPrintableCharacters_07 (0.00s)
 === RUN   TestStrOps_CopyIn_01
 --- PASS: TestStrOps_CopyIn_01 (0.00s)
 === RUN   TestStrOps_CopyOut_01
@@ -469,4 +483,4 @@
 === RUN   TestStrOps_Write_04
 --- PASS: TestStrOps_Write_04 (0.00s)
 PASS
-ok  	github.com/MikeAustin71/stringopsgo/strops/v2	2.519s
+ok  	github.com/MikeAustin71/stringopsgo/strops/v2	3.174s

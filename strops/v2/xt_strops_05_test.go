@@ -1,6 +1,9 @@
 package strops
 
-import "testing"
+import (
+	"io"
+	"testing"
+)
 
 func TestStrOps_FindRegExIndex_01(t *testing.T) {
 

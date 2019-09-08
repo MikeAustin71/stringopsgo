@@ -1,6 +1,9 @@
 package strops
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestStrOps_ExtractNumericDigits_01(t *testing.T) {
 

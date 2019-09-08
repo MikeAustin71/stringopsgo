@@ -209,6 +209,141 @@ func TestStrOps_BreakTextAtLineLength_08(t *testing.T) {
 	}
 }
 
+func TestStrOps_ConvertNonPrintableCharacters_01(t *testing.T) {
+
+	testStr := "Hello world! How are you doing today?\n"
+	testRunes := []rune(testStr)
+	expectedStr := "Hello world! How are you doing today?\\n"
+
+	actualStr := StrOps{}.ConvertNonPrintableCharacters(testRunes, false)
+
+	if expectedStr != actualStr {
+		t.Errorf("ERROR: Expected result string='%v'\n"+
+			"Instead, actual result string='%v'\n",
+			expectedStr, actualStr)
+	}
+
+}
+
+func TestStrOps_ConvertNonPrintableCharacters_02(t *testing.T) {
+
+	testStr := "Hello world! How are you doing today?\n"
+	testRunes := []rune(testStr)
+	expectedStr := "Hello[SPACE]world![SPACE]How[SPACE]are[SPACE]you[SPACE]doing[SPACE]today?\\n"
+
+	actualStr := StrOps{}.ConvertNonPrintableCharacters(testRunes, true)
+
+	if expectedStr != actualStr {
+		t.Errorf("ERROR: Expected result string='%v'\n"+
+			"Instead, actual result string='%v'\n",
+			expectedStr, actualStr)
+	}
+
+}
+
+func TestStrOps_ConvertNonPrintableCharacters_03(t *testing.T) {
+
+	testStr := "Hello world!\tHow\rare\ayou\bdoing\ftoday?\v\n"
+	testRunes := []rune(testStr)
+	expectedStr := "Hello world!\\tHow\\rare\\ayou\\bdoing\\ftoday?\\v\\n"
+
+	actualStr := StrOps{}.ConvertNonPrintableCharacters(testRunes, false)
+
+	if expectedStr != actualStr {
+		t.Errorf("ERROR: Expected result string='%v'\n"+
+			"Instead, actual result string='%v'\n",
+			expectedStr, actualStr)
+	}
+
+}
+
+func TestStrOps_ConvertNonPrintableCharacters_04(t *testing.T) {
+
+	testStr := ""
+	testRunes := []rune(testStr)
+	expectedStr := "[EMPTY]"
+
+	actualStr := StrOps{}.ConvertNonPrintableCharacters(testRunes, false)
+
+	if expectedStr != actualStr {
+		t.Errorf("ERROR: Expected result string='%v'\n"+
+			"Instead, actual result string='%v'\n",
+			expectedStr, actualStr)
+	}
+
+}
+
+func TestStrOps_ConvertNonPrintableCharacters_05(t *testing.T) {
+
+	testRunes := []rune{
+		'H',
+		'e',
+		'l',
+		'l',
+		'o',
+		0}
+
+	expectedStr := "Hello[NULL]"
+
+	actualStr := StrOps{}.ConvertNonPrintableCharacters(testRunes, false)
+
+	if expectedStr != actualStr {
+		t.Errorf("ERROR: Expected result string='%v'\n"+
+			"Instead, actual result string='%v'\n",
+			expectedStr, actualStr)
+	}
+
+}
+
+func TestStrOps_ConvertNonPrintableCharacters_06(t *testing.T) {
+
+	testRunes := []rune{
+		'H',
+		'e',
+		'l',
+		'l',
+		'o',
+		1,
+		2,
+		3,
+		4,
+		5,
+		6	}
+
+	expectedStr := "Hello[SOH][STX][ETX][EOT][ENQ][ACK]"
+
+	actualStr := StrOps{}.ConvertNonPrintableCharacters(testRunes, false)
+
+	if expectedStr != actualStr {
+		t.Errorf("ERROR: Expected result string='%v'\n"+
+			"Instead, actual result string='%v'\n",
+			expectedStr, actualStr)
+	}
+
+}
+
+func TestStrOps_ConvertNonPrintableCharacters_07(t *testing.T) {
+
+	testRunes := []rune{
+		'H',
+		'e',
+		'l',
+		'l',
+		'o',
+		0x5c }
+
+	expectedStr := "Hello\\"
+
+	actualStr := StrOps{}.ConvertNonPrintableCharacters(testRunes, false)
+
+	if expectedStr != actualStr {
+		t.Errorf("ERROR: Expected result string='%v'\n"+
+			"Instead, actual result string='%v'\n",
+			expectedStr, actualStr)
+	}
+
+}
+
 func TestStrOps_CopyIn_01(t *testing.T) {
 
 	string1 := "What in the world is Garfield doing!"
