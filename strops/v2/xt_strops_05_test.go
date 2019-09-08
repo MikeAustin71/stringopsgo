@@ -703,4 +703,3 @@ func TestStrOps_LowerCaseFirstLetter_05(t *testing.T) {
 	}
 
 }
-

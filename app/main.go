@@ -8,7 +8,7 @@ func main() {
 
   mt := examples.MainTest{}
 
-  mt.ExampleExtractNumStr02()
+  mt.ExampleRead03()
 
 }
 

@@ -483,4 +483,5 @@
 === RUN   TestStrOps_Write_04
 --- PASS: TestStrOps_Write_04 (0.00s)
 PASS
-ok  	github.com/MikeAustin71/stringopsgo/strops/v2	3.174s
+coverage: 87.5% of statements
+ok  	github.com/MikeAustin71/stringopsgo/strops/v2	3.588s

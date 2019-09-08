@@ -1829,36 +1829,6 @@ func (sops StrOps) FindRegExIndex(targetStr string, regex string) []int {
 
 }
 
-// GetCountBytesRead - Returns private member variable
-// 'StrOps.cntBytesRead' which holds the number of bytes
-// accumulated through the last Read operation executed through
-// method StrOps.Read().
-func (sops *StrOps) GetCountBytesRead() uint64 {
-
-	var bytesRead uint64
-
-	sops.stringDataMutex.Lock()
-	bytesRead = sops.cntBytesRead
-	sops.stringDataMutex.Unlock()
-
-	return bytesRead
-}
-
-// GetCountBytesWritten - Returns private member variable
-// 'StrOps.cntBytesWritten' which holds the number of bytes
-// accumulated through the last Write operation executed
-// through method StrOps.Write().
-func (sops *StrOps) GetCountBytesWritten() uint64 {
-
-	var bytesWritten uint64
-
-	sops.stringDataMutex.Lock()
-	bytesWritten = sops.cntBytesWritten
-	sops.stringDataMutex.Unlock()
-
-	return bytesWritten
-}
-
 // GetReader - Returns an io.Reader which will read the private
 // member data element StrOps.stringData.
 func (sops *StrOps) GetReader() io.Reader {
@@ -2181,7 +2151,8 @@ func (sops StrOps) NewPtr() *StrOps {
 // bytes into 'p'. This method supports buffered 'read' operations.
 //
 // The internal member string variable, 'StrOps.stringData' is written
-// into 'p'.
+// into 'p'. When the end of 'StrOps.stringData' is written to 'p',
+// the method returns error = 'io.EOF'.
 //
 // 'StrOps.stringData' can be accessed through Getter an Setter methods,
 // GetStringData() and SetStringData()
@@ -2635,32 +2606,10 @@ func (sops StrOps) ReplaceStringChars(
 	return string(outputStr), nil
 }
 
-// ResetBytesReadCounter - Resets the internal 'Bytes Read' counter
-// to zero. As practical matter, this method is rarely if ever used.
-// Its use is restricted primarily to special circumstances or debugging
-// operations.
-//
-// This method sets StrOps.cntBytesRead equal to zero.
-func (sops *StrOps) ResetBytesReadCounter() {
-	sops.stringDataMutex.Lock()
-	sops.cntBytesRead = 0
-	sops.stringDataMutex.Unlock()
-}
-
-// ResetBytesWrittenCounter - Resets the internal 'Bytes Written' counter
-// to zero. As practical matter, this method is rarely if ever used.
-// Its use is restricted primarily to special circumstances or debugging
-// operations.
-//
-// This method sets StrOps.cntBytesWritten equal to zero.
-func (sops *StrOps) ResetBytesWrittenCounter() {
-	sops.stringDataMutex.Lock()
-	sops.cntBytesWritten = 0
-	sops.stringDataMutex.Unlock()
-}
-
 // SetStringData - Sets the value of internal
-// string data element, StrOps.stringData.
+// string data element, StrOps.stringData. It
+// also zeros internal fields sops.cntBytesWritten
+// and sops.cntBytesRead.
 func (sops *StrOps) SetStringData(str string) {
 	sops.stringDataMutex.Lock()
 	sops.stringData = str
