@@ -158,6 +158,18 @@
 --- PASS: TestStrOps_ExtractDataField_07 (0.00s)
 === RUN   TestStrOps_ExtractDataField_08
 --- PASS: TestStrOps_ExtractDataField_08 (0.00s)
+=== RUN   TestStrOps_ExtractDataField_09
+--- PASS: TestStrOps_ExtractDataField_09 (0.00s)
+=== RUN   TestStrOps_ExtractDataField_10
+--- PASS: TestStrOps_ExtractDataField_10 (0.00s)
+=== RUN   TestStrOps_ExtractDataField_11
+--- PASS: TestStrOps_ExtractDataField_11 (0.00s)
+=== RUN   TestStrOps_ExtractDataField_12
+--- PASS: TestStrOps_ExtractDataField_12 (0.00s)
+=== RUN   TestStrOps_ExtractDataField_13
+--- PASS: TestStrOps_ExtractDataField_13 (0.00s)
+=== RUN   TestStrOps_ExtractDataField_14
+--- PASS: TestStrOps_ExtractDataField_14 (0.00s)
 === RUN   TestStrOps_ExtractNumericDigits_01
 --- PASS: TestStrOps_ExtractNumericDigits_01 (0.00s)
 === RUN   TestStrOps_ExtractNumericDigits_02
@@ -483,5 +495,5 @@
 === RUN   TestStrOps_Write_04
 --- PASS: TestStrOps_Write_04 (0.00s)
 PASS
-coverage: 87.5% of statements
-ok  	github.com/MikeAustin71/stringopsgo/strops/v2	3.588s
+coverage: 88.2% of statements
+ok  	github.com/MikeAustin71/stringopsgo/strops/v2	2.780s
