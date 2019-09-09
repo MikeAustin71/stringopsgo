@@ -185,7 +185,7 @@ func (dfTrailDelimiter DataFieldTrailingDelimiterType) ParseString(
 
 		if !ok {
 			return DataFieldTrailingDelimiterType(0),
-				errors.New(ePrefix + "Invalid Permission Code!")
+				errors.New(ePrefix + "Invalid DataFieldTrailingDelimiterType Code!")
 		}
 
 	} else {
@@ -196,7 +196,7 @@ func (dfTrailDelimiter DataFieldTrailingDelimiterType) ParseString(
 
 		if !ok {
 			return DataFieldTrailingDelimiterType(0),
-				errors.New(ePrefix + "Invalid Permission Code!")
+				errors.New(ePrefix + "Invalid DataFieldTrailingDelimiterType Code!")
 		}
 
 	}
@@ -261,11 +261,11 @@ func (dfTrailDelimiter DataFieldTrailingDelimiterType) String() string {
 }
 
 // Value - Returns the value of the DataFieldTrailingDelimiterType instance
-// as type DataFieldTrailingDelimiterType.
+// as type int.
 //
-func (dfTrailDelimiter DataFieldTrailingDelimiterType) Value() DataFieldTrailingDelimiterType {
+func (dfTrailDelimiter DataFieldTrailingDelimiterType) Value() int {
 
-	return dfTrailDelimiter
+	return int(dfTrailDelimiter)
 }
 
 // DfTrailDelimiter - public global variable of

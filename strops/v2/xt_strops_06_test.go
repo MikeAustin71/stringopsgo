@@ -71,6 +71,39 @@ func TestStrOps_MakeSingleCharString_02(t *testing.T) {
 
 }
 
+func TestStrOps_MakeSingleCharString_03(t *testing.T) {
+
+	sUtil := StrOps{}
+	requestedLen := 20
+
+	charRune := rune(0)
+
+	_, err := sUtil.MakeSingleCharString(charRune, requestedLen)
+
+	if err == nil {
+		t.Error("Expected an error return from sUtil.MakeSingleCharString(charRune, 10)\n" +
+			"because 'charRune'==0.\n" +
+			"However, NO ERROR WAS RETURNED!\n")
+	}
+}
+
+func TestStrOps_MakeSingleCharString_04(t *testing.T) {
+
+	sUtil := StrOps{}
+	requestedLen := 0
+
+	charRune := 'x'
+
+	_, err := sUtil.MakeSingleCharString(charRune, requestedLen)
+
+	if err == nil {
+		t.Error("Expected an error return from sUtil.MakeSingleCharString(charRune, 10)\n" +
+			"because 'requestedLen'< 1.\n" +
+			"However, NO ERROR WAS RETURNED!\n")
+	}
+}
+
+
 func TestStrOps_Read_01(t *testing.T) {
 
 	expected := "original base string"
@@ -1011,6 +1044,49 @@ func TestStrOps_ReplaceMultipleStrs_04(t *testing.T) {
 	}
 
 }
+
+func TestStrOps_ReplaceMultipleStrs_05(t *testing.T) {
+
+	rStrs := make([][]string, 3, 5)
+
+	for i := 0; i < 3; i++ {
+		rStrs[i] = make([]string, 2, 5)
+	}
+
+	testStr := ""
+
+	rStrs[0][0] = "o"
+	rStrs[0][1] = "x"
+	rStrs[1][0] = " "
+	rStrs[1][1] = "J"
+	rStrs[2][0] = "l"
+	rStrs[2][1] = "F"
+
+	_, err := StrOps{}.ReplaceMultipleStrs(testStr, rStrs)
+
+	if err == nil {
+		t.Error("Expected error return from StrOps{}.ReplaceMultipleStrs(testStr, rStrs)\n" +
+			"because 'testStr' is a zero length string.\n" +
+			"However, NO ERROR WAS RETURNED!\n")
+	}
+}
+
+
+func TestStrOps_ReplaceMultipleStrs_06(t *testing.T) {
+
+	testStr := "Hello World"
+
+	rStrs := make([][]string,0)
+
+	_, err := StrOps{}.ReplaceMultipleStrs(testStr, rStrs)
+
+	if err == nil {
+		t.Error("Expected an error return from StrOps{}.ReplaceMultipleStrs(testStr, rStrs)\n"+
+			"because 'rStrs' is a zero length array.\n" +
+			"However, NO ERROR WAS RETURNED!!!\n")
+	}
+}
+
 
 func TestStrOps_ReplaceNewLines_01(t *testing.T) {
 

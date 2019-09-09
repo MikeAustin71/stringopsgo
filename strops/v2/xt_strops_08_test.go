@@ -507,15 +507,18 @@ func TestStrOps_StrRightJustify_001(t *testing.T) {
 
 }
 
-func TestStrOps_StrCenterInStrLeft_001(t *testing.T) {
-	strToCntr := "1234567"
+func TestStrOps_StrCenterInStrLeft_01(t *testing.T) {
+	strToCenter := "1234567"
 	fieldLen := 79
 	exPadLen := 36
 	exTotalLen := 43
 
-	exStr := strings.Repeat(" ", exPadLen) + strToCntr
+	exStr := strings.Repeat(" ", exPadLen) + strToCenter
+
 	su := StrOps{}
-	str, err := su.StrCenterInStrLeft(strToCntr, fieldLen)
+
+	str, err := su.StrCenterInStrLeft(strToCenter, fieldLen)
+
 	if err != nil {
 		t.Error("StrCenterInStrLeft() generated error: ", err.Error())
 	}
@@ -532,7 +535,69 @@ func TestStrOps_StrCenterInStrLeft_001(t *testing.T) {
 
 }
 
-func TestStrOps_StrGetRuneCnt(t *testing.T) {
+func TestStrOps_StrCenterInStrLeft_02(t *testing.T) {
+	strToCenter := "Hello"
+	fieldLen := 15
+	exTotalFinalStrLen := 10
+
+	expectedReturnedStr := "     Hello"
+	expectedReturnedPrintStr := strings.ReplaceAll(expectedReturnedStr, " ", "@")
+
+	su := StrOps{}
+
+	actualStr, err := su.StrCenterInStrLeft(strToCenter, fieldLen)
+
+	if err != nil {
+		t.Errorf("Error returned by StrCenterInStrLeft()\n" +
+			"Error='%v'", err.Error())
+	}
+
+	lenActualStr := len(actualStr)
+
+	actualPrintStr := strings.ReplaceAll(actualStr, " ", "@")
+
+	if expectedReturnedStr != actualStr  {
+		t.Errorf("Error: Expected string='%v'\n" +
+			"Instead, string='%v'\n" +
+			"Note: Spaces have been replaced with '@'.\n",
+			expectedReturnedPrintStr, actualPrintStr)
+	}
+
+	if exTotalFinalStrLen != lenActualStr {
+		t.Errorf("Error: Expected final string length='%v'.\n" +
+			"Instead, final string length='%v'.\n",
+			exTotalFinalStrLen, lenActualStr)
+	}
+}
+
+func TestStrOps_StrCenterInStrLeft_03(t *testing.T) {
+	strToCenter := "  "
+	fieldLen := 15
+
+	_, err := StrOps{}.StrCenterInStrLeft(strToCenter, fieldLen)
+
+	if err == nil {
+		t.Error("Expected an error return from StrCenterInStrLeft()\n" +
+			"because parameter, 'strToCenter', consists entirely of blank spaces.\n" +
+			"However, NO ERROR WAS RETURNED!\n\n")
+	}
+
+}
+
+func TestStrOps_StrCenterInStrLeft_04(t *testing.T) {
+	strToCenter := "Hello"
+	fieldLen := 2
+
+	_, err := StrOps{}.StrCenterInStrLeft(strToCenter, fieldLen)
+
+	if err == nil {
+		t.Error("Expected error return from StrCenterInStrLeft(strToCenter, fieldLen) because\n" +
+			"input parameter, 'fieldLen' is less than the length of 'strToCenter'.\n" +
+			"However, NO ERROR WAS RETURNED!!")
+	}
+}
+
+func TestStrOps_StrGetRuneCnt_01(t *testing.T) {
 	strToCnt := "1234567"
 	exCnt := 7
 	su := StrOps{}

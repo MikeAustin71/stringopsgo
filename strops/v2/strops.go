@@ -215,7 +215,7 @@ type DataFieldProfileDto struct {
 // for return as part of an error or null state condition. All references
 // to the data field are zeroed.
 //
-func (dfProfile DataFieldProfileDto) ConvertToErrorState() {
+func (dfProfile *DataFieldProfileDto) ConvertToErrorState() {
 	dfProfile.DataFieldStr = ""
 	dfProfile.DataFieldIndex = -1
 	dfProfile.DataFieldLength = 0
@@ -529,7 +529,7 @@ func (sops StrOps) ConvertNonPrintableCharacters(
 		case '\\':
 			b.WriteString("\\") // U+005c backslash
 		case ' ':
-			                      // 0X20 Space character
+			// 0X20 Space character
 			if convertSpace {
 				b.WriteString("[SPACE]")
 			} else {
@@ -1082,13 +1082,12 @@ func (sops StrOps) ExtractNumericDigits(
 	nStrDto.TargetStr = targetStr
 	nStrDto.StartIndex = startIndex
 
-
 	ePrefix := "StrOps.ExtractNumericDigits() "
 
 	lenTargetStr := len(targetStr)
 
 	if lenTargetStr == 0 {
-		return nStrDto, errors.New(ePrefix+
+		return nStrDto, errors.New(ePrefix +
 			"ERROR: Input parameter 'targetStr' is an empty string!\n")
 	}
 
@@ -1562,19 +1561,19 @@ func (sops StrOps) FindLastSpace(targetStr string, startIdx, endIdx int) (int, e
 // Examples
 //
 //
-//	Example (1)
-// 		In the text string segment:
+//   Example (1)
+//     In the text string segment:
 //
-//			"The cow jumped over the moon."
+//     "The cow jumped over the moon."
 //
-//		The last word would be defined as "moon."
+//     The last word would be defined as "moon."
 //
-//	Example (2)
-//		In the text string segment:
+//     Example (2)
+//       In the text string segment:
 //
-//			"  somewhere over the rainbow  "
+//       "  somewhere over the rainbow  "
 //
-//		The last word would be defined as "rainbow"
+//       The last word would be defined as "rainbow"
 //
 // ------------------------------------------------------------------------
 //
@@ -1598,43 +1597,44 @@ func (sops StrOps) FindLastSpace(targetStr string, startIdx, endIdx int) (int, e
 // Input Parameters
 //
 //
-//	targetStr	string	- The string containing the string segment which
-//                      		will be searched to identify the last word
-//                      		in the string segment.
+//  targetStr   string - The string containing the string segment which
+//                       will be searched to identify the last word
+//                       in the string segment.
 //
-//	startIndex	int	- The index marking the beginning of the string
-//                      		segment in 'targetStr'.
+//  startIndex     int - The index marking the beginning of the string
+//                       segment in 'targetStr'.
 //
-//	endIndex	int	- The index marking the end of the string segment
-//                      		in 'targetStr'.
+//  endIndex       int - The index marking the end of the string segment
+//                       in 'targetStr'.
 //
 // ------------------------------------------------------------------------
 //
 // Return Values
 //
-//	beginWrdIdx	int	-	The index marking the beginning of the last word
-// 					in the string segment identified by input parameters
-//					'startIndex' and 'endIndex'. If the string segment
-//					consists of all spaces or is empty, this value is
-//					set to -1.
+//  beginWrdIdx    int  - The index marking the beginning of the last word
+//                        in the string segment identified by input parameters
+//                        'startIndex' and 'endIndex'. If the string segment
+//                        consists of all spaces or is empty, this value is
+//                        set to -1.
 //
-//	endWrdIdx	int	-	The index marking the end of the last word in the
-//					string segment identified by input parameters 'startIndex'
-//					and 'endIndex'. If the string segment consists of all
-//					spaces or is empty, this value is set to -1.
+//  endWrdIdx      int  - The index marking the end of the last word in the
+//                        string segment identified by input parameters 'startIndex'
+//                        and 'endIndex'. If the string segment consists of all
+//                        spaces or is empty, this value is set to -1.
 //
-//	isAllOneWord	bool	-	If the string segment identified by input parameters
-//					'startIndex' and 'endIndex' consists entirely of non-space
-//					characters (characters other than ' '), this value is set
-//					to 'true'.
+//  isAllOneWord   bool - If the string segment identified by input parameters
+//                        'startIndex' and 'endIndex' consists entirely of non-space
+//                        characters (characters other than ' '), this value is set
+//                        to 'true'.
 //
-//	isAllSpaces	bool	-	If the string segment identified by input parameters
-//					'startIndex' and 'endIndex' consists entirely of space
-//					characters (character = ' '), this value is set to 'true'.
+//  isAllSpaces    bool - If the string segment identified by input parameters
+//                        'startIndex' and 'endIndex' consists entirely of space
+//                        characters (character = ' '), this value is set to 'true'.
 //
-//	err		error	-	If targetStr is empty or if startIndex or endIndex is invalid,
-//					an error is returned. If the method completes successfully,
-//					err = nil.
+//  err           error - If targetStr is empty or if startIndex or endIndex is invalid,
+//                        an error is returned. If the method completes successfully,
+//                        err = nil.
+//
 func (sops StrOps) FindLastWord(
 	targetStr string,
 	startIndex,
@@ -1995,26 +1995,27 @@ func (sops StrOps) GetValidRunes(targetRunes []rune, validRunes []rune) ([]rune,
 //
 // Input Parameter
 //
-//	targetStr	string	-	The string which will be screened for valid characters.
+//  targetStr  string - The string which will be screened for valid characters.
 //
-//	validRunes	[] rune	-	An array of type rune containing valid characters. Characters
-//					which exist in both 'targetStr' and 'validRunes' will be
-//					returned as a new string. Invalid characters are discarded.
+//  validRunes []rune - An array of type rune containing valid characters. Characters
+//                      which exist in both 'targetStr' and 'validRunes' will be
+//                      returned as a new string. Invalid characters are discarded.
 //
 // ------------------------------------------------------------------------
 //
 // Return Values
 //
-//	string	- This string will be returned containing valid characters extracted
-//		from 'targetStr'. A character is considered valid if it exists in
-//		both 'targetStr' and 'validRunes'. Invalid characters are discarded.
-//		This means that if no valid characters are identified, a zero length
-//		string will be returned.
+//  string - This string will be returned containing valid characters extracted
+//             from 'targetStr'. A character is considered valid if it exists in
+//             both 'targetStr' and 'validRunes'. Invalid characters are discarded.
+//             This means that if no valid characters are identified, a zero length
+//             string will be returned.
 //
-//	error - If the method completes successfully this value is 'nil'. If an error is
-//		encountered this value will contain the error message. Examples of possible
-//		errors include a zero length 'targetStr' (string) or a zero length
-//		'validRunes' array.
+//  error  - If the method completes successfully this value is 'nil'. If an error is
+//           encountered this value will contain the error message. Examples of possible
+//           errors include a zero length 'targetStr' (string) or a zero length
+//           'validRunes' array.
+//
 func (sops StrOps) GetValidString(targetStr string, validRunes []rune) (string, error) {
 
 	ePrefix := "StrOps.GetValidString() "
@@ -2097,6 +2098,7 @@ func (sops StrOps) LowerCaseFirstLetter(str string) string {
 // MakeSingleCharString - Creates a string of length 'strLen' consisting of
 // a single character passed through input parameter, 'charRune' as type
 // 'rune'.
+//
 func (sops StrOps) MakeSingleCharString(charRune rune, strLen int) (string, error) {
 
 	ePrefix := "StrOps.MakeSingleCharString() "
@@ -2412,6 +2414,7 @@ func (sops StrOps) ReplaceBytes(targetBytes []byte, replacementBytes [][]byte) (
 // Input parameter 'replaceArray' should be passed as a two-dimensional slice.
 // If the length of the 'replaceArray' second dimension is less than '2', an
 // error will be returned.
+//
 func (sops StrOps) ReplaceMultipleStrs(targetStr string, replaceArray [][]string) (string, error) {
 
 	ePrefix := "StrOps.ReplaceMultipleStrs() "
@@ -2612,20 +2615,45 @@ func (sops *StrOps) SetStringData(str string) {
 	sops.stringDataMutex.Unlock()
 }
 
-// StrCenterInStrLeft - returns a string which includes
-// a left pad blank string plus the original string. It
-// does NOT include the Right pad blank string.
+// StrCenterInStrLeft - returns a string which includes a left pad blank string
+// plus the original string. It does NOT include the Right pad blank string.
 //
-// Nevertheless, the complete string will effectively
-// center the original string is a field of specified length.
+// Nevertheless, the complete string will effectively center the original string
+// in a field of specified length.
+//
+// Example:
+//   In this example the total field length is 15. The length of the test string,
+//   "Hello", is 5. In order to center the test string in a field with length of 15,
+//   there will be 5-spaces on the left and 5-spaces on the right. This method will
+//   compute the left-pad spaces necessary to center the string in a field with length
+//   of 15, but will only include the padded left margin of 5-spaces. It will NOT
+//   include the trailing 5-spaces on the right.
+//
+//   In the following example, the final result string will substitute the'@' character
+//   for the white space character (0x20) in order to illustrate the padding added by
+//   this method.
+//
+//    strToCenter     = "Hello"
+//    fieldLen        = 15
+//    Returned String = "@@@@@Hello" or "     Hello"
+//
 func (sops StrOps) StrCenterInStrLeft(strToCenter string, fieldLen int) (string, error) {
 
 	ePrefix := "StrOps.StrCenterInStrLeft() "
 
 	if sops.IsEmptyOrWhiteSpace(strToCenter) {
-		return strToCenter,
+		return "",
 			errors.New(ePrefix +
 				"Error: Input parameter 'strToCenter' is All White Space or an EMPTY String!")
+	}
+
+	if fieldLen < len(strToCenter) {
+		return "",
+		fmt.Errorf(ePrefix +
+			"Error: Input parameter 'fieldLen' is less than length of 'strToCenter'.\n" +
+			"strToCenter length='%v'\n" +
+			"fieldLen='%v'\n",
+			len(strToCenter), fieldLen)
 	}
 
 	pad, err := sops.StrPadLeftToCenter(strToCenter, fieldLen)

@@ -4,16 +4,38 @@ import (
 	"testing"
 )
 
-/*
+func TestDataFieldProfileDto_ConvertToErrorState_01(t *testing.T) {
 
-	'xt_strops_01_test.go' is located in source code repository:
+	dfProfile := DataFieldProfileDto{}
 
-			https://github.com/MikeAustin71/stringopsgo.git
+	dfProfile.DataFieldStr = "Hello World"
+	dfProfile.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfLine()
+	dfProfile.DataFieldTrailingDelimiter = "\n"
+	dfProfile.DataFieldIndex = 99
+	dfProfile.DataFieldLength = len(dfProfile.DataFieldStr)
 
-	It contains tests related to type, 'StrOps' located
-	in source file, 'xStrops.go'.
+	dfProfile.ConvertToErrorState()
 
-*/
+	if dfProfile.DataFieldStr != "" {
+		t.Errorf("Expected dfProfile.DataFieldStr==Empty String.\n" +
+			"Instead dfProfile.DataFieldStr='%v'\n", dfProfile.DataFieldStr)
+	}
+
+	if dfProfile.DataFieldIndex != -1 {
+		t.Errorf("Expected dfProfile.DataFieldIndex==-1\n" +
+			"Instead, dfProfile.DataFieldIndex=='%v'\n", dfProfile.DataFieldIndex)
+	}
+
+	if dfProfile.DataFieldLength != 0 {
+		t.Errorf("Expected dfProfile.DataFieldLength==0\n" +
+			"Instead, dfProfile.DataFieldLength=='%v'\n", dfProfile.DataFieldLength)
+	}
+
+	if dfProfile.NextTargetStrIndex != -1 {
+		t.Errorf("Expected dfProfile.NextTargetStrIndex==-1\n" +
+			"Instead, dfProfile.NextTargetStrIndex=='%v'\n", dfProfile.NextTargetStrIndex)
+	}
+}
 
 func TestStrOps_BreakTextAtLineLength_01(t *testing.T) {
 
@@ -436,6 +458,23 @@ func TestStrOps_DoesLastCharExist_02(t *testing.T) {
 	if false != actualReturn {
 		t.Errorf("Expected return value='false'. Instead, return value='%v' ",
 			actualReturn)
+	}
+
+}
+
+func TestStrOps_DoesLastCharExist_03(t *testing.T) {
+
+	var lastChar rune
+
+	lastChar = 'x'
+
+	testString := ""
+
+	actualReturn := StrOps{}.DoesLastCharExist(testString, lastChar)
+
+	if false != actualReturn {
+		t.Error("Expected return value='false' because 'testString' was an empty string\n" +
+			"Instead, the actual return value was 'true'\n")
 	}
 
 }
