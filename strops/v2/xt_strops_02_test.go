@@ -170,8 +170,27 @@ func TestStrOps_FindFirstNonSpaceChar_10(t *testing.T) {
 		t.Errorf("Error: Expected firstNonSpaceIdx='9'. Instead, Idx='%v' ",
 			firstNonSpaceIdx)
 	}
-
 }
+
+func TestStrOps_FindFirstNonSpaceChar_11(t *testing.T) {
+	//012345678901234
+	testStr := "  "
+
+	index, err :=
+		StrOps{}.FindFirstNonSpaceChar(testStr, 0, 4)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4)\n" +
+			"Error='%v'\n", err.Error())
+	}
+
+	if index != -1 {
+		t.Errorf("Expected 'index' returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4)\n" +
+			"would be equal to -1 because parameter, 'testStr' consists entirely of spaces.\n" +
+			"However, the returned index was %v.", index)
+	}
+}
+
 
 func TestStrOps_FindLastNonSpaceChar_01(t *testing.T) {
 	//                 1         2         3         4         5         6         7         8

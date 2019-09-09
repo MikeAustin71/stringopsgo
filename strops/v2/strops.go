@@ -1382,17 +1382,17 @@ func (sops StrOps) ExtractNumericDigits(
 // Return Values
 //
 //	This method returns the index of the first non-space character in the target string
-//	segment using a left to right search. If the entire string consists of space characters,
-//	this method returns a value of -1.
+//	segment using a left to right search. If the target string is an empty string or
+//	consists of space characters, this method returns a value of -1.
+//
 func (sops StrOps) FindFirstNonSpaceChar(targetStr string, startIndex, endIndex int) (int, error) {
 
 	ePrefix := "StrOps.FindFirstNonSpaceChar() "
 
-	targetStrLen := len(targetStr)
-
-	if targetStrLen == 0 {
+	if sops.IsEmptyOrWhiteSpace(targetStr) {
 		return -1, nil
 	}
+	targetStrLen := len(targetStr)
 
 	if startIndex < 0 {
 		return -1, fmt.Errorf(ePrefix+"ERROR: Invalid input parameter. 'startIndex' is LESS THAN ZERO! "+
@@ -2944,10 +2944,10 @@ Done:
 //
 // Example:
 //
-//	fieldLen = 15
-//	strToJustify 	= "Hello World"
-//	Returned String = "Hello World    "
-//	String Index    =  012345648901234
+//  fieldLen = 15
+//  strToJustify    = "Hello World"
+//  Returned String = "Hello World    "
+//  String Index    =  012345648901234
 //
 func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, error) {
 
@@ -3025,9 +3025,9 @@ func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string,
 //
 // Example:
 //
-//	If the total field length ('fieldLen') is specified as 50-characters and the
-//	length of string to justify ('strToJustify') is 20-characters, then this method
-//	would return a string consisting of 30-space characters plus the 'strToJustify'.
+//  If the total field length ('fieldLen') is specified as 50-characters and the
+//  length of string to justify ('strToJustify') is 20-characters, then this method
+//  would return a string consisting of 30-space characters plus the 'strToJustify'.
 //
 func (sops StrOps) StrRightJustify(strToJustify string, fieldLen int) (string, error) {
 

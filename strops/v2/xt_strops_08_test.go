@@ -456,7 +456,7 @@ func TestStrOps_StrCenterInStr_001(t *testing.T) {
 
 }
 
-func TestStrOps_StrLeftJustify_001(t *testing.T) {
+func TestStrOps_StrLeftJustify_01(t *testing.T) {
 	strToJustify := "1234567"
 	fieldLen := 45
 	exTotalLen := fieldLen
@@ -466,7 +466,8 @@ func TestStrOps_StrLeftJustify_001(t *testing.T) {
 	su := StrOps{}
 	str, err := su.StrLeftJustify(strToJustify, fieldLen)
 	if err != nil {
-		t.Error("StrLeftJustify() generated error: ", err.Error())
+		t.Errorf("StrLeftJustify() generated error:\n" +
+			"%v", err.Error())
 	}
 
 	l1 := su.StrGetRuneCnt(str)
@@ -481,7 +482,52 @@ func TestStrOps_StrLeftJustify_001(t *testing.T) {
 
 }
 
-func TestStrOps_StrRightJustify_001(t *testing.T) {
+func TestStrOps_StrLeftJustify_02(t *testing.T) {
+	strToJustify := "      "
+	fieldLen := 45
+
+	_, err := StrOps{}.StrLeftJustify(strToJustify, fieldLen)
+
+	if err == nil {
+		t.Error("Expected an error return from StrLeftJustify(strToJustify, fieldLen)\n" +
+			"because parameter, 'strToJustify', is an empty string.\n" +
+			"However, NO ERROR WAS RETURNED!!!\n")
+	}
+}
+
+func TestStrOps_StrLeftJustify_03(t *testing.T) {
+	strToJustify := "Hello"
+	fieldLen := len(strToJustify)
+
+	justifiedStr, err := StrOps{}.StrLeftJustify(strToJustify, fieldLen)
+
+	if err != nil {
+		t.Errorf("Error returnd by StrLeftJustify(strToJustify, fieldLen)\n" +
+			"Error='%v'\n", err.Error())
+		return
+	}
+
+	if strToJustify != justifiedStr {
+		t.Errorf("Error: Expected justified string='%v'.\n" +
+			"Instead, justified string='%v'\n",
+			strToJustify, justifiedStr)
+	}
+}
+
+func TestStrOps_StrLeftJustify_04(t *testing.T) {
+	strToJustify := "Hello"
+	fieldLen := 2
+
+	_, err := StrOps{}.StrLeftJustify(strToJustify, fieldLen)
+
+	if err == nil {
+		t.Error("Expected an error return from StrLeftJustify(strToJustify, fieldLen)\n" +
+			"because parameter, 'fieldLen', is less than the length of 'strToJustify'.\n" +
+			"However, NO ERROR WAS RETURNED!!!\n")
+	}
+}
+
+func TestStrOps_StrRightJustify_01(t *testing.T) {
 
 	strToJustify := "1234567"
 	fieldLen := 45
@@ -503,6 +549,53 @@ func TestStrOps_StrRightJustify_001(t *testing.T) {
 
 	if str != exStr {
 		t.Error(fmt.Sprintf("Strings did not match. Expected string '%v', got ", exStr), str)
+	}
+
+}
+
+func TestStrOps_StrRightJustify_02(t *testing.T) {
+
+	strToJustify := "   "
+	fieldLen := 45
+
+	_, err := StrOps{}.StrRightJustify(strToJustify, fieldLen)
+
+	if err == nil {
+		t.Error("Expected an error return from StrRightJustify(strToJustify, fieldLen)\n" +
+			"because parameter 'strToJustify' consists entirely of blank spaces.\n" +
+			"However, NO ERROR WAS RETURNED!!",)
+	}
+}
+
+func TestStrOps_StrRightJustify_03(t *testing.T) {
+
+	strToJustify := "1234567"
+	fieldLen := len(strToJustify)
+
+	actualStr, err := StrOps{}.StrRightJustify(strToJustify, fieldLen)
+
+	if err != nil {
+		t.Error("StrRightJustify() generated error: ", err.Error())
+	}
+
+	if strToJustify != actualStr {
+		t.Errorf("Error: Expected final string='%v'\n" +
+			"Instead, final string='%v'\n",
+			strToJustify, actualStr)
+	}
+}
+
+func TestStrOps_StrRightJustify_04(t *testing.T) {
+
+	strToJustify := "1234567"
+	fieldLen := 6
+
+	_, err := StrOps{}.StrRightJustify(strToJustify, fieldLen)
+
+	if err == nil {
+		t.Error("Expected an error return from StrRightJustify(strToJustify, fieldLen)\n" +
+			"because parameter, 'fieldLen' is less than the length of 'strToJustify'.\n" +
+			"However, NO ERROR WAS RETURNED!!!\n")
 	}
 
 }
