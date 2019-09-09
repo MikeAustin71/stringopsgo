@@ -282,15 +282,21 @@ type StrOps struct {
 //
 // Input Parameters
 //
+//  targetStr  string  - The string which will be parsed into text lines. If
+//                         'targetStr' is an empty string an error will be
+//                         returned. If 'targetStr' consists entirely of white
+//                         space, this method will return a string consisting
+//                         of a new-line character and an error value of 'nil'.
 //
-//	targetStr	string	- The string which will be parsed into text lines.
+//  lineLength    int  - The maximum length of each line.
 //
-//	lineLength	int	- The maximum length of each line.
+// Note: If the caller specifies a line length of 50, the line delimiter character
+// may be placed in the 51st character position depending upon the word breaks.
 //
-// Note: If the caller specifies a line length of 50, the line delimiter character may be placed in the
-// 51st character position depending upon the word breaks.
-//
-func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineDelimiter rune) (string, error) {
+func (sops StrOps) BreakTextAtLineLength(
+	targetStr string,
+	lineLength int,
+	lineDelimiter rune) (string, error) {
 
 	ePrefix := "StrOps.BreakTextAtLineLength() "
 
@@ -469,7 +475,7 @@ func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineD
 	return b.String(), nil
 }
 
-// ConvertNonPrintableCharacters - Receives a string containing non-printable characters
+// ConvertNonPrintableChars - Receives a string containing non-printable characters
 // and converts them to 'printable' characters returned in a string.
 //
 // If the input parameter 'convertSpace' is set to 'true' then all spaces are converted
@@ -478,7 +484,7 @@ func (sops StrOps) BreakTextAtLineLength(targetStr string, lineLength int, lineD
 // Reference:
 //    https://www.juniper.net/documentation/en_US/idp5.1/topics/reference/general/intrusion-detection-prevention-custom-attack-object-extended-ascii.html
 //
-func (sops StrOps) ConvertNonPrintableCharacters(
+func (sops StrOps) ConvertNonPrintableChars(
 	nonPrintableChars []rune, convertSpace bool) (printableChars string) {
 
 	lenNonPrintableChars := len(nonPrintableChars)

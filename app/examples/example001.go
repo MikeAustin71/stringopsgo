@@ -376,7 +376,7 @@ func (mt MainTest) ExampleExtractDataField02() {
 	fmt.Println("              Field Str Length: ", expectedDataFieldLength)
 	fmt.Println("                   Field Index: ", expectedDataFieldIdx)
 	fmt.Println("      Field Trailing Delimiter: ",
-		strops.StrOps{}.ConvertNonPrintableCharacters([]rune(expectedDataFieldTrailingDelimiter), false))
+		strops.StrOps{}.ConvertNonPrintableChars([]rune(expectedDataFieldTrailingDelimiter), false))
 	fmt.Println(" Field Trailing Delimiter Type: ", expectedDataFieldTrailingDelimiterType.String())
 	fmt.Println("    Target Str Last Good Index: ", expectedLastGoodIdx)
 	fmt.Println("             Next Target Index: ", expectedNextTargetIdx)
@@ -387,13 +387,13 @@ func (mt MainTest) ExampleExtractDataField02() {
 	fmt.Println("              Field Str Length: ", datDto.DataFieldLength)
 	fmt.Println("                   Field Index: ", datDto.DataFieldIndex)
 	fmt.Println("      Field Trailing Delimiter: ",
-		strops.StrOps{}.ConvertNonPrintableCharacters([]rune(datDto.DataFieldTrailingDelimiter), false))
+		strops.StrOps{}.ConvertNonPrintableChars([]rune(datDto.DataFieldTrailingDelimiter), false))
 	fmt.Println(" Field Trailing Delimiter Type: ", datDto.DataFieldTrailingDelimiterType.String())
 	fmt.Println("             Comment Delimiter: ",
-		strops.StrOps{}.ConvertNonPrintableCharacters([]rune(datDto.CommentDelimiter), false))
+		strops.StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), false))
 	fmt.Println("       Comment Delimiter Index: ", datDto.CommentDelimiterIndex)
 	fmt.Println("         End Of Line Delimiter: ",
-		strops.StrOps{}.ConvertNonPrintableCharacters([]rune(datDto.EndOfLineDelimiter), false))
+		strops.StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
 	fmt.Println("   End Of Line Delimiter Index: ", datDto.EndOfLineDelimiterIndex)
 	fmt.Println("             Next Target Index: ", datDto.NextTargetStrIndex)
 	fmt.Println("                 Target String: ", datDto.TargetStr)

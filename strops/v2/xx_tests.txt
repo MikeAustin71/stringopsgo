@@ -16,20 +16,22 @@
 --- PASS: TestStrOps_BreakTextAtLineLength_07 (0.00s)
 === RUN   TestStrOps_BreakTextAtLineLength_08
 --- PASS: TestStrOps_BreakTextAtLineLength_08 (0.00s)
-=== RUN   TestStrOps_ConvertNonPrintableCharacters_01
---- PASS: TestStrOps_ConvertNonPrintableCharacters_01 (0.00s)
-=== RUN   TestStrOps_ConvertNonPrintableCharacters_02
---- PASS: TestStrOps_ConvertNonPrintableCharacters_02 (0.00s)
-=== RUN   TestStrOps_ConvertNonPrintableCharacters_03
---- PASS: TestStrOps_ConvertNonPrintableCharacters_03 (0.00s)
-=== RUN   TestStrOps_ConvertNonPrintableCharacters_04
---- PASS: TestStrOps_ConvertNonPrintableCharacters_04 (0.00s)
-=== RUN   TestStrOps_ConvertNonPrintableCharacters_05
---- PASS: TestStrOps_ConvertNonPrintableCharacters_05 (0.00s)
-=== RUN   TestStrOps_ConvertNonPrintableCharacters_06
---- PASS: TestStrOps_ConvertNonPrintableCharacters_06 (0.00s)
-=== RUN   TestStrOps_ConvertNonPrintableCharacters_07
---- PASS: TestStrOps_ConvertNonPrintableCharacters_07 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableChars_01
+--- PASS: TestStrOps_ConvertNonPrintableChars_01 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableChars_02
+--- PASS: TestStrOps_ConvertNonPrintableChars_02 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableChars_03
+--- PASS: TestStrOps_ConvertNonPrintableChars_03 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableChars_04
+--- PASS: TestStrOps_ConvertNonPrintableChars_04 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableChars_05
+--- PASS: TestStrOps_ConvertNonPrintableChars_05 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableChars_06
+--- PASS: TestStrOps_ConvertNonPrintableChars_06 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableChars_07
+--- PASS: TestStrOps_ConvertNonPrintableChars_07 (0.00s)
+=== RUN   TestStrOps_ConvertNonPrintableChars_08
+--- PASS: TestStrOps_ConvertNonPrintableChars_08 (0.00s)
 === RUN   TestStrOps_CopyIn_01
 --- PASS: TestStrOps_CopyIn_01 (0.00s)
 === RUN   TestStrOps_CopyOut_01
@@ -103,7 +105,7 @@
 === RUN   TestStrOps_FindLastSpace_05
 --- PASS: TestStrOps_FindLastSpace_05 (0.00s)
 === RUN   TestStrOps_FindLastSpace_06
---- PASS: TestStrOps_FindLastSpace_06 (0.03s)
+--- PASS: TestStrOps_FindLastSpace_06 (0.00s)
 === RUN   TestStrOps_FindLastSpace_07
 --- PASS: TestStrOps_FindLastSpace_07 (0.00s)
 === RUN   TestStrOps_FindLastSpace_08
@@ -557,5 +559,5 @@
 === RUN   TestDataFieldTrailingDelimiterType_Value_01
 --- PASS: TestDataFieldTrailingDelimiterType_Value_01 (0.00s)
 PASS
-coverage: 93.0% of statements
-ok  	github.com/MikeAustin71/stringopsgo/strops/v2	2.772s
+coverage: 93.2% of statements
+ok  	github.com/MikeAustin71/stringopsgo/strops/v2	3.885s
