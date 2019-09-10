@@ -273,7 +273,7 @@ github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1694.30,1707.3 2 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1709.27,1719.3 2 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1731.28,1736.35 3 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1744.3,1750.7 2 1
-github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1736.35,1739.4 2 0
+github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1736.35,1739.4 2 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1739.9,1742.4 2 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1753.24,1755.28 1 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1761.3,1762.26 1 1
@@ -287,7 +287,7 @@ github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1780.17,1790.3 5 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1792.18,1802.3 5 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1824.73,1830.2 2 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1834.43,1841.2 5 1
-github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1844.48,1846.2 1 0
+github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1844.48,1846.2 1 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1850.44,1860.2 7 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1894.82,1902.25 4 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:1907.2,1909.24 2 1
@@ -393,7 +393,7 @@ github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:2428.21,2431.3 1 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:2433.28,2437.3 1 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:2441.39,2443.20 1 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:2450.3,2450.91 1 1
-github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:2443.20,2448.4 1 0
+github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:2443.20,2448.4 1 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:2461.81,2464.2 1 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:2497.96,2505.20 4 1
 github.com/MikeAustin71/stringopsgo/strops/v2/strops.go:2510.2,2512.25 2 1

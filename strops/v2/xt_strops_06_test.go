@@ -1085,6 +1085,21 @@ func TestStrOps_ReplaceMultipleStrs_06(t *testing.T) {
 	}
 }
 
+func TestStrOps_ReplaceMultipleStrs_07(t *testing.T) {
+
+	testStr := "Hello World"
+
+	rStrs := make([][]string, 35)
+
+	_, err := StrOps{}.ReplaceMultipleStrs(testStr, rStrs)
+
+	if err == nil {
+		t.Error("Expected an error return from StrOps{}.ReplaceMultipleStrs(testStr, rStrs)\n" +
+			"because 'rStrs' is a 1-dimensional array.\n" +
+			"However, NO ERROR WAS RETURNED!!!\n")
+	}
+}
+
 func TestStrOps_ReplaceNewLines_01(t *testing.T) {
 
 	testStr := "Hello\nWorld"
