@@ -866,7 +866,7 @@ func TestStrOps_StrPadLeftToCenter_05(t *testing.T) {
 
 }
 
-func TestStrOps_SwapRune_001(t *testing.T) {
+func TestStrOps_SwapRune_01(t *testing.T) {
 	su := StrOps{}
 
 	tStr := "  Hello   World  "
@@ -890,7 +890,7 @@ func TestStrOps_SwapRune_001(t *testing.T) {
 
 }
 
-func TestStrOps_SwapRune_002(t *testing.T) {
+func TestStrOps_SwapRune_02(t *testing.T) {
 	su := StrOps{}
 
 	tStr := "HelloWorld"
@@ -914,7 +914,7 @@ func TestStrOps_SwapRune_002(t *testing.T) {
 
 }
 
-func TestStrOps_SwapRune_003(t *testing.T) {
+func TestStrOps_SwapRune_03(t *testing.T) {
 	su := StrOps{}
 
 	tStr := "Hello Worldx"
@@ -938,7 +938,7 @@ func TestStrOps_SwapRune_003(t *testing.T) {
 
 }
 
-func TestStrOps_SwapRune_004(t *testing.T) {
+func TestStrOps_SwapRune_04(t *testing.T) {
 	su := StrOps{}
 
 	tStr := "xHello World"
@@ -946,7 +946,7 @@ func TestStrOps_SwapRune_004(t *testing.T) {
 	result, err := su.SwapRune(tStr, 'x', 'X')
 
 	if err != nil {
-		t.Error("Error returned from SwapRune: ", err.Error())
+		t.Errorf("Error returned from SwapRune:\n%v", err.Error())
 	}
 
 	if result != expected {
@@ -958,6 +958,23 @@ func TestStrOps_SwapRune_004(t *testing.T) {
 
 	if resultLen != expectedLen {
 		t.Errorf("Expected result length == '%v' instead received result length == '%v'", expectedLen, resultLen)
+	}
+}
+
+func TestStrOps_SwapRune_05(t *testing.T) {
+
+	tStr := ""
+
+	newStr, err := StrOps{}.SwapRune(tStr, 'x', 'X')
+
+	if err != nil {
+		t.Errorf("Error returned from SwapRune:\n%v", err.Error())
+	}
+
+	if newStr != tStr {
+		t.Errorf("Error: Expected StrOps{}.SwapRune(tStr, 'x', 'X') would return\n" +
+			"an empty string, because 'tStr' is an empty string.\n" +
+			"Instead, newStr='%v'", newStr)
 	}
 
 }
