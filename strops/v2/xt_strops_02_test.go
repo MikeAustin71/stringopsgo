@@ -1046,5 +1046,42 @@ func TestStrOps_FindLastWord_15(t *testing.T) {
 		t.Error("Error: Expected isAllSpaces='false'.\n" +
 			"Instead, isAllSpaces='true'.\n")
 	}
+}
 
+func TestStrOps_FindLastWord_16(t *testing.T) {
+	//          0         1         2         3         4         5         6         7
+	//          01234567890123456789012345678901234567890123456789012345678901234567890
+	testStr := "Now is the time for all good men to come to the aid of their country.  "
+
+	startIndex := 60 // A space character
+
+	beginWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
+		StrOps{}.FindLastWord(testStr, startIndex, startIndex)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
+			"Error='%v' ", err.Error())
+	}
+
+	if startIndex != beginWrdIdx {
+		t.Errorf("Error: Expected beginWrdIdx='%v'.\n"+
+			"Instead, beginWrdIdx='%v'.\n",
+			startIndex, beginWrdIdx)
+	}
+
+	if startIndex != endWrdIdx {
+		t.Errorf("Error: Expected endWrdIdx='%v'.\n"+
+			"Instead, endWrdIdx='%v'.\n",
+			startIndex, endWrdIdx)
+	}
+
+	if isAllOneWord != false {
+		t.Error("Error: Expected isAllOneWord='false'.\n" +
+			"Instead, isAllOneWord='true'.\n")
+	}
+
+	if isAllSpaces != true {
+		t.Error("Error: Expected isAllSpaces='true'.\n" +
+			"Instead, isAllSpaces='false'.\n")
+	}
 }
