@@ -84,6 +84,17 @@ func TestStrOps_GetReader_02(t *testing.T) {
 
 }
 
+func TestStrOps_GetSoftwareVersion_01(t *testing.T) {
+	expectedStr := "2.0.4"
+	actualStr := StrOps{}.GetSoftwareVersion()
+
+	if expectedStr != actualStr {
+		t.Errorf("Error: Expected Software Version string='%v'.\n" +
+			"Instead, Software Version string='%v'.\n",
+			expectedStr, actualStr)
+	}
+}
+
 func TestStrOps_GetValidBytes_01(t *testing.T) {
 
 	validBytes := []byte{'v', 'a', 'l', 'i', 'd'}
