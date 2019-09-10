@@ -979,7 +979,7 @@ func TestStrOps_SwapRune_05(t *testing.T) {
 
 }
 
-func TestStrOps_TrimMultipleChars_001(t *testing.T) {
+func TestStrOps_TrimMultipleChars_01(t *testing.T) {
 	tStr := " 16:26:32   CST "
 	expected := "16:26:32 CST"
 	su := StrOps{}
@@ -996,7 +996,7 @@ func TestStrOps_TrimMultipleChars_001(t *testing.T) {
 
 }
 
-func TestStrOps_TrimMultipleChars_002(t *testing.T) {
+func TestStrOps_TrimMultipleChars_02(t *testing.T) {
 	tStr := "       Hello          World        "
 	expected := "Hello World"
 	su := StrOps{}
@@ -1013,7 +1013,7 @@ func TestStrOps_TrimMultipleChars_002(t *testing.T) {
 
 }
 
-func TestStrOps_TrimMultipleChars_003(t *testing.T) {
+func TestStrOps_TrimMultipleChars_03(t *testing.T) {
 	tStr := "Hello          World        "
 	expected := "Hello World"
 	su := StrOps{}
@@ -1030,7 +1030,7 @@ func TestStrOps_TrimMultipleChars_003(t *testing.T) {
 
 }
 
-func TestStrOps_TrimMultipleChars_004(t *testing.T) {
+func TestStrOps_TrimMultipleChars_04(t *testing.T) {
 	tStr := " Hello          World"
 	expected := "Hello World"
 	su := StrOps{}
@@ -1047,7 +1047,7 @@ func TestStrOps_TrimMultipleChars_004(t *testing.T) {
 
 }
 
-func TestStrOps_TrimMultipleChars_005(t *testing.T) {
+func TestStrOps_TrimMultipleChars_05(t *testing.T) {
 	tStr := "Hello World"
 	expected := "Hello World"
 	su := StrOps{}
@@ -1064,7 +1064,7 @@ func TestStrOps_TrimMultipleChars_005(t *testing.T) {
 
 }
 
-func TestStrOps_TrimMultipleChars_006(t *testing.T) {
+func TestStrOps_TrimMultipleChars_06(t *testing.T) {
 	tStr := "Hello World "
 	expected := "Hello World"
 	su := StrOps{}
@@ -1081,7 +1081,7 @@ func TestStrOps_TrimMultipleChars_006(t *testing.T) {
 
 }
 
-func TestStrOps_TrimMultipleChars_007(t *testing.T) {
+func TestStrOps_TrimMultipleChars_07(t *testing.T) {
 	tStr := " Hello World "
 	expected := "Hello World"
 	su := StrOps{}
@@ -1094,6 +1094,31 @@ func TestStrOps_TrimMultipleChars_007(t *testing.T) {
 
 	if result != expected {
 		t.Errorf("Expected result == '%v' instead received result== '%v'", expected, result)
+	}
+
+}
+
+func TestStrOps_TrimMultipleChars_08(t *testing.T) {
+	tStr := ""
+
+	_, err := StrOps{}.TrimMultipleChars(tStr, ' ')
+
+	if err == nil {
+		t.Error("Expected an error return from StrOps{}.TrimMultipleChars(tStr, ' ')\n" +
+			"because 'tStr' is an empty string.\n" +
+			"However, NO ERROR WAS RETURNED!!!\n")
+	}
+}
+
+func TestStrOps_TrimMultipleChars_09(t *testing.T) {
+	tStr := "Hello World"
+	replaceRune := rune(0)
+	_, err := StrOps{}.TrimMultipleChars(tStr, replaceRune)
+
+	if err == nil {
+		t.Error("Expected an error return from StrOps{}.TrimMultipleChars(tStr, replaceRune)\n" +
+			"because 'replaceRune' has a zero value.\n" +
+			"However, NO ERROR WAS RETURNED!!!\n")
 	}
 
 }
