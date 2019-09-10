@@ -17,22 +17,22 @@ func TestDataFieldProfileDto_ConvertToErrorState_01(t *testing.T) {
 	dfProfile.ConvertToErrorState()
 
 	if dfProfile.DataFieldStr != "" {
-		t.Errorf("Expected dfProfile.DataFieldStr==Empty String.\n" +
+		t.Errorf("Expected dfProfile.DataFieldStr==Empty String.\n"+
 			"Instead dfProfile.DataFieldStr='%v'\n", dfProfile.DataFieldStr)
 	}
 
 	if dfProfile.DataFieldIndex != -1 {
-		t.Errorf("Expected dfProfile.DataFieldIndex==-1\n" +
+		t.Errorf("Expected dfProfile.DataFieldIndex==-1\n"+
 			"Instead, dfProfile.DataFieldIndex=='%v'\n", dfProfile.DataFieldIndex)
 	}
 
 	if dfProfile.DataFieldLength != 0 {
-		t.Errorf("Expected dfProfile.DataFieldLength==0\n" +
+		t.Errorf("Expected dfProfile.DataFieldLength==0\n"+
 			"Instead, dfProfile.DataFieldLength=='%v'\n", dfProfile.DataFieldLength)
 	}
 
 	if dfProfile.NextTargetStrIndex != -1 {
-		t.Errorf("Expected dfProfile.NextTargetStrIndex==-1\n" +
+		t.Errorf("Expected dfProfile.NextTargetStrIndex==-1\n"+
 			"Instead, dfProfile.NextTargetStrIndex=='%v'\n", dfProfile.NextTargetStrIndex)
 	}
 }
@@ -226,13 +226,26 @@ func TestStrOps_BreakTextAtLineLength_08(t *testing.T) {
 	returnStr, err := StrOps{}.BreakTextAtLineLength(tstStr, 10, '\n')
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.BreakTextAtLineLength(...).\n" +
+		t.Errorf("Error returned by StrOps{}.BreakTextAtLineLength(...).\n"+
 			"Error='%v'\n", err.Error())
 	}
 
 	if "\n" != returnStr {
-		t.Errorf("Error: Expected returnStr= new line character.\n" +
+		t.Errorf("Error: Expected returnStr= new line character.\n"+
 			"Instead, returnStr='%v'\n", returnStr)
+	}
+}
+
+func TestStrOps_BreakTextAtLineLength_09(t *testing.T) {
+
+	tstStr := ""
+
+	_, err := StrOps{}.BreakTextAtLineLength(tstStr, 10, '\n')
+
+	if err == nil {
+		t.Error("Expected an error return from StrOps{}.BreakTextAtLineLength(tstStr, 10, '\\n')" +
+			"because tstStr is an empty string.\n" +
+			"However, NO ERROR WAS RETURNED!!!\n")
 	}
 }
 
@@ -335,7 +348,7 @@ func TestStrOps_ConvertNonPrintableChars_06(t *testing.T) {
 		3,
 		4,
 		5,
-		6	}
+		6}
 
 	expectedStr := "Hello[SOH][STX][ETX][EOT][ENQ][ACK]"
 
@@ -357,7 +370,7 @@ func TestStrOps_ConvertNonPrintableChars_07(t *testing.T) {
 		'l',
 		'l',
 		'o',
-		0x5c }
+		0x5c}
 
 	expectedStr := "Hello\\"
 

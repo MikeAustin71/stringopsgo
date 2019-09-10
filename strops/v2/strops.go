@@ -2655,11 +2655,11 @@ func (sops StrOps) StrCenterInStrLeft(strToCenter string, fieldLen int) (string,
 
 	if fieldLen < len(strToCenter) {
 		return "",
-		fmt.Errorf(ePrefix +
-			"Error: Input parameter 'fieldLen' is less than length of 'strToCenter'.\n" +
-			"strToCenter length='%v'\n" +
-			"fieldLen='%v'\n",
-			len(strToCenter), fieldLen)
+			fmt.Errorf(ePrefix+
+				"Error: Input parameter 'fieldLen' is less than length of 'strToCenter'.\n"+
+				"strToCenter length='%v'\n"+
+				"fieldLen='%v'\n",
+				len(strToCenter), fieldLen)
 	}
 
 	pad, err := sops.StrPadLeftToCenter(strToCenter, fieldLen)
@@ -2991,11 +2991,11 @@ func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, er
 //
 // Example:
 //
-//	Assume that total field length ('fieldlen') is 70. Assume that the string to Center
-//	('strToCenter') is 10-characters. In order to center a 10-character string in a
-//	70-character field, 30-space characters would need to be positioned on each side
-//	of the string to center. This method only returns the left segment, or a string
-//	consisting of 30-spaces.
+// Assume that total field length ('fieldlen') is 70. Assume that the string to Center
+// ('strToCenter') is 10-characters. In order to center a 10-character string in a
+// 70-character field, 30-space characters would need to be positioned on each side
+// of the string to center. This method only returns the left margin, or a string
+// consisting of 30-spaces.
 //
 func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string, error) {
 

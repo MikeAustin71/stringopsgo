@@ -13,18 +13,16 @@ import (
 	"time"
 )
 
-
 type MainTest struct {
 	input string
 }
-
 
 func (mt MainTest) ExampleExtractDataField01() {
 
 	endOfLineDelimiters := []string{"\n"}
 	commentDelimiters := []string{"#"}
-	leadingFieldSeparators := []string{"\t", " ", "\r","\f","\v"}
-	trailingFieldSeparators := []string{"\t", " ", "\r","\f","\v"}
+	leadingFieldSeparators := []string{"\t", " ", "\r", "\f", "\v"}
+	trailingFieldSeparators := []string{"\t", " ", "\r", "\f", "\v"}
 	targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
 	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
 	expectedLastGoodIdx--
@@ -48,7 +46,7 @@ func (mt MainTest) ExampleExtractDataField01() {
 	startTime = time.Now()
 
 	datDto,
-	err := strops.StrOps{}.ExtractDataField(
+		err := strops.StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
@@ -68,17 +66,17 @@ func (mt MainTest) ExampleExtractDataField01() {
 
 	isError := false
 
-	if targetStr  != datDto.TargetStr {
+	if targetStr != datDto.TargetStr {
 		fmt.Printf("ERROR: Expected datDto.TargetStr='%v'.\n"+
 			"Instead, datDto.TargetStr='%v'.\n",
-			targetStr ,datDto.TargetStr)
+			targetStr, datDto.TargetStr)
 		isError = true
 	}
 
-	if lenTargetStr !=  datDto.TargetStrLength {
+	if lenTargetStr != datDto.TargetStrLength {
 		fmt.Printf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
 			"Instead, datDto.TargetStrLength='%v'.\n",
-			lenTargetStr ,datDto.TargetStrLength)
+			lenTargetStr, datDto.TargetStrLength)
 		isError = true
 	}
 
@@ -106,14 +104,14 @@ func (mt MainTest) ExampleExtractDataField01() {
 	if expectedDataFieldStr != datDto.DataFieldStr {
 		fmt.Printf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
 			"Instead, datDto.DataFieldStr='%v'.\n",
-			expectedDataFieldStr, datDto.DataFieldStr )
+			expectedDataFieldStr, datDto.DataFieldStr)
 		isError = true
 	}
 
-	if  expectedDataFieldLength != datDto.DataFieldLength {
+	if expectedDataFieldLength != datDto.DataFieldLength {
 		fmt.Printf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
 			"Instead, datDto.DataFieldLength='%v'.\n",
-			expectedDataFieldLength, datDto.DataFieldLength )
+			expectedDataFieldLength, datDto.DataFieldLength)
 		isError = true
 	}
 
@@ -145,7 +143,7 @@ func (mt MainTest) ExampleExtractDataField01() {
 		isError = true
 	}
 
-	if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
+	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
 		fmt.Printf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
 			"Instead, datDto.NextTargetStrIndex='%v'.\n",
 			expectedNextTargetIdx, datDto.NextTargetStrIndex)
@@ -207,13 +205,12 @@ func (mt MainTest) ExampleExtractDataField01() {
 
 }
 
-
 func (mt MainTest) ExampleExtractDataField02() {
 
 	endOfLineDelimiters := []string{"\n"}
 	commentDelimiters := []string{"#"}
-	leadingFieldSeparators := []string{"\t", " ", "\r","\f","\v"}
-	trailingFieldSeparators := []string{"\t", " ", "\r","\f","\v"}
+	leadingFieldSeparators := []string{"\t", " ", "\r", "\f", "\v"}
+	trailingFieldSeparators := []string{"\t", " ", "\r", "\f", "\v"}
 	targetStr := "\tZone:\tAmerica/Chicago\t\tZone:\tAmerica/New_York\t\tZone:\tAmerica/Los_Angeles\n"
 	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
 	expectedLastGoodIdx--
@@ -239,7 +236,7 @@ func (mt MainTest) ExampleExtractDataField02() {
 
 	startTime = time.Now()
 
-	for i:=0; i < 3; i++ {
+	for i := 0; i < 3; i++ {
 
 		datDto,
 			err = strops.StrOps{}.ExtractDataField(
@@ -252,7 +249,7 @@ func (mt MainTest) ExampleExtractDataField02() {
 			endOfLineDelimiters)
 
 		if err != nil {
-			fmt.Printf("Error returned by StrOps{}.ExtractDataField()\n" +
+			fmt.Printf("Error returned by StrOps{}.ExtractDataField()\n"+
 				"Cycle No='%v'\n"+
 				"targetStr='%v'\tstartIdx='%v'\n"+
 				"Error='%v'\n", i, targetStr, startIdx, err.Error())
@@ -267,17 +264,17 @@ func (mt MainTest) ExampleExtractDataField02() {
 
 	isError := false
 
-	if targetStr  != datDto.TargetStr {
+	if targetStr != datDto.TargetStr {
 		fmt.Printf("ERROR: Expected datDto.TargetStr='%v'.\n"+
 			"Instead, datDto.TargetStr='%v'.\n",
-			targetStr ,datDto.TargetStr)
+			targetStr, datDto.TargetStr)
 		isError = true
 	}
 
-	if lenTargetStr !=  datDto.TargetStrLength {
+	if lenTargetStr != datDto.TargetStrLength {
 		fmt.Printf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
 			"Instead, datDto.TargetStrLength='%v'.\n",
-			lenTargetStr ,datDto.TargetStrLength)
+			lenTargetStr, datDto.TargetStrLength)
 		isError = true
 	}
 
@@ -305,14 +302,14 @@ func (mt MainTest) ExampleExtractDataField02() {
 	if expectedDataFieldStr != datDto.DataFieldStr {
 		fmt.Printf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
 			"Instead, datDto.DataFieldStr='%v'.\n",
-			expectedDataFieldStr, datDto.DataFieldStr )
+			expectedDataFieldStr, datDto.DataFieldStr)
 		isError = true
 	}
 
-	if  expectedDataFieldLength != datDto.DataFieldLength {
+	if expectedDataFieldLength != datDto.DataFieldLength {
 		fmt.Printf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
 			"Instead, datDto.DataFieldLength='%v'.\n",
-			expectedDataFieldLength, datDto.DataFieldLength )
+			expectedDataFieldLength, datDto.DataFieldLength)
 		isError = true
 	}
 
@@ -344,7 +341,7 @@ func (mt MainTest) ExampleExtractDataField02() {
 		isError = true
 	}
 
-	if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
+	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
 		fmt.Printf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
 			"Instead, datDto.NextTargetStrIndex='%v'.\n",
 			expectedNextTargetIdx, datDto.NextTargetStrIndex)
@@ -410,13 +407,12 @@ func (mt MainTest) ExampleExtractDataField02() {
 
 }
 
-
 func (mt MainTest) ExampleExtractDataField03() {
 
 	endOfLineDelimiters := []string{"\n"}
 	commentDelimiters := []string{"#"}
-	leadingFieldSeparators := []string{"\t", " ", "\r","\f","\v"}
-	trailingFieldSeparators := []string{"\t", " ", "\r","\f","\v"}
+	leadingFieldSeparators := []string{"\t", " ", "\r", "\f", "\v"}
+	trailingFieldSeparators := []string{"\t", " ", "\r", "\f", "\v"}
 	targetStr := " America/Chicago\t Good morning America!\n"
 	lenTargetStr := len(targetStr)
 	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
@@ -437,7 +433,7 @@ func (mt MainTest) ExampleExtractDataField03() {
 	startTime = time.Now()
 
 	datDto,
-	err := strops.StrOps{}.ExtractDataField(
+		err := strops.StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
@@ -457,17 +453,17 @@ func (mt MainTest) ExampleExtractDataField03() {
 
 	isError := false
 
-	if targetStr  != datDto.TargetStr {
+	if targetStr != datDto.TargetStr {
 		fmt.Printf("ERROR: Expected datDto.TargetStr='%v'.\n"+
 			"Instead, datDto.TargetStr='%v'.\n",
-			targetStr ,datDto.TargetStr)
+			targetStr, datDto.TargetStr)
 		isError = true
 	}
 
-	if lenTargetStr !=  datDto.TargetStrLength {
+	if lenTargetStr != datDto.TargetStrLength {
 		fmt.Printf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
 			"Instead, datDto.TargetStrLength='%v'.\n",
-			lenTargetStr ,datDto.TargetStrLength)
+			lenTargetStr, datDto.TargetStrLength)
 		isError = true
 	}
 
@@ -495,14 +491,14 @@ func (mt MainTest) ExampleExtractDataField03() {
 	if expectedDataFieldStr != datDto.DataFieldStr {
 		fmt.Printf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
 			"Instead, datDto.DataFieldStr='%v'.\n",
-			expectedDataFieldStr, datDto.DataFieldStr )
+			expectedDataFieldStr, datDto.DataFieldStr)
 		isError = true
 	}
 
-	if  expectedDataFieldLength != datDto.DataFieldLength {
+	if expectedDataFieldLength != datDto.DataFieldLength {
 		fmt.Printf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
 			"Instead, datDto.DataFieldLength='%v'.\n",
-			expectedDataFieldLength, datDto.DataFieldLength )
+			expectedDataFieldLength, datDto.DataFieldLength)
 		isError = true
 	}
 
@@ -534,7 +530,7 @@ func (mt MainTest) ExampleExtractDataField03() {
 		isError = true
 	}
 
-	if expectedNextTargetIdx != datDto.NextTargetStrIndex  {
+	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
 		fmt.Printf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
 			"Instead, datDto.NextTargetStrIndex='%v'.\n",
 			expectedNextTargetIdx, datDto.NextTargetStrIndex)
@@ -615,11 +611,11 @@ func (mt MainTest) ExampleExtractNumStr01() {
 	if expectedNextTargetStrIdx >= len(targetStr) {
 		expectedNextTargetStrIdx = -1
 	}
-	var startTime, endTime  time.Time
+	var startTime, endTime time.Time
 	startTime = time.Now()
 
 	nStrDto,
-	err := strops.StrOps{}.ExtractNumericDigits(
+		err := strops.StrOps{}.ExtractNumericDigits(
 		targetStr,
 		startIndex,
 		keepLeadingChars,
@@ -679,8 +675,7 @@ func (mt MainTest) ExampleExtractNumStr01() {
 	}
 
 	totalNanoSecs,
-	elapsedTime := mt.Timer(startTime, endTime)
-
+		elapsedTime := mt.Timer(startTime, endTime)
 
 	fmt.Println("  mainTest.ExampleExtractNumStr01()  ")
 	fmt.Println("-------------------------------------")
@@ -742,11 +737,11 @@ func (mt MainTest) ExampleExtractNumStr02() {
 		expectedNextTargetStrIdx = -1
 	}
 
-	var startTime, endTime  time.Time
+	var startTime, endTime time.Time
 	startTime = time.Now()
 
 	nStrDto,
-	err := strops.StrOps{}.ExtractNumericDigits(
+		err := strops.StrOps{}.ExtractNumericDigits(
 		targetStr,
 		startIndex,
 		keepLeadingChars,
@@ -762,7 +757,7 @@ func (mt MainTest) ExampleExtractNumStr02() {
 	}
 
 	totalNanoSeconds,
-	elapsedTime := mt.Timer(startTime, endTime)
+		elapsedTime := mt.Timer(startTime, endTime)
 
 	isError := false
 
@@ -845,7 +840,7 @@ func (mt MainTest) ExampleExtractNumStr02() {
 
 func (mt MainTest) ExampleStripLeadingChars01() {
 
-	badChars := []string {
+	badChars := []string{
 		" ",
 		"/",
 		"//",
@@ -864,14 +859,14 @@ func (mt MainTest) ExampleStripLeadingChars01() {
 	actualString, actualStrLen := strops.StrOps{}.StripLeadingChars(testString, badChars)
 
 	if expectedStr != actualString {
-		fmt.Printf("ERROR: Expected result string='%v'\n" +
+		fmt.Printf("ERROR: Expected result string='%v'\n"+
 			"Instead, result string='%v'\n",
 			expectedStr, actualString)
 		return
 	}
 
 	if expectedStrLen != actualStrLen {
-		fmt.Printf("ERROR: Expected result string length='%v'\n" +
+		fmt.Printf("ERROR: Expected result string length='%v'\n"+
 			"Instead, result string length='%v'\n",
 			expectedStrLen, actualStrLen)
 	}
@@ -879,7 +874,7 @@ func (mt MainTest) ExampleStripLeadingChars01() {
 }
 
 func (mt MainTest) ExampleSortStrLenHighestToLowest01() {
-	badChars := []string {
+	badChars := []string{
 		"aaaaa",
 		"bbbbb",
 		"cccccccccc",
@@ -887,14 +882,14 @@ func (mt MainTest) ExampleSortStrLenHighestToLowest01() {
 		"fffffffffff",
 		"xx",
 		"ddddddddd",
-		"eeeeeeeeeee" }
+		"eeeeeeeeeee"}
 
 	fmt.Println("Sort by Length Highest To Lowest")
 	fmt.Println("          Unordered List")
 	fmt.Println("================================")
 	fmt.Println()
 
-	for i:=0; i < len(badChars); i++ {
+	for i := 0; i < len(badChars); i++ {
 		fmt.Printf("%3d. %v\n", i+1, badChars[i])
 	}
 
@@ -907,7 +902,7 @@ func (mt MainTest) ExampleSortStrLenHighestToLowest01() {
 	fmt.Println("================================")
 	fmt.Println()
 
-	for i:=0; i < len(badChars); i++ {
+	for i := 0; i < len(badChars); i++ {
 		fmt.Printf("%3d. %v\n", i+1, badChars[i])
 	}
 
@@ -915,7 +910,7 @@ func (mt MainTest) ExampleSortStrLenHighestToLowest01() {
 
 func (mt MainTest) ExampleSortStrLenLowestToHighest01() {
 
-	badChars := []string {
+	badChars := []string{
 		"aaaaa",
 		"bbbbb",
 		"cccccccccc",
@@ -923,14 +918,14 @@ func (mt MainTest) ExampleSortStrLenLowestToHighest01() {
 		"fffffffffff",
 		"xx",
 		"ddddddddd",
-		"eeeeeeeeeee" }
+		"eeeeeeeeeee"}
 
 	fmt.Println("Sort by Length Lowest To Highest")
 	fmt.Println("          Unordered List")
 	fmt.Println("================================")
 	fmt.Println()
 
-	for i:=0; i < len(badChars); i++ {
+	for i := 0; i < len(badChars); i++ {
 		fmt.Printf("%3d. %v\n", i+1, badChars[i])
 	}
 
@@ -943,12 +938,11 @@ func (mt MainTest) ExampleSortStrLenLowestToHighest01() {
 	fmt.Println("================================")
 	fmt.Println()
 
-	for i:=0; i < len(badChars); i++ {
+	for i := 0; i < len(badChars); i++ {
 		fmt.Printf("%3d. %v\n", i+1, badChars[i])
 	}
 
 }
-
 
 func (mt MainTest) ExampleExpressions01() {
 	//AMpm Match \d{1}\s?(?i)[pa][.\s]*(?i)m[.]*
@@ -1425,7 +1419,7 @@ func (mt MainTest) Timer(
 
 	totalNanoseconds := t2Dur.Nanoseconds()
 	var numOfHours, numOfMinutes, numOfSeconds, numOfMilliseconds,
-	numOfMicroseconds, numOfNanoseconds int64
+		numOfMicroseconds, numOfNanoseconds int64
 
 	if totalNanoseconds >= HourNanoseconds {
 		numOfHours = totalNanoseconds / HourNanoseconds
@@ -1493,4 +1487,3 @@ func (mt MainTest) Timer(
 
 	return t2Dur.Nanoseconds(), str
 }
-

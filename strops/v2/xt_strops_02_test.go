@@ -180,17 +180,16 @@ func TestStrOps_FindFirstNonSpaceChar_11(t *testing.T) {
 		StrOps{}.FindFirstNonSpaceChar(testStr, 0, 4)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4)\n" +
+		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4)\n"+
 			"Error='%v'\n", err.Error())
 	}
 
 	if index != -1 {
-		t.Errorf("Expected 'index' returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4)\n" +
-			"would be equal to -1 because parameter, 'testStr' consists entirely of spaces.\n" +
+		t.Errorf("Expected 'index' returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4)\n"+
+			"would be equal to -1 because parameter, 'testStr' consists entirely of spaces.\n"+
 			"However, the returned index was %v.", index)
 	}
 }
-
 
 func TestStrOps_FindLastNonSpaceChar_01(t *testing.T) {
 	//                 1         2         3         4         5         6         7         8
@@ -981,7 +980,6 @@ func TestStrOps_FindLastWord_12(t *testing.T) {
 
 }
 
-
 func TestStrOps_FindLastWord_13(t *testing.T) {
 	//          0         1         2         3         4         5         6         7
 	//          0123456789012345678901234567890123456789012345678901234567890123456789012
@@ -1012,3 +1010,41 @@ func TestStrOps_FindLastWord_14(t *testing.T) {
 
 }
 
+func TestStrOps_FindLastWord_15(t *testing.T) {
+	//          0         1         2         3         4         5         6         7
+	//          01234567890123456789012345678901234567890123456789012345678901234567890
+	testStr := "Now is the time for all good men to come to the aid of their country.  "
+
+	startIndex := 67
+
+	beginWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
+		StrOps{}.FindLastWord(testStr, startIndex, startIndex)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
+			"Error='%v' ", err.Error())
+	}
+
+	if startIndex != beginWrdIdx {
+		t.Errorf("Error: Expected beginWrdIdx='%v'.\n"+
+			"Instead, beginWrdIdx='%v'.\n",
+			startIndex, beginWrdIdx)
+	}
+
+	if startIndex != endWrdIdx {
+		t.Errorf("Error: Expected endWrdIdx='%v'.\n"+
+			"Instead, endWrdIdx='%v'.\n",
+			startIndex, endWrdIdx)
+	}
+
+	if isAllOneWord != true {
+		t.Error("Error: Expected isAllOneWord='true'.\n" +
+			"Instead, isAllOneWord='false'.\n")
+	}
+
+	if isAllSpaces != false {
+		t.Error("Error: Expected isAllSpaces='false'.\n" +
+			"Instead, isAllSpaces='true'.\n")
+	}
+
+}

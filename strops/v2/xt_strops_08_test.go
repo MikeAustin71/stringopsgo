@@ -9,28 +9,28 @@ import (
 )
 
 func TestSortStrLengthHighestToLowest_Len_01(t *testing.T) {
-	badChars := []string {
+	badChars := []string{
 		"aaaaa",
 		"bbbbb",
 		"cccccccccc",
 		"ddddddddd",
 		"eeeeeeeeeee",
-		"fffffffffff" }
+		"fffffffffff"}
 
 	sort.Sort(SortStrLengthHighestToLowest(badChars))
 
-	goodChars := []string {
+	goodChars := []string{
 		"fffffffffff",
 		"eeeeeeeeeee",
 		"cccccccccc",
 		"ddddddddd",
 		"bbbbb",
-		"aaaaa"	}
+		"aaaaa"}
 
-	for i:=0; i < len(badChars); i++ {
+	for i := 0; i < len(badChars); i++ {
 		if goodChars[i] != badChars[i] {
 			errStr := "badChars mismatch!\nbadCharsArray=\n"
-			for j:=0; j<len(badChars); j++ {
+			for j := 0; j < len(badChars); j++ {
 				errStr += fmt.Sprintf("%v\n", badChars[j])
 			}
 
@@ -41,7 +41,7 @@ func TestSortStrLengthHighestToLowest_Len_01(t *testing.T) {
 }
 
 func TestSortStrLengthLowestToHighest01(t *testing.T) {
-	badChars := []string {
+	badChars := []string{
 		"aaaaa",
 		"bbbbb",
 		"cccccccccc",
@@ -49,11 +49,11 @@ func TestSortStrLengthLowestToHighest01(t *testing.T) {
 		"eeeeeeeeeee",
 		"fffffffffff",
 		"x",
-		"z" }
+		"z"}
 
 	sort.Sort(SortStrLengthLowestToHighest(badChars))
 
-	goodChars := []string {
+	goodChars := []string{
 		"x",
 		"z",
 		"aaaaa",
@@ -61,12 +61,12 @@ func TestSortStrLengthLowestToHighest01(t *testing.T) {
 		"ddddddddd",
 		"cccccccccc",
 		"eeeeeeeeeee",
-		"fffffffffff" }
+		"fffffffffff"}
 
-	for i:=0; i < len(badChars); i++ {
+	for i := 0; i < len(badChars); i++ {
 		if goodChars[i] != badChars[i] {
 			errStr := "badChars mismatch!\nbadCharsArray=\n"
-			for j:=0; j<len(badChars); j++ {
+			for j := 0; j < len(badChars); j++ {
 				errStr += fmt.Sprintf("%v\n", badChars[j])
 			}
 
@@ -77,7 +77,7 @@ func TestSortStrLengthLowestToHighest01(t *testing.T) {
 }
 
 func TestStrOps_StripBadChars_001(t *testing.T) {
-	badChars := []string {
+	badChars := []string{
 		" ",
 		"/",
 		"//",
@@ -96,20 +96,20 @@ func TestStrOps_StripBadChars_001(t *testing.T) {
 		"..."}
 	expectedStr := "SomeString"
 	expectedStrLen := len(expectedStr)
-	testString :=  "..........      ./../.\\.\\..\\////   " + expectedStr +
+	testString := "..........      ./../.\\.\\..\\////   " + expectedStr +
 		"..........      ./../.\\.\\..\\////   "
 
 	actualString, actualStrLen := StrOps{}.StripBadChars(testString, badChars)
 
 	if expectedStr != actualString {
-		t.Errorf("ERROR: Expected result string='%v'\n" +
+		t.Errorf("ERROR: Expected result string='%v'\n"+
 			"Instead, result string='%v'\n",
 			expectedStr, actualString)
 		return
 	}
 
 	if expectedStrLen != actualStrLen {
-		t.Errorf("ERROR: Expected result string length='%v'\n" +
+		t.Errorf("ERROR: Expected result string length='%v'\n"+
 			"Instead, result string length='%v'\n",
 			expectedStrLen, actualStrLen)
 		return
@@ -122,7 +122,7 @@ func TestStrOps_StripBadChars_002(t *testing.T) {
 
 	expectedStr := "SomeString"
 
-	testString :=  "..........      ./../.\\.\\..\\////   " + expectedStr +
+	testString := "..........      ./../.\\.\\..\\////   " + expectedStr +
 		"..........      ./../.\\.\\..\\////   "
 
 	expectedStr = testString
@@ -131,14 +131,14 @@ func TestStrOps_StripBadChars_002(t *testing.T) {
 	actualString, actualStrLen := StrOps{}.StripBadChars(testString, badChars)
 
 	if expectedStr != actualString {
-		t.Errorf("ERROR: Expected result string='%v'\n" +
+		t.Errorf("ERROR: Expected result string='%v'\n"+
 			"Instead, result string='%v'\n",
 			expectedStr, actualString)
 		return
 	}
 
 	if expectedStrLen != actualStrLen {
-		t.Errorf("ERROR: Expected result string length='%v'\n" +
+		t.Errorf("ERROR: Expected result string length='%v'\n"+
 			"Instead, result string length='%v'\n",
 			expectedStrLen, actualStrLen)
 		return
@@ -146,7 +146,7 @@ func TestStrOps_StripBadChars_002(t *testing.T) {
 }
 
 func TestStrOps_StripBadChars_003(t *testing.T) {
-	badChars := []string {
+	badChars := []string{
 		" ",
 		"/",
 		"//",
@@ -166,19 +166,19 @@ func TestStrOps_StripBadChars_003(t *testing.T) {
 
 	expectedStr := ""
 	expectedStrLen := len(expectedStr)
-	testString :=  expectedStr
+	testString := expectedStr
 
 	actualString, actualStrLen := StrOps{}.StripBadChars(testString, badChars)
 
 	if expectedStr != actualString {
-		t.Errorf("ERROR: Expected result string='%v'\n" +
+		t.Errorf("ERROR: Expected result string='%v'\n"+
 			"Instead, result string='%v'\n",
 			expectedStr, actualString)
 		return
 	}
 
 	if expectedStrLen != actualStrLen {
-		t.Errorf("ERROR: Expected result string length='%v'\n" +
+		t.Errorf("ERROR: Expected result string length='%v'\n"+
 			"Instead, result string length='%v'\n",
 			expectedStrLen, actualStrLen)
 		return
@@ -186,34 +186,33 @@ func TestStrOps_StripBadChars_003(t *testing.T) {
 }
 
 func TestStrOps_StripBadChars_004(t *testing.T) {
-	badChars := []string {
+	badChars := []string{
 		"  "}
 
 	expectedStr := "Some String"
 	expectedStrLen := len(expectedStr)
-	testString :=  "  Some         Stri  ng  "
+	testString := "  Some         Stri  ng  "
 
 	actualString, actualStrLen := StrOps{}.StripBadChars(testString, badChars)
 
 	if expectedStr != actualString {
-		t.Errorf("ERROR: Expected result string='%v'\n" +
+		t.Errorf("ERROR: Expected result string='%v'\n"+
 			"Instead, result string='%v'\n",
 			expectedStr, actualString)
 		return
 	}
 
 	if expectedStrLen != actualStrLen {
-		t.Errorf("ERROR: Expected result string length='%v'\n" +
+		t.Errorf("ERROR: Expected result string length='%v'\n"+
 			"Instead, result string length='%v'\n",
 			expectedStrLen, actualStrLen)
 		return
 	}
 }
 
-
 func TestStrOps_StripLeadingChars_001(t *testing.T) {
 
-	badChars := []string {
+	badChars := []string{
 		" ",
 		"/",
 		"//",
@@ -231,7 +230,6 @@ func TestStrOps_StripLeadingChars_001(t *testing.T) {
 		"////",
 		"..."}
 
-
 	expectedStr := "SomeString"
 	expectedStrLen := len(expectedStr)
 	testString := "..........      ./../.\\.\\..\\////   " + expectedStr
@@ -239,13 +237,13 @@ func TestStrOps_StripLeadingChars_001(t *testing.T) {
 	actualString, actualStrLen := StrOps{}.StripLeadingChars(testString, badChars)
 
 	if expectedStr != actualString {
-		t.Errorf("ERROR: Expected result string='%v'\n" +
+		t.Errorf("ERROR: Expected result string='%v'\n"+
 			"Instead, result string='%v'\n",
 			expectedStr, actualString)
 	}
 
 	if expectedStrLen != actualStrLen {
-		t.Errorf("ERROR: Expected result string length='%v'\n" +
+		t.Errorf("ERROR: Expected result string length='%v'\n"+
 			"Instead, result string length='%v'\n",
 			expectedStrLen, actualStrLen)
 	}
@@ -255,7 +253,6 @@ func TestStrOps_StripLeadingChars_002(t *testing.T) {
 
 	badChars := make([]string, 0)
 
-
 	expectedStr := "SomeString"
 
 	testString := "..........      ./../.\\.\\..\\////   " + expectedStr
@@ -266,22 +263,21 @@ func TestStrOps_StripLeadingChars_002(t *testing.T) {
 	actualString, actualStrLen := StrOps{}.StripLeadingChars(testString, badChars)
 
 	if expectedStr != actualString {
-		t.Errorf("ERROR: Expected result string='%v'\n" +
+		t.Errorf("ERROR: Expected result string='%v'\n"+
 			"Instead, result string='%v'\n",
 			expectedStr, actualString)
 	}
 
 	if expectedStrLen != actualStrLen {
-		t.Errorf("ERROR: Expected result string length='%v'\n" +
+		t.Errorf("ERROR: Expected result string length='%v'\n"+
 			"Instead, result string length='%v'\n",
 			expectedStrLen, actualStrLen)
 	}
 }
 
-
 func TestStrOps_StripLeadingChars_003(t *testing.T) {
 
-	badChars := []string {
+	badChars := []string{
 		" ",
 		"/",
 		"//",
@@ -298,7 +294,6 @@ func TestStrOps_StripLeadingChars_003(t *testing.T) {
 		"///",
 		"////",
 		"..."}
-
 
 	expectedStr := ""
 	expectedStrLen := len(expectedStr)
@@ -307,13 +302,13 @@ func TestStrOps_StripLeadingChars_003(t *testing.T) {
 	actualString, actualStrLen := StrOps{}.StripLeadingChars(testString, badChars)
 
 	if expectedStr != actualString {
-		t.Errorf("ERROR: Expected result string='%v'\n" +
+		t.Errorf("ERROR: Expected result string='%v'\n"+
 			"Instead, result string='%v'\n",
 			expectedStr, actualString)
 	}
 
 	if expectedStrLen != actualStrLen {
-		t.Errorf("ERROR: Expected result string length='%v'\n" +
+		t.Errorf("ERROR: Expected result string length='%v'\n"+
 			"Instead, result string length='%v'\n",
 			expectedStrLen, actualStrLen)
 	}
@@ -321,7 +316,7 @@ func TestStrOps_StripLeadingChars_003(t *testing.T) {
 
 func TestStrOps_StripTrailingChars_001(t *testing.T) {
 
-	badChars := []string {
+	badChars := []string{
 		" ",
 		"/",
 		"//",
@@ -339,7 +334,6 @@ func TestStrOps_StripTrailingChars_001(t *testing.T) {
 		"////",
 		"..."}
 
-
 	expectedStr := "SomeString"
 	expectedStrLen := len(expectedStr)
 	testString := expectedStr + "..........      ./../.\\.\\..\\////   "
@@ -347,13 +341,13 @@ func TestStrOps_StripTrailingChars_001(t *testing.T) {
 	actualString, actualStrLen := StrOps{}.StripTrailingChars(testString, badChars)
 
 	if expectedStr != actualString {
-		t.Errorf("ERROR: Expected result string='%v'\n" +
+		t.Errorf("ERROR: Expected result string='%v'\n"+
 			"Instead, result string='%v'\n",
 			expectedStr, actualString)
 	}
 
 	if expectedStrLen != actualStrLen {
-		t.Errorf("ERROR: Expected result string length='%v'\n" +
+		t.Errorf("ERROR: Expected result string length='%v'\n"+
 			"Instead, result string length='%v'\n",
 			expectedStrLen, actualStrLen)
 	}
@@ -361,7 +355,7 @@ func TestStrOps_StripTrailingChars_001(t *testing.T) {
 
 func TestStrOps_StripTrailingChars_002(t *testing.T) {
 
-	badChars := make([]string, 0 )
+	badChars := make([]string, 0)
 
 	expectedStr := "SomeString"
 
@@ -370,17 +364,16 @@ func TestStrOps_StripTrailingChars_002(t *testing.T) {
 	expectedStr = testString
 	expectedStrLen := len(expectedStr)
 
-
 	actualString, actualStrLen := StrOps{}.StripTrailingChars(testString, badChars)
 
 	if expectedStr != actualString {
-		t.Errorf("ERROR: Expected result string='%v'\n" +
+		t.Errorf("ERROR: Expected result string='%v'\n"+
 			"Instead, result string='%v'\n",
 			expectedStr, actualString)
 	}
 
 	if expectedStrLen != actualStrLen {
-		t.Errorf("ERROR: Expected result string length='%v'\n" +
+		t.Errorf("ERROR: Expected result string length='%v'\n"+
 			"Instead, result string length='%v'\n",
 			expectedStrLen, actualStrLen)
 	}
@@ -388,7 +381,7 @@ func TestStrOps_StripTrailingChars_002(t *testing.T) {
 
 func TestStrOps_StripTrailingChars_003(t *testing.T) {
 
-	badChars := []string {
+	badChars := []string{
 		" ",
 		"/",
 		"//",
@@ -406,7 +399,6 @@ func TestStrOps_StripTrailingChars_003(t *testing.T) {
 		"////",
 		"..."}
 
-
 	expectedStr := ""
 	expectedStrLen := len(expectedStr)
 	testString := expectedStr
@@ -414,18 +406,17 @@ func TestStrOps_StripTrailingChars_003(t *testing.T) {
 	actualString, actualStrLen := StrOps{}.StripTrailingChars(testString, badChars)
 
 	if expectedStr != actualString {
-		t.Errorf("ERROR: Expected result string='%v'\n" +
+		t.Errorf("ERROR: Expected result string='%v'\n"+
 			"Instead, result string='%v'\n",
 			expectedStr, actualString)
 	}
 
 	if expectedStrLen != actualStrLen {
-		t.Errorf("ERROR: Expected result string length='%v'\n" +
+		t.Errorf("ERROR: Expected result string length='%v'\n"+
 			"Instead, result string length='%v'\n",
 			expectedStrLen, actualStrLen)
 	}
 }
-
 
 func TestStrOps_StrCenterInStr_001(t *testing.T) {
 	strToCntr := "1234567"
@@ -466,7 +457,7 @@ func TestStrOps_StrLeftJustify_01(t *testing.T) {
 	su := StrOps{}
 	str, err := su.StrLeftJustify(strToJustify, fieldLen)
 	if err != nil {
-		t.Errorf("StrLeftJustify() generated error:\n" +
+		t.Errorf("StrLeftJustify() generated error:\n"+
 			"%v", err.Error())
 	}
 
@@ -502,13 +493,13 @@ func TestStrOps_StrLeftJustify_03(t *testing.T) {
 	justifiedStr, err := StrOps{}.StrLeftJustify(strToJustify, fieldLen)
 
 	if err != nil {
-		t.Errorf("Error returnd by StrLeftJustify(strToJustify, fieldLen)\n" +
+		t.Errorf("Error returnd by StrLeftJustify(strToJustify, fieldLen)\n"+
 			"Error='%v'\n", err.Error())
 		return
 	}
 
 	if strToJustify != justifiedStr {
-		t.Errorf("Error: Expected justified string='%v'.\n" +
+		t.Errorf("Error: Expected justified string='%v'.\n"+
 			"Instead, justified string='%v'\n",
 			strToJustify, justifiedStr)
 	}
@@ -563,7 +554,7 @@ func TestStrOps_StrRightJustify_02(t *testing.T) {
 	if err == nil {
 		t.Error("Expected an error return from StrRightJustify(strToJustify, fieldLen)\n" +
 			"because parameter 'strToJustify' consists entirely of blank spaces.\n" +
-			"However, NO ERROR WAS RETURNED!!",)
+			"However, NO ERROR WAS RETURNED!!")
 	}
 }
 
@@ -579,7 +570,7 @@ func TestStrOps_StrRightJustify_03(t *testing.T) {
 	}
 
 	if strToJustify != actualStr {
-		t.Errorf("Error: Expected final string='%v'\n" +
+		t.Errorf("Error: Expected final string='%v'\n"+
 			"Instead, final string='%v'\n",
 			strToJustify, actualStr)
 	}
@@ -641,7 +632,7 @@ func TestStrOps_StrCenterInStrLeft_02(t *testing.T) {
 	actualStr, err := su.StrCenterInStrLeft(strToCenter, fieldLen)
 
 	if err != nil {
-		t.Errorf("Error returned by StrCenterInStrLeft()\n" +
+		t.Errorf("Error returned by StrCenterInStrLeft()\n"+
 			"Error='%v'", err.Error())
 	}
 
@@ -649,15 +640,15 @@ func TestStrOps_StrCenterInStrLeft_02(t *testing.T) {
 
 	actualPrintStr := strings.ReplaceAll(actualStr, " ", "@")
 
-	if expectedReturnedStr != actualStr  {
-		t.Errorf("Error: Expected string='%v'\n" +
-			"Instead, string='%v'\n" +
+	if expectedReturnedStr != actualStr {
+		t.Errorf("Error: Expected string='%v'\n"+
+			"Instead, string='%v'\n"+
 			"Note: Spaces have been replaced with '@'.\n",
 			expectedReturnedPrintStr, actualPrintStr)
 	}
 
 	if exTotalFinalStrLen != lenActualStr {
-		t.Errorf("Error: Expected final string length='%v'.\n" +
+		t.Errorf("Error: Expected final string length='%v'.\n"+
 			"Instead, final string length='%v'.\n",
 			exTotalFinalStrLen, lenActualStr)
 	}
@@ -714,12 +705,12 @@ func TestStrOps_StrGetCharCnt01(t *testing.T) {
 	}
 }
 
-func TestStrOps_StrPadLeftToCenter(t *testing.T) {
-	strToCntr := "1234567"
+func TestStrOps_StrPadLeftToCenter_01(t *testing.T) {
+	strToCenter := "1234567"
 	fieldLen := 79
 	exLen := 36
 	su := StrOps{}
-	padStr, err := su.StrPadLeftToCenter(strToCntr, fieldLen)
+	padStr, err := su.StrPadLeftToCenter(strToCenter, fieldLen)
 
 	if err != nil {
 		t.Error("Error on StrPadLeftToCenter(), got", err.Error())
@@ -731,6 +722,37 @@ func TestStrOps_StrPadLeftToCenter(t *testing.T) {
 		t.Error(fmt.Sprintf("Expected pad length of '%v', got ", exLen), l1)
 	}
 
+}
+
+func TestStrOps_StrPadLeftToCenter_02(t *testing.T) {
+	strToCenter := "Hello"
+	fieldLen := 15
+	exLen := 5
+	su := StrOps{}
+	padStr, err := su.StrPadLeftToCenter(strToCenter, fieldLen)
+
+	if err != nil {
+		t.Error("Error on StrPadLeftToCenter(), got", err.Error())
+	}
+
+	l1 := su.StrGetRuneCnt(padStr)
+
+	if l1 != exLen {
+		t.Error(fmt.Sprintf("Expected pad length of '%v', got ", exLen), l1)
+	}
+}
+
+func TestStrOps_StrPadLeftToCenter_03(t *testing.T) {
+	strToCenter := "   "
+	fieldLen := 15
+	su := StrOps{}
+	_, err := su.StrPadLeftToCenter(strToCenter, fieldLen)
+
+	if err == nil {
+		t.Error("Expected an error return from StrPadLeftToCenter(strToCenter, fieldLen)\n" +
+			"because 'strToCenter' consists entirely of white space." +
+			"However, NO ERROR WAS RETURNED!")
+	}
 }
 
 func TestStrOps_SwapRune_001(t *testing.T) {

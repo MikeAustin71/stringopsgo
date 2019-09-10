@@ -47,7 +47,7 @@ func TestStrOps_ExtractDataField_01(t *testing.T) {
 	}
 
 	datDto,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
@@ -208,7 +208,7 @@ func TestStrOps_ExtractDataField_02(t *testing.T) {
 	}
 
 	datDto,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
@@ -361,7 +361,7 @@ func TestStrOps_ExtractDataField_03(t *testing.T) {
 	expectedNextTargetIdx := -1
 
 	datDto,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
@@ -518,7 +518,7 @@ func TestStrOps_ExtractDataField_04(t *testing.T) {
 	}
 
 	datDto,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
@@ -673,7 +673,7 @@ func TestStrOps_ExtractDataField_05(t *testing.T) {
 	expectedCommentDelimiterIndex := strings.Index(targetStr, "#")
 
 	datDto,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
@@ -825,7 +825,7 @@ func TestStrOps_ExtractDataField_06(t *testing.T) {
 	expectedCommentDelimiterIndex := strings.Index(targetStr, "#")
 
 	datDto,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
@@ -1139,7 +1139,7 @@ func TestStrOps_ExtractDataField_08(t *testing.T) {
 	expectedDataFieldTrailingDelimiter := "#"
 	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.Comment()
 	expectedEndOfLineDelimiter := "\n"
-	expectedEndOfLineDelimiterIdx := strings.Index(targetStr,"\n")
+	expectedEndOfLineDelimiterIdx := strings.Index(targetStr, "\n")
 	expectedCommentDelimiter := "#"
 	expectedCommentDelimiterIndex := strings.Index(targetStr, "#")
 	expectedNextTargetIdx := -1
@@ -1281,7 +1281,7 @@ func TestStrOps_ExtractDataField_09(t *testing.T) {
 	leadingKeyWordDelimiter := "Zone:"
 
 	_,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
@@ -1316,7 +1316,7 @@ func TestStrOps_ExtractDataField_10(t *testing.T) {
 	leadingKeyWordDelimiter := "Zone:"
 
 	_,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
@@ -1356,7 +1356,7 @@ func TestStrOps_ExtractDataField_11(t *testing.T) {
 	leadingKeyWordDelimiter := "Zone:"
 
 	_,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
@@ -1396,7 +1396,7 @@ func TestStrOps_ExtractDataField_12(t *testing.T) {
 	leadingKeyWordDelimiter := "Zone:"
 
 	_,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
@@ -1432,11 +1432,11 @@ func TestStrOps_ExtractDataField_13(t *testing.T) {
 		" "}
 
 	targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
-	startIdx :=  999
+	startIdx := 999
 	leadingKeyWordDelimiter := "Zone:"
 
 	_,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
@@ -1489,9 +1489,8 @@ func TestStrOps_ExtractDataField_14(t *testing.T) {
 
 	expectedNextTargetIdx := -1
 
-
 	datDto,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
@@ -1607,4 +1606,3 @@ func TestStrOps_ExtractDataField_14(t *testing.T) {
 	}
 
 }
-

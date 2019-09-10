@@ -103,7 +103,6 @@ func TestStrOps_MakeSingleCharString_04(t *testing.T) {
 	}
 }
 
-
 func TestStrOps_Read_01(t *testing.T) {
 
 	expected := "original base string"
@@ -393,7 +392,7 @@ func TestStrOps_ReadStringFromBytes_06(t *testing.T) {
 
 func TestStrOps_ReadStringFromBytes_07(t *testing.T) {
 
-	var bytes[]byte
+	var bytes []byte
 
 	expectedStr := ""
 	expecteNextIdx := -1
@@ -1071,22 +1070,20 @@ func TestStrOps_ReplaceMultipleStrs_05(t *testing.T) {
 	}
 }
 
-
 func TestStrOps_ReplaceMultipleStrs_06(t *testing.T) {
 
 	testStr := "Hello World"
 
-	rStrs := make([][]string,0)
+	rStrs := make([][]string, 0)
 
 	_, err := StrOps{}.ReplaceMultipleStrs(testStr, rStrs)
 
 	if err == nil {
-		t.Error("Expected an error return from StrOps{}.ReplaceMultipleStrs(testStr, rStrs)\n"+
+		t.Error("Expected an error return from StrOps{}.ReplaceMultipleStrs(testStr, rStrs)\n" +
 			"because 'rStrs' is a zero length array.\n" +
 			"However, NO ERROR WAS RETURNED!!!\n")
 	}
 }
-
 
 func TestStrOps_ReplaceNewLines_01(t *testing.T) {
 
