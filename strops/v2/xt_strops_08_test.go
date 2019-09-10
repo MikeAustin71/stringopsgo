@@ -832,6 +832,40 @@ func TestStrOps_StrPadLeftToCenter_03(t *testing.T) {
 	}
 }
 
+func TestStrOps_StrPadLeftToCenter_04(t *testing.T) {
+	strToCenter := "Hello World"
+	fieldLen := 5
+	su := StrOps{}
+	_, err := su.StrPadLeftToCenter(strToCenter, fieldLen)
+
+	if err == nil {
+		t.Error("Expected an error return from StrPadLeftToCenter(strToCenter, fieldLen)\n" +
+			"because 'fieldLen' is less than the length of 'strToCenter'." +
+			"However, NO ERROR WAS RETURNED!")
+	}
+}
+
+func TestStrOps_StrPadLeftToCenter_05(t *testing.T) {
+	strToCenter := "Hello"
+	fieldLen := 5
+	exLen := 0
+	su := StrOps{}
+
+	padStr, err := su.StrPadLeftToCenter(strToCenter, fieldLen)
+
+	if err != nil {
+		t.Error("Error on StrPadLeftToCenter(), got", err.Error())
+	}
+
+	lenPadStr := len(padStr)
+
+	if exLen != lenPadStr {
+		t.Errorf("Error: Expected length of Pad String='0'.\n" +
+			"Instead, length of Pad String='%v'", lenPadStr)
+	}
+
+}
+
 func TestStrOps_SwapRune_001(t *testing.T) {
 	su := StrOps{}
 
