@@ -2678,8 +2678,9 @@ func (sops StrOps) StrCenterInStrLeft(strToCenter string, fieldLen int) (string,
 // StrCenterInStr - returns a string which includes a left pad blank string plus
 // the original string ('strToCenter'), plus a right pad blank string.
 //
-// The complete string will effectively center the original string is a field of
-// specified length ('fieldLen').
+// The returned string will effectively center the original string ('strToCenter')
+// in a field of specified length ('fieldLen').
+//
 func (sops StrOps) StrCenterInStr(strToCenter string, fieldLen int) (string, error) {
 
 	ePrefix := "StrOps.StrCenterInStr() "

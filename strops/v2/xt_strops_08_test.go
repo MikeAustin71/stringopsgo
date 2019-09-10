@@ -418,8 +418,8 @@ func TestStrOps_StripTrailingChars_003(t *testing.T) {
 	}
 }
 
-func TestStrOps_StrCenterInStr_001(t *testing.T) {
-	strToCntr := "1234567"
+func TestStrOps_StrCenterInStr_01(t *testing.T) {
+	strToCenter := "1234567"
 	fieldLen := 79
 	exLeftPadLen := 36
 	exRightPadLen := 36
@@ -427,10 +427,10 @@ func TestStrOps_StrCenterInStr_001(t *testing.T) {
 
 	leftPad := strings.Repeat(" ", exLeftPadLen)
 	rightPad := strings.Repeat(" ", exRightPadLen)
-	exStr := leftPad + strToCntr + rightPad
+	exStr := leftPad + strToCenter + rightPad
 
 	su := StrOps{}
-	str, err := su.StrCenterInStr(strToCntr, fieldLen)
+	str, err := su.StrCenterInStr(strToCenter, fieldLen)
 	if err != nil {
 		t.Error("StrCenterInStr() generated error: ", err.Error())
 	}
@@ -444,7 +444,84 @@ func TestStrOps_StrCenterInStr_001(t *testing.T) {
 	if str != exStr {
 		t.Error(fmt.Sprintf("Strings did not match. Expected string '%v', got ", exStr), str)
 	}
+}
 
+func TestStrOps_StrCenterInStr_02(t *testing.T) {
+	strToCenter := "Hello"
+	fieldLen := 15
+	exLeftPadLen := 5
+	exRightPadLen := 5
+	exTotalLen := 15
+
+	leftPad := strings.Repeat(" ", exLeftPadLen)
+	rightPad := strings.Repeat(" ", exRightPadLen)
+	exStr := leftPad + strToCenter + rightPad
+
+	su := StrOps{}
+	str, err := su.StrCenterInStr(strToCenter, fieldLen)
+	if err != nil {
+		t.Error("StrCenterInStr() generated error: ", err.Error())
+	}
+
+	l1 := su.StrGetRuneCnt(str)
+
+	if l1 != exTotalLen {
+		t.Error(fmt.Sprintf("Expected total str length '%v', got", exTotalLen), l1)
+	}
+
+	if str != exStr {
+		t.Error(fmt.Sprintf("Strings did not match. Expected string '%v', got ", exStr), str)
+	}
+}
+
+func TestStrOps_StrCenterInStr_03(t *testing.T) {
+	strToCenter := "Hello"
+	fieldLen := 5
+	exTotalLen := 5
+
+	exStr := strToCenter
+
+	su := StrOps{}
+	str, err := su.StrCenterInStr(strToCenter, fieldLen)
+	if err != nil {
+		t.Errorf("StrCenterInStr() generated error: %v", err.Error())
+	}
+
+	l1 := su.StrGetRuneCnt(str)
+
+	if l1 != exTotalLen {
+		t.Error(fmt.Sprintf("Expected total str length '%v', got", exTotalLen), l1)
+	}
+
+	if str != exStr {
+		t.Error(fmt.Sprintf("Strings did not match. Expected string '%v', got ", exStr), str)
+	}
+}
+
+func TestStrOps_StrCenterInStr_04(t *testing.T) {
+	strToCenter := "Hello World"
+	fieldLen := 5
+
+	_, err := StrOps{}.StrCenterInStr(strToCenter, fieldLen)
+
+	if err == nil {
+		t.Error("Expected an error return from StrOps{}.StrCenterInStr(strToCenter, fieldLen)\n" +
+			"because 'fieldLen' is less than the length of 'strToCenter'.\n" +
+			"However, NO ERROR WAS RETURNED!!!\n")
+	}
+}
+
+func TestStrOps_StrCenterInStr_05(t *testing.T) {
+	strToCenter := "     "
+	fieldLen := 15
+
+	_, err := StrOps{}.StrCenterInStr(strToCenter, fieldLen)
+
+	if err == nil {
+		t.Error("Expected an error return from StrOps{}.StrCenterInStr(strToCenter, fieldLen)\n" +
+			"because 'strToCenter' consists entirely of white space.\n" +
+			"However, NO ERROR WAS RETURNED!!!\n")
+	}
 }
 
 func TestStrOps_StrLeftJustify_01(t *testing.T) {
