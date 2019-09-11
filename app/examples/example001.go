@@ -18,23 +18,24 @@ type MainTest struct {
 }
 
 func (mt MainTest) ExampleExtractDataField01() {
-
+	// line feed (ascii character 12) and carriage return (ascii character 13)
 	endOfLineDelimiters := []string{"\n"}
 	commentDelimiters := []string{"#"}
 	leadingFieldSeparators := []string{"\t", " ", "\r", "\f", "\v"}
 	trailingFieldSeparators := []string{"\t", " ", "\r", "\f", "\v"}
-	targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
+	targetStr := " Zone:\t America/Chicago\t Link: US/Central\t!\n"
 	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
 	expectedLastGoodIdx--
 	lenTargetStr := len(targetStr)
 	startIdx := 0
-	leadingKeyWordDelimiter := "Zone:"
+	leadingKeyWordDelimiters := []string{"Zone:", "Link:"}
+	expectedLeadingKeyWordDelimiter := leadingKeyWordDelimiters[0]
 	expectedDataFieldStr := "America/Chicago"
 	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
 	expectedDataFieldLength := len(expectedDataFieldStr)
 	expectedDataFieldTrailingDelimiter := "\t"
 	expectedDataFieldTrailingDelimiterType := strops.DfTrailDelimiter.EndOfField()
-	expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, leadingKeyWordDelimiter)
+	expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, expectedLeadingKeyWordDelimiter)
 	expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
 
 	if expectedNextTargetIdx > expectedLastGoodIdx {
@@ -48,7 +49,7 @@ func (mt MainTest) ExampleExtractDataField01() {
 	datDto,
 		err := strops.StrOps{}.ExtractDataField(
 		targetStr,
-		leadingKeyWordDelimiter,
+		leadingKeyWordDelimiters,
 		startIdx,
 		leadingFieldSeparators,
 		trailingFieldSeparators,
@@ -87,10 +88,10 @@ func (mt MainTest) ExampleExtractDataField01() {
 		isError = true
 	}
 
-	if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
 		fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
 			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-			leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+			expectedLeadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
 		isError = true
 	}
 
@@ -166,18 +167,20 @@ func (mt MainTest) ExampleExtractDataField01() {
 	fmt.Printf("             TargetStr: %v", targetStr)
 	fmt.Println("      TargetStr Length: ", lenTargetStr)
 	fmt.Println("           Start Index: ", startIdx)
-	fmt.Println("    Key Word Delimiter: ", leadingKeyWordDelimiter)
+	fmt.Println("   Key Word Delimiters: ", leadingKeyWordDelimiters)
 	fmt.Println("Key Word Delimiter Idx: ", expectedLeadingKeyWordDelimiterIndex)
 	fmt.Println("------------------------------------------------")
 	fmt.Println("                 Expected Results               ")
 	fmt.Println("------------------------------------------------")
-	fmt.Println("                  Field String: ", expectedDataFieldStr)
-	fmt.Println("              Field Str Length: ", expectedDataFieldLength)
-	fmt.Println("                   Field Index: ", expectedDataFieldIdx)
-	fmt.Println("      Field Trailing Delimiter: ", expectedDataFieldTrailingDelimiter)
-	fmt.Println(" Field Trailing Delimiter Type: ", expectedDataFieldTrailingDelimiterType.String())
-	fmt.Println("    Target Str Last Good Index: ", expectedLastGoodIdx)
-	fmt.Println("             Next Target Index: ", expectedNextTargetIdx)
+	fmt.Println("                    Field String: ", expectedDataFieldStr)
+	fmt.Println("                Field Str Length: ", expectedDataFieldLength)
+	fmt.Println("                     Field Index: ", expectedDataFieldIdx)
+	fmt.Println("      Leading Key Word Delimiter: ", expectedLeadingKeyWordDelimiter)
+	fmt.Println("Leading Key Word Delimiter Index: ", expectedLeadingKeyWordDelimiterIndex)
+	fmt.Println("        Field Trailing Delimiter: ", expectedDataFieldTrailingDelimiter)
+	fmt.Println("   Field Trailing Delimiter Type: ", expectedDataFieldTrailingDelimiterType.String())
+	fmt.Println("      Target Str Last Good Index: ", expectedLastGoodIdx)
+	fmt.Println("               Next Target Index: ", expectedNextTargetIdx)
 	fmt.Println("------------------------------------------------")
 	fmt.Println("                  Actual Results                ")
 	fmt.Println("------------------------------------------------")
@@ -217,13 +220,14 @@ func (mt MainTest) ExampleExtractDataField02() {
 	lenTargetStr := len(targetStr)
 	startIdx := 0
 	expectedStartIdx := 46
-	leadingKeyWordDelimiter := "Zone:"
+	leadingKeyWordDelimiters := []string{"Zone:"}
+	expectedLeadingKeyWordDelimiter := leadingKeyWordDelimiters[0]
 	expectedDataFieldStr := "America/Los_Angeles"
 	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
 	expectedDataFieldLength := len(expectedDataFieldStr)
 	expectedDataFieldTrailingDelimiter := "\n"
 	expectedDataFieldTrailingDelimiterType := strops.DfTrailDelimiter.EndOfLine()
-	expectedLeadingKeyWordDelimiterIndex := strings.LastIndex(targetStr, leadingKeyWordDelimiter)
+	expectedLeadingKeyWordDelimiterIndex := strings.LastIndex(targetStr, expectedLeadingKeyWordDelimiter)
 	expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
 
 	if expectedNextTargetIdx > expectedLastGoodIdx {
@@ -241,7 +245,7 @@ func (mt MainTest) ExampleExtractDataField02() {
 		datDto,
 			err = strops.StrOps{}.ExtractDataField(
 			targetStr,
-			leadingKeyWordDelimiter,
+			leadingKeyWordDelimiters,
 			startIdx,
 			leadingFieldSeparators,
 			trailingFieldSeparators,
@@ -285,10 +289,10 @@ func (mt MainTest) ExampleExtractDataField02() {
 		isError = true
 	}
 
-	if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
 		fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
 			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-			leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+			expectedLeadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
 		isError = true
 	}
 
@@ -364,19 +368,20 @@ func (mt MainTest) ExampleExtractDataField02() {
 	fmt.Printf("             TargetStr: %v", targetStr)
 	fmt.Println("      TargetStr Length: ", lenTargetStr)
 	fmt.Println("           Start Index: ", startIdx)
-	fmt.Println("    Key Word Delimiter: ", leadingKeyWordDelimiter)
-	fmt.Println("Key Word Delimiter Idx: ", expectedLeadingKeyWordDelimiterIndex)
+	fmt.Println("    Key Word Delimiter: ", leadingKeyWordDelimiters)
 	fmt.Println("------------------------------------------------")
 	fmt.Println("                 Expected Results               ")
 	fmt.Println("------------------------------------------------")
-	fmt.Println("                  Field String: ", expectedDataFieldStr)
-	fmt.Println("              Field Str Length: ", expectedDataFieldLength)
-	fmt.Println("                   Field Index: ", expectedDataFieldIdx)
-	fmt.Println("      Field Trailing Delimiter: ",
+	fmt.Println("                   Field String: ", expectedDataFieldStr)
+	fmt.Println("               Field Str Length: ", expectedDataFieldLength)
+	fmt.Println("                    Field Index: ", expectedDataFieldIdx)
+	fmt.Println("       Field Trailing Delimiter: ",
 		strops.StrOps{}.ConvertNonPrintableChars([]rune(expectedDataFieldTrailingDelimiter), false))
-	fmt.Println(" Field Trailing Delimiter Type: ", expectedDataFieldTrailingDelimiterType.String())
-	fmt.Println("    Target Str Last Good Index: ", expectedLastGoodIdx)
-	fmt.Println("             Next Target Index: ", expectedNextTargetIdx)
+	fmt.Println("  Field Trailing Delimiter Type: ", expectedDataFieldTrailingDelimiterType.String())
+	fmt.Println("      Leading Keyword Delimiter: ",expectedLeadingKeyWordDelimiter)
+	fmt.Println("Leading Keyword Delimiter Index: ", expectedLeadingKeyWordDelimiterIndex)
+	fmt.Println("     Target Str Last Good Index: ", expectedLastGoodIdx)
+	fmt.Println("              Next Target Index: ", expectedNextTargetIdx)
 	fmt.Println("------------------------------------------------")
 	fmt.Println("                  Actual Results                ")
 	fmt.Println("------------------------------------------------")
@@ -418,7 +423,8 @@ func (mt MainTest) ExampleExtractDataField03() {
 	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
 	expectedLastGoodIdx--
 	startIdx := 0
-	leadingKeyWordDelimiter := "Zone:"
+	leadingKeyWordDelimiter := []string{"Zone:"}
+	expectedLeadingKeyWordDelimiter := ""
 	expectedDataFieldStr := ""
 	expectedDataFieldIdx := -1
 	expectedDataFieldLength := len(expectedDataFieldStr)
@@ -474,7 +480,7 @@ func (mt MainTest) ExampleExtractDataField03() {
 		isError = true
 	}
 
-	if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
 		fmt.Printf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
 			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
 			leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
@@ -558,13 +564,15 @@ func (mt MainTest) ExampleExtractDataField03() {
 	fmt.Println("------------------------------------------------")
 	fmt.Println("                 Expected Results               ")
 	fmt.Println("------------------------------------------------")
-	fmt.Println("                  Field String: ", expectedDataFieldStr)
-	fmt.Println("              Field Str Length: ", expectedDataFieldLength)
-	fmt.Println("                   Field Index: ", expectedDataFieldIdx)
-	fmt.Printf("      Field Trailing Delimiter: %v", expectedDataFieldTrailingDelimiter)
-	fmt.Println(" Field Trailing Delimiter Type: ", expectedDataFieldTrailingDelimiterType.String())
-	fmt.Println("    Target Str Last Good Index: ", expectedLastGoodIdx)
-	fmt.Println("             Next Target Index: ", expectedNextTargetIdx)
+	fmt.Println("                   Field String: ", expectedDataFieldStr)
+	fmt.Println("               Field Str Length: ", expectedDataFieldLength)
+	fmt.Println("                    Field Index: ", expectedDataFieldIdx)
+	fmt.Printf("       Field Trailing Delimiter: %v", expectedDataFieldTrailingDelimiter)
+	fmt.Println("  Field Trailing Delimiter Type: ", expectedDataFieldTrailingDelimiterType.String())
+	fmt.Println("      Leading Keyword Delimiter: ", expectedLeadingKeyWordDelimiter)
+	fmt.Println("Leading Keyword Delimiter Index: ", expectedLeadingKeyWordDelimiterIndex)
+	fmt.Println("     Target Str Last Good Index: ", expectedLastGoodIdx)
+	fmt.Println("              Next Target Index: ", expectedNextTargetIdx)
 	fmt.Println("------------------------------------------------")
 	fmt.Println("                  Actual Results                ")
 	fmt.Println("------------------------------------------------")

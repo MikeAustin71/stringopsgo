@@ -216,6 +216,8 @@ type DataFieldProfileDto struct {
 // to the data field are zeroed.
 //
 func (dfProfile *DataFieldProfileDto) ConvertToErrorState() {
+	dfProfile.LeadingKeyWordDelimiter = ""
+	dfProfile.LeadingKeyWordDelimiterIndex = -1
 	dfProfile.DataFieldStr = ""
 	dfProfile.DataFieldIndex = -1
 	dfProfile.DataFieldLength = 0
@@ -625,17 +627,30 @@ func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
 //
 //  targetStr               string   - The target string from which the data field will be extracted.
 //
-//  leadingKeyWordDelimiter string   - The Key Word or character which identifies and immediately precedes
-//                                       the data field. If this parameter is populated, the search
-//                                       for a data field will begin immediately after the found data
-//                                       string. If this Key Word is NOT located in 'targetStr', an
-//                                       empty string will be returned for data field.
+//  leadingKeyWordDelimiters []string- Data fields are often preceded by field names or field designators.
+//                                       The 'leadingKeyWordDelimiters' parameter is a string array
+//                                       containing 'Key Word Delimiters'. A Key Word Delimiter may be
+//                                       a Key Word string or a character which identifies and immediately
+//                                       precedes the data field. If multiple Key Word Delimiters exist
+//                                       in 'targetStr' the first instance of a key word in targetStr'
+//                                       will be designated as the Key Word Delimiter.
 //
-//                                       If this parameter is an empty string, the search for data field
-//                                       will begin at the string index designated by parameter, 'startIdx'.
+//                                       If this parameter is populated, the search for a data field
+//                                       will begin immediately after the first located Key Word
+//                                       Delimiter string. If none of Key Words in this string array
+//                                       are located in 'targetStr', an empty string will be returned
+//                                       for data field. If this parameter is populated, at least one
+//                                       of the Key Words MUST exist in 'targetStr' before a data field
+//                                       will be extracted and returned.
+//
+//                                       If this parameter is an empty string array, the search for a
+//                                       data field will begin at the string index designated by
+//                                       parameter, 'startIdx'.
 //
 //  startIdx                int      - The string index in parameter 'targetStr' from which the search for
-//                                       a data field will begin.
+//                                       a data field will begin. Note that the starting index will be adjusted
+//                                       according to the existence of a Key Word Delimiter as explained
+//                                       above.
 //
 //  leadingFieldSeparators  []string - An array of characters or groups of characters which delimit the
 //                                       leading edge of the data field.
@@ -688,7 +703,7 @@ func (sops StrOps) DoesLastCharExist(testStr string, lastChar rune) bool {
 //
 func (sops StrOps) ExtractDataField(
 	targetStr string,
-	leadingKeyWordDelimiter string,
+	leadingKeyWordDelimiters []string,
 	startIdx int,
 	leadingFieldSeparators []string,
 	trailingFieldSeparators []string,
@@ -700,7 +715,7 @@ func (sops StrOps) ExtractDataField(
 	newDataDto.TargetStr = targetStr
 	newDataDto.TargetStrLength = len(targetStr)
 	newDataDto.TargetStrStartIndex = startIdx
-	newDataDto.LeadingKeyWordDelimiter = leadingKeyWordDelimiter
+	newDataDto.LeadingKeyWordDelimiter = ""
 
 	lenTargetStr := len(targetStr)
 
@@ -749,36 +764,46 @@ func (sops StrOps) ExtractDataField(
 	lastGoodTargetStrIdx := lenTargetStr - 1
 
 	lenOfEndOfLineDelimiters := len(endOfLineDelimiters)
+	delimiterIdx := -1
+	delimiterValue := ""
 
+	// Check End-Of-Line Delimiters
 	if lenOfEndOfLineDelimiters > 0 {
 
 		for b := 0; b < lenOfEndOfLineDelimiters; b++ {
+
+			if len(endOfLineDelimiters[b]) == 0 {
+				continue
+			}
+
 			eolDelimiterIdx := strings.Index(targetStr[startIdx:], endOfLineDelimiters[b])
 
 			if eolDelimiterIdx == -1 {
 				continue
 			}
 
-			eolDelimiterIdx += startIdx
-
-			newDataDto.EndOfLineDelimiter = endOfLineDelimiters[b]
-			newDataDto.EndOfLineDelimiterIndex = eolDelimiterIdx
-
-			if eolDelimiterIdx > lastGoodTargetStrIdx {
-				continue
+			if delimiterIdx == -1 ||
+					eolDelimiterIdx < delimiterIdx {
+				delimiterIdx = eolDelimiterIdx
+				delimiterValue = endOfLineDelimiters[b]
 			}
-
-			// End-Of-Line Index is less than or equal to 'lastGoodTargetStrIds'
-			newDataDto.DataFieldTrailingDelimiter = endOfLineDelimiters[b]
-			newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfLine()
-
-			eolDelimiterIdx--
-			lastGoodTargetStrIdx = eolDelimiterIdx
-
-			break
 		}
 
+		if delimiterIdx > -1 {
+		// Valid End-Of-Line Delimiter does exist
+			delimiterIdx += startIdx
+			newDataDto.EndOfLineDelimiter = delimiterValue
+			newDataDto.EndOfLineDelimiterIndex = delimiterIdx
+
+			if delimiterIdx < lastGoodTargetStrIdx {
+				// End-Of-Line Index is less than or equal to 'lastGoodTargetStrIds'
+				newDataDto.DataFieldTrailingDelimiter = delimiterValue
+				newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfLine()
+				lastGoodTargetStrIdx = delimiterIdx - 1
+			}
+		}
 	}
+
 
 	if startIdx > lastGoodTargetStrIdx ||
 		lastGoodTargetStrIdx < 0 {
@@ -790,9 +815,17 @@ func (sops StrOps) ExtractDataField(
 
 	lenCommentDelimiters := len(commentDelimiters)
 
+	// Check Comment Delimiters
 	if lenCommentDelimiters > 0 {
 
+		delimiterIdx = -1
+		delimiterValue = ""
+
 		for b := 0; b < lenCommentDelimiters; b++ {
+
+			if len(commentDelimiters[b]) == 0 {
+				continue
+			}
 
 			commentIdx := strings.Index(targetStr[startIdx:], commentDelimiters[b])
 
@@ -800,25 +833,27 @@ func (sops StrOps) ExtractDataField(
 				continue
 			}
 
-			commentIdx += startIdx
-
-			newDataDto.CommentDelimiter = commentDelimiters[b]
-			newDataDto.CommentDelimiterIndex = commentIdx
-
-			if commentIdx > lastGoodTargetStrIdx {
-				continue
+			if delimiterIdx == -1 ||
+					commentIdx < delimiterIdx {
+				delimiterIdx = commentIdx
+				delimiterValue = commentDelimiters[b]
 			}
-
-			// Comment Index is less than or equal to 'lastGoodTargetStrIds'
-			newDataDto.DataFieldTrailingDelimiter = commentDelimiters[b]
-			newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.Comment()
-
-			commentIdx--
-			lastGoodTargetStrIdx = commentIdx
-
-			break
 		}
 
+		if delimiterIdx > -1 {
+
+			delimiterIdx += startIdx
+			newDataDto.CommentDelimiter = delimiterValue
+			newDataDto.CommentDelimiterIndex = delimiterIdx
+
+			if delimiterIdx < lastGoodTargetStrIdx {
+
+				// Comment Index is less than or equal to 'lastGoodTargetStrIds'
+				newDataDto.DataFieldTrailingDelimiter = delimiterValue
+				newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.Comment()
+				lastGoodTargetStrIdx = delimiterIdx - 1
+			}
+		}
 	}
 
 	newDataDto.TargetStrLastGoodIndex = lastGoodTargetStrIdx
@@ -831,27 +866,64 @@ func (sops StrOps) ExtractDataField(
 		return newDataDto, nil
 	}
 
-	lenLeadingKeyWordDelimiter := len(leadingKeyWordDelimiter)
+	lenLeadingKeyWordDelimiters := len(leadingKeyWordDelimiters)
 
-	if lenLeadingKeyWordDelimiter > 0 {
+// Check Leading Key Word Delimiters
+	if lenLeadingKeyWordDelimiters > 0 {
+		delimiterIdx = -1
+		delimiterValue = ""
+		validTestDelimiterExists := false
 
-		keyWordIdx := strings.Index(targetStr[startIdx:], leadingKeyWordDelimiter)
+		for k := 0; k < lenLeadingKeyWordDelimiters; k++ {
 
-		if keyWordIdx == -1 {
+			if len(leadingKeyWordDelimiters[k]) == 0 {
+				// Zero length strings are not processed
+				continue
+			}
+
+			validTestDelimiterExists = true
+
+			tempKeyWordIdx := strings.Index(targetStr[startIdx:], leadingKeyWordDelimiters[k])
+
+			if tempKeyWordIdx == -1 {
+				continue
+			}
+
+			if delimiterIdx == -1 ||
+					tempKeyWordIdx < delimiterIdx {
+
+				delimiterIdx = tempKeyWordIdx
+				delimiterValue = leadingKeyWordDelimiters[k]
+			}
+		}
+
+		if validTestDelimiterExists && delimiterIdx == -1 {
+			// Key Word Delimiters were requested,
+			// but none were found. Exit!
 			return newDataDto, nil
 		}
 
-		keyWordIdx += startIdx
+		if delimiterIdx > -1 {
+			// All of the key word delimiters were zero
+			// length strings. Therefore, ignore
+			// key word delimiters.
+			delimiterIdx += startIdx
 
-		if keyWordIdx >= lastGoodTargetStrIdx {
-			return newDataDto, nil
-		}
+			if delimiterIdx >= lastGoodTargetStrIdx {
+				// Key Word Delimiter was found but it is
+				// located beyond the last good character index.
+				// Probably located inside a comment or after a new-line.
+				return newDataDto, nil
+			}
 
-		newDataDto.LeadingKeyWordDelimiterIndex = keyWordIdx
+			newDataDto.LeadingKeyWordDelimiter = delimiterValue
+			newDataDto.LeadingKeyWordDelimiterIndex = delimiterIdx
 
-		startIdx = lenLeadingKeyWordDelimiter + keyWordIdx
-	}
+			startIdx = len(delimiterValue) + delimiterIdx
+		} // End of if delimiterIdx > -1
+	} // End of if lenLeadingKeyWordDelimiters > 0
 
+	// Main Target String Loop
 	fieldDataRunes := make([]rune, 0, 20)
 	firstDataFieldIdx := -1
 
