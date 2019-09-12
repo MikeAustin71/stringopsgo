@@ -1858,3 +1858,45 @@ func TestStrOps_ExtractDataField_20(t *testing.T) {
 	}
 }
 
+func TestStrOps_ExtractDataField_21(t *testing.T) {
+
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	targetStr := " Zone:\t America/Chicago\t#Good morning America!\n"
+	startIdx := 0
+	leadingKeyWordDelimiters := []string{
+		"",
+		"",
+		""}
+
+	_,
+	err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiters,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
+
+	if err == nil {
+		t.Error("Expected an error return for StrOps{}.ExtractDataField()\n" +
+			"because input parameter 'leadingKeyWordDelimiters' array consists entirely\n" +
+			"of empty strings. \n" +
+			"However, NO ERROR WAS RETURNED!\n")
+	}
+}
