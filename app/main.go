@@ -1,30 +1,10 @@
 package main
 
-import (
-	"MikeAustin71/stringopsgo/app/examples"
-	"fmt"
-	"time"
-)
+import "MikeAustin71/stringopsgo/app/examples"
 
 func main() {
 
-	var startTime, endTime time.Time
-	startTime = time.Now()
-	time.Sleep(50 * time.Millisecond)
-	endTime = time.Now()
-
-	totalNanoSeconds,
-	elapsedTime := examples.MainTest{}.Timer(startTime, endTime)
-
-	if totalNanoSeconds > 5000 {
-		return
-	}
-
-	if elapsedTime != "Something" {
-		return
-	}
-
-fmt.Println()
+	examples.MainTest{}.ExampleExtractDataField01()
 
 }
 

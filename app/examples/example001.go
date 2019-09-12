@@ -23,6 +23,8 @@ func (mt MainTest) ExampleExtractDataField01() {
 	commentDelimiters := []string{"#"}
 	leadingFieldSeparators := []string{"\t", " ", "\r", "\f", "\v"}
 	trailingFieldSeparators := []string{"\t", " ", "\r", "\f", "\v"}
+	//            0          1         2          3         4          5         6         7
+	//            0123456 78901234567890123 456789012345678901 23 456789012345678901234567890
 	targetStr := " Zone:\t America/Chicago\t Link: US/Central\t!\n"
 	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
 	expectedLastGoodIdx--

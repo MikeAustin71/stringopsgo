@@ -505,7 +505,7 @@ func TestStrOps_ExtractDataField_04(t *testing.T) {
 	startIdx := 6
 	// leadingKeyWordDelimiters consisting if a zero length
 	// array or an array of empty strings are ignored.
-	leadingKeyWordDelimiters := []string {""}
+	leadingKeyWordDelimiters := make([]string,0)
 	expectedLeadingKeyWordDelimiter := ""
 	expectedLeadingKeyWordDelimiterIndex := -1
 	expectedDataFieldStr := "America/Chicago"
@@ -977,7 +977,7 @@ func TestStrOps_ExtractDataField_07(t *testing.T) {
 	expectedDataFieldLength := len(expectedDataFieldStr)
 	expectedDataFieldTrailingDelimiter := "\n"
 	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfLine()
-	expectedLeadingKeyWordDelimiter := "Zone"
+	expectedLeadingKeyWordDelimiter := "Zone:"
 	expectedLeadingKeyWordDelimiterIndex := strings.LastIndex(targetStr, expectedLeadingKeyWordDelimiter)
 	expectedEndOfLineDelimiter := "\n"
 	expectedCommentDelimiter := ""
@@ -1035,7 +1035,7 @@ func TestStrOps_ExtractDataField_07(t *testing.T) {
 	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
 		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
 			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-			leadingKeyWordDelimiters, datDto.LeadingKeyWordDelimiter)
+			expectedLeadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
 	}
 
 	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
@@ -1274,12 +1274,7 @@ func TestStrOps_ExtractDataField_09(t *testing.T) {
 
 	endOfLineDelimiters := []string{"\n"}
 	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	leadingFieldDelimiters := make([]string,0)
 
 	trailingFieldDelimiters := []string{
 		"\t",
@@ -1303,14 +1298,12 @@ func TestStrOps_ExtractDataField_09(t *testing.T) {
 		endOfLineDelimiters)
 
 	if err == nil {
-		t.Error("Expected an error return for X\n" +
-			"because input parameter 'leadingFieldDelimiters' is an empty string array.\n" +
+		t.Error("Expected an error return for  StrOps{}.ExtractDataField()\n" +
+			"because input parameter 'leadingFieldDelimiters' is a zero length string array.\n" +
 			"However, NO ERROR WAS RETURNED!")
 	}
 
 }
-
-/*
 
 func TestStrOps_ExtractDataField_10(t *testing.T) {
 
@@ -1323,16 +1316,16 @@ func TestStrOps_ExtractDataField_10(t *testing.T) {
 		"\v",
 		" "}
 
-	trailingFieldDelimiters := []string{}
+	trailingFieldDelimiters := make([]string,0)
 
-	targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
+	targetStr := " Zone:\t America/Chicago\tLink:\tGood morning America!\n"
 	startIdx := 0
-	leadingKeyWordDelimiter := "Zone:"
+	leadingKeyWordDelimiters := []string{"Link:", "Zone:"}
 
 	_,
 		err := StrOps{}.ExtractDataField(
 		targetStr,
-		leadingKeyWordDelimiter,
+		leadingKeyWordDelimiters,
 		startIdx,
 		leadingFieldDelimiters,
 		trailingFieldDelimiters,
@@ -1340,11 +1333,10 @@ func TestStrOps_ExtractDataField_10(t *testing.T) {
 		endOfLineDelimiters)
 
 	if err == nil {
-		t.Error("Expected an error return for X\n" +
-			"because input parameter 'trailingFieldDelimiters' is an empty string array.\n" +
+		t.Error("Expected an error return for StrOps{}.ExtractDataField(...)\n" +
+			"because input parameter 'trailingFieldDelimiters' is a zero length string array.\n" +
 			"However, NO ERROR WAS RETURNED!")
 	}
-
 }
 
 func TestStrOps_ExtractDataField_11(t *testing.T) {
@@ -1367,12 +1359,12 @@ func TestStrOps_ExtractDataField_11(t *testing.T) {
 
 	targetStr := ""
 	startIdx := 0
-	leadingKeyWordDelimiter := "Zone:"
+	leadingKeyWordDelimiters := []string{"Zone:"}
 
 	_,
 		err := StrOps{}.ExtractDataField(
 		targetStr,
-		leadingKeyWordDelimiter,
+		leadingKeyWordDelimiters,
 		startIdx,
 		leadingFieldDelimiters,
 		trailingFieldDelimiters,
@@ -1380,7 +1372,7 @@ func TestStrOps_ExtractDataField_11(t *testing.T) {
 		endOfLineDelimiters)
 
 	if err == nil {
-		t.Error("Expected an error return for X\n" +
+		t.Error("Expected an error return for StrOps{}.ExtractDataField(...)\n" +
 			"because input parameter 'targetStr' is an empty string.\n" +
 			"However, NO ERROR WAS RETURNED!")
 	}
@@ -1407,12 +1399,12 @@ func TestStrOps_ExtractDataField_12(t *testing.T) {
 
 	targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
 	startIdx := -1
-	leadingKeyWordDelimiter := "Zone:"
+	leadingKeyWordDelimiters := []string{"Zone:"}
 
 	_,
 		err := StrOps{}.ExtractDataField(
 		targetStr,
-		leadingKeyWordDelimiter,
+		leadingKeyWordDelimiters,
 		startIdx,
 		leadingFieldDelimiters,
 		trailingFieldDelimiters,
@@ -1424,7 +1416,6 @@ func TestStrOps_ExtractDataField_12(t *testing.T) {
 			"because input parameter 'startIdx' is less than zero.\n" +
 			"However, NO ERROR WAS RETURNED!")
 	}
-
 }
 
 func TestStrOps_ExtractDataField_13(t *testing.T) {
@@ -1447,12 +1438,12 @@ func TestStrOps_ExtractDataField_13(t *testing.T) {
 
 	targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
 	startIdx := 999
-	leadingKeyWordDelimiter := "Zone:"
+	leadingKeyWordDelimiters := []string{"Zone:"}
 
 	_,
 		err := StrOps{}.ExtractDataField(
 		targetStr,
-		leadingKeyWordDelimiter,
+		leadingKeyWordDelimiters,
 		startIdx,
 		leadingFieldDelimiters,
 		trailingFieldDelimiters,
@@ -1460,7 +1451,7 @@ func TestStrOps_ExtractDataField_13(t *testing.T) {
 		endOfLineDelimiters)
 
 	if err == nil {
-		t.Error("Expected an error return for X\n" +
+		t.Error("Expected an error return for StrOps{}.ExtractDataField()\n" +
 			"because input parameter 'startIdx' is exceeds the outer boundary of 'targetStr'.\n" +
 			"However, NO ERROR WAS RETURNED!")
 	}
@@ -1490,12 +1481,13 @@ func TestStrOps_ExtractDataField_14(t *testing.T) {
 	expectedLastGoodIdx := lenTargetStr - 1
 	expectedEndOfLineDelimiterIdx := -1
 	startIdx := 0
-	leadingKeyWordDelimiter := ""
+	leadingKeyWordDelimiters := make([]string,0)
 	expectedDataFieldStr := "Good morning America!"
 	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
 	expectedDataFieldLength := len(expectedDataFieldStr)
 	expectedDataFieldTrailingDelimiter := ""
 	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfString()
+	expectedLeadingKeyWordDelimiter := ""
 	expectedLeadingKeyWordDelimiterIndex := -1
 	expectedEndOfLineDelimiter := ""
 	expectedCommentDelimiter := ""
@@ -1506,7 +1498,7 @@ func TestStrOps_ExtractDataField_14(t *testing.T) {
 	datDto,
 		err := StrOps{}.ExtractDataField(
 		targetStr,
-		leadingKeyWordDelimiter,
+		leadingKeyWordDelimiters,
 		startIdx,
 		leadingFieldDelimiters,
 		trailingFieldDelimiters,
@@ -1538,10 +1530,10 @@ func TestStrOps_ExtractDataField_14(t *testing.T) {
 			startIdx, datDto.TargetStrStartIndex)
 	}
 
-	if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
 		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
 			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-			leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+			expectedLeadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
 	}
 
 	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
@@ -1620,4 +1612,3 @@ func TestStrOps_ExtractDataField_14(t *testing.T) {
 	}
 }
 
-*/

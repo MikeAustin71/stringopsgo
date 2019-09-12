@@ -750,6 +750,25 @@ func (sops StrOps) ExtractDataField(
 				"'leadingFieldSeparators' are required!\n")
 	}
 
+	validTestDelimiterExists := false
+
+	for i:=0; i < lenLeadingFieldSeparators; i++ {
+
+		if len(leadingFieldSeparators[i]) == 0 {
+			continue
+		}
+
+		validTestDelimiterExists = true
+
+	}
+
+	if !validTestDelimiterExists {
+		newDataDto.ConvertToErrorState()
+		return newDataDto,
+			errors.New(ePrefix +
+				"Error: Parameter 'leadingFieldSeparators' Delimiters Array consists entirely of empty strings!\n")
+	}
+
 	lenTrailingFieldSeparators := len(trailingFieldSeparators)
 
 	if lenTrailingFieldSeparators == 0 {
@@ -759,6 +778,24 @@ func (sops StrOps) ExtractDataField(
 				"'trailingFieldSeparators' are required!\n")
 	}
 
+	validTestDelimiterExists = false
+
+	for i:=0; i < lenTrailingFieldSeparators; i++ {
+
+		if len(trailingFieldSeparators[i]) == 0 {
+			continue
+		}
+
+		validTestDelimiterExists = true
+	}
+
+	if !validTestDelimiterExists {
+		newDataDto.ConvertToErrorState()
+		return newDataDto,
+			errors.New(ePrefix +
+				"Error: Parameter 'trailingFieldSeparators' Delimiters Array consists entirely of empty strings!\n")
+	}
+
 	targetStrRunes := []rune(targetStr)
 	lenTargetStr = len(targetStrRunes)
 	lastGoodTargetStrIdx := lenTargetStr - 1
@@ -766,6 +803,7 @@ func (sops StrOps) ExtractDataField(
 	lenOfEndOfLineDelimiters := len(endOfLineDelimiters)
 	delimiterIdx := -1
 	delimiterValue := ""
+	validTestDelimiterExists = false
 
 	// Check End-Of-Line Delimiters
 	if lenOfEndOfLineDelimiters > 0 {
@@ -775,6 +813,8 @@ func (sops StrOps) ExtractDataField(
 			if len(endOfLineDelimiters[b]) == 0 {
 				continue
 			}
+
+			validTestDelimiterExists = true
 
 			eolDelimiterIdx := strings.Index(targetStr[startIdx:], endOfLineDelimiters[b])
 
@@ -789,20 +829,29 @@ func (sops StrOps) ExtractDataField(
 			}
 		}
 
+		if !validTestDelimiterExists {
+			newDataDto.ConvertToErrorState()
+			return newDataDto,
+			errors.New(ePrefix +
+				"Error: End-Of-Line Delimiters Array consists entirely of empty strings!\n")
+		}
+
 		if delimiterIdx > -1 {
 		// Valid End-Of-Line Delimiter does exist
 			delimiterIdx += startIdx
 			newDataDto.EndOfLineDelimiter = delimiterValue
 			newDataDto.EndOfLineDelimiterIndex = delimiterIdx
 
+			delimiterIdx-- // Compute last good Target String Index
+
 			if delimiterIdx < lastGoodTargetStrIdx {
 				// End-Of-Line Index is less than or equal to 'lastGoodTargetStrIds'
 				newDataDto.DataFieldTrailingDelimiter = delimiterValue
 				newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.EndOfLine()
-				lastGoodTargetStrIdx = delimiterIdx - 1
+				lastGoodTargetStrIdx = delimiterIdx
 			}
-		}
-	}
+		} // End of if delimiterIdx > -1 {
+	} // End of if lenOfEndOfLineDelimiters > 0 {
 
 
 	if startIdx > lastGoodTargetStrIdx ||
@@ -820,12 +869,15 @@ func (sops StrOps) ExtractDataField(
 
 		delimiterIdx = -1
 		delimiterValue = ""
+		validTestDelimiterExists = false
 
 		for b := 0; b < lenCommentDelimiters; b++ {
 
 			if len(commentDelimiters[b]) == 0 {
 				continue
 			}
+
+			validTestDelimiterExists = true
 
 			commentIdx := strings.Index(targetStr[startIdx:], commentDelimiters[b])
 
@@ -840,18 +892,26 @@ func (sops StrOps) ExtractDataField(
 			}
 		}
 
+		if !validTestDelimiterExists {
+			newDataDto.ConvertToErrorState()
+			return newDataDto,
+				errors.New(ePrefix +
+					"Error: Comment Delimiters Array consists entirely of empty strings!\n")
+		}
+
 		if delimiterIdx > -1 {
 
 			delimiterIdx += startIdx
 			newDataDto.CommentDelimiter = delimiterValue
 			newDataDto.CommentDelimiterIndex = delimiterIdx
+			delimiterIdx--
 
 			if delimiterIdx < lastGoodTargetStrIdx {
 
 				// Comment Index is less than or equal to 'lastGoodTargetStrIds'
 				newDataDto.DataFieldTrailingDelimiter = delimiterValue
 				newDataDto.DataFieldTrailingDelimiterType = DfTrailDelimiter.Comment()
-				lastGoodTargetStrIdx = delimiterIdx - 1
+				lastGoodTargetStrIdx = delimiterIdx
 			}
 		}
 	}
@@ -872,7 +932,7 @@ func (sops StrOps) ExtractDataField(
 	if lenLeadingKeyWordDelimiters > 0 {
 		delimiterIdx = -1
 		delimiterValue = ""
-		validTestDelimiterExists := false
+		validTestDelimiterExists = false
 
 		for k := 0; k < lenLeadingKeyWordDelimiters; k++ {
 
@@ -897,7 +957,14 @@ func (sops StrOps) ExtractDataField(
 			}
 		}
 
-		if validTestDelimiterExists && delimiterIdx == -1 {
+		if !validTestDelimiterExists {
+			newDataDto.ConvertToErrorState()
+			return newDataDto,
+				errors.New(ePrefix +
+					"Error: Leading Key Word Delimiters Array consists entirely of empty strings!\n")
+		}
+
+		if delimiterIdx == -1 {
 			// Key Word Delimiters were requested,
 			// but none were found. Exit!
 			return newDataDto, nil
@@ -923,7 +990,9 @@ func (sops StrOps) ExtractDataField(
 		} // End of if delimiterIdx > -1
 	} // End of if lenLeadingKeyWordDelimiters > 0
 
+	//////////////////////////////
 	// Main Target String Loop
+	//////////////////////////////
 	fieldDataRunes := make([]rune, 0, 20)
 	firstDataFieldIdx := -1
 
