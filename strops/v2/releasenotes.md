@@ -7,6 +7,7 @@ Added methods:
   
 ## Tests
   + Added tests for new methods.
+  + Test coverage == 96%
   + Executed tests successfully on *Linux Mint 19.2* and 
   *Ubantu 18.04.3*. 
   
