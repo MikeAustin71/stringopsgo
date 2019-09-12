@@ -1770,3 +1770,91 @@ func TestStrOps_ExtractDataField_18(t *testing.T) {
 	}
 }
 
+func TestStrOps_ExtractDataField_19(t *testing.T) {
+
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	targetStr := "#Zone:\t America/Chicago\tLink:\t US/Central\t Good morning America!\n"
+	startIdx := 0
+	leadingKeyWordDelimiters := []string{"Zone:","Link:"}
+
+	fieldDto,
+	err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiters,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n" +
+			"Error='%v'\n",err.Error())
+		return
+	}
+
+	if fieldDto.TargetStrLastGoodIndex != -1 {
+		t.Errorf("Expected TargetStrLastGoodIndex==-1.\n" +
+			"Instead, TargetStrLastGoodIndex='%v'\n", fieldDto.TargetStrLastGoodIndex)
+	}
+}
+
+func TestStrOps_ExtractDataField_20(t *testing.T) {
+
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	targetStr := "\nZone:\t America/Chicago\tLink:\t US/Central\t Good morning America!\n"
+	startIdx := 0
+	leadingKeyWordDelimiters := []string{"Zone:","Link:"}
+
+	fieldDto,
+	err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiters,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n" +
+			"Error='%v'\n",err.Error())
+		return
+	}
+
+	if fieldDto.TargetStrLastGoodIndex != -1 {
+		t.Errorf("Expected TargetStrLastGoodIndex==-1.\n" +
+			"Instead, TargetStrLastGoodIndex='%v'\n", fieldDto.TargetStrLastGoodIndex)
+	}
+}
+
