@@ -380,7 +380,7 @@ func (mt MainTest) ExampleExtractDataField02() {
 	fmt.Println("       Field Trailing Delimiter: ",
 		strops.StrOps{}.ConvertNonPrintableChars([]rune(expectedDataFieldTrailingDelimiter), false))
 	fmt.Println("  Field Trailing Delimiter Type: ", expectedDataFieldTrailingDelimiterType.String())
-	fmt.Println("      Leading Keyword Delimiter: ",expectedLeadingKeyWordDelimiter)
+	fmt.Println("      Leading Keyword Delimiter: ", expectedLeadingKeyWordDelimiter)
 	fmt.Println("Leading Keyword Delimiter Index: ", expectedLeadingKeyWordDelimiterIndex)
 	fmt.Println("     Target Str Last Good Index: ", expectedLastGoodIdx)
 	fmt.Println("              Next Target Index: ", expectedNextTargetIdx)

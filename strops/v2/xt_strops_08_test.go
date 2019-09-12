@@ -860,7 +860,7 @@ func TestStrOps_StrPadLeftToCenter_05(t *testing.T) {
 	lenPadStr := len(padStr)
 
 	if exLen != lenPadStr {
-		t.Errorf("Error: Expected length of Pad String='0'.\n" +
+		t.Errorf("Error: Expected length of Pad String='0'.\n"+
 			"Instead, length of Pad String='%v'", lenPadStr)
 	}
 
@@ -972,8 +972,8 @@ func TestStrOps_SwapRune_05(t *testing.T) {
 	}
 
 	if newStr != tStr {
-		t.Errorf("Error: Expected StrOps{}.SwapRune(tStr, 'x', 'X') would return\n" +
-			"an empty string, because 'tStr' is an empty string.\n" +
+		t.Errorf("Error: Expected StrOps{}.SwapRune(tStr, 'x', 'X') would return\n"+
+			"an empty string, because 'tStr' is an empty string.\n"+
 			"Instead, newStr='%v'", newStr)
 	}
 

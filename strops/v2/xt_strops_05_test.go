@@ -89,7 +89,7 @@ func TestStrOps_GetSoftwareVersion_01(t *testing.T) {
 	actualStr := StrOps{}.GetSoftwareVersion()
 
 	if expectedStr != actualStr {
-		t.Errorf("Error: Expected Software Version string='%v'.\n" +
+		t.Errorf("Error: Expected Software Version string='%v'.\n"+
 			"Instead, Software Version string='%v'.\n",
 			expectedStr, actualStr)
 	}

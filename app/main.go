@@ -8,17 +8,6 @@ func main() {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
 /* This Works
 import (
   "MikeAustin71/stringopsgo/strops/v2"

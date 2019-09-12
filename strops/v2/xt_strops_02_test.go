@@ -191,7 +191,7 @@ func TestStrOps_ExtractDataField_02(t *testing.T) {
 	expectedEndOfLineDelimiterIdx := expectedLastGoodIdx
 	expectedLastGoodIdx--
 	startIdx := 0
-	leadingKeyWordDelimiters := []string{"Link:","Duplicate:","Zone:"}
+	leadingKeyWordDelimiters := []string{"Link:", "Duplicate:", "Zone:"}
 	expectedLeadingKeyWordDelimiter := leadingKeyWordDelimiters[2]
 	expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, expectedLeadingKeyWordDelimiter)
 	expectedDataFieldStr := "America/Chicago"
@@ -349,7 +349,7 @@ func TestStrOps_ExtractDataField_03(t *testing.T) {
 	expectedEndOfLineDelimiterIdx := expectedLastGoodIdx
 	expectedLastGoodIdx--
 	startIdx := 0
-	leadingKeyWordDelimiters := []string{"Zone:","Link:","Duplicate:"}
+	leadingKeyWordDelimiters := []string{"Zone:", "Link:", "Duplicate:"}
 	expectedDataFieldStr := ""
 	expectedDataFieldIdx := -1
 	expectedDataFieldLength := len(expectedDataFieldStr)
@@ -505,7 +505,7 @@ func TestStrOps_ExtractDataField_04(t *testing.T) {
 	startIdx := 6
 	// leadingKeyWordDelimiters consisting if a zero length
 	// array or an array of empty strings are ignored.
-	leadingKeyWordDelimiters := make([]string,0)
+	leadingKeyWordDelimiters := make([]string, 0)
 	expectedLeadingKeyWordDelimiter := ""
 	expectedLeadingKeyWordDelimiterIndex := -1
 	expectedDataFieldStr := "America/Chicago"
@@ -523,7 +523,7 @@ func TestStrOps_ExtractDataField_04(t *testing.T) {
 	}
 
 	datDto,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiters,
 		startIdx,
@@ -662,7 +662,7 @@ func TestStrOps_ExtractDataField_05(t *testing.T) {
 	expectedLastGoodIdx := strings.Index(targetStr, "#")
 	expectedLastGoodIdx--
 	startIdx := 0
-	leadingKeyWordDelimiters := []string{"Link:", "Duplicate:","Zone:"}
+	leadingKeyWordDelimiters := []string{"Link:", "Duplicate:", "Zone:"}
 	expectedDataFieldStr := ""
 	expectedDataFieldIdx := -1
 	expectedDataFieldLength := len(expectedDataFieldStr)
@@ -971,7 +971,7 @@ func TestStrOps_ExtractDataField_07(t *testing.T) {
 	lenTargetStr := len(targetStr)
 	startIdx := 0
 	expectedStartIdx := 46
-	leadingKeyWordDelimiters := []string{"Zone:","Link:", "Duplicate:"}
+	leadingKeyWordDelimiters := []string{"Zone:", "Link:", "Duplicate:"}
 	expectedDataFieldStr := "America/Los_Angeles"
 	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
 	expectedDataFieldLength := len(expectedDataFieldStr)
@@ -1274,7 +1274,7 @@ func TestStrOps_ExtractDataField_09(t *testing.T) {
 
 	endOfLineDelimiters := []string{"\n"}
 	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := make([]string,0)
+	leadingFieldDelimiters := make([]string, 0)
 
 	trailingFieldDelimiters := []string{
 		"\t",
@@ -1285,7 +1285,7 @@ func TestStrOps_ExtractDataField_09(t *testing.T) {
 
 	targetStr := " Zone:\t America/Chicago\tLink:\t US/Central/t Good morning America!\n"
 	startIdx := 0
-	leadingKeyWordDelimiters := []string{"Link:", "Zone:","Duplicate:"}
+	leadingKeyWordDelimiters := []string{"Link:", "Zone:", "Duplicate:"}
 
 	_,
 		err := StrOps{}.ExtractDataField(
@@ -1316,7 +1316,7 @@ func TestStrOps_ExtractDataField_10(t *testing.T) {
 		"\v",
 		" "}
 
-	trailingFieldDelimiters := make([]string,0)
+	trailingFieldDelimiters := make([]string, 0)
 
 	targetStr := " Zone:\t America/Chicago\tLink:\tGood morning America!\n"
 	startIdx := 0
@@ -1480,7 +1480,7 @@ func TestStrOps_ExtractDataField_14(t *testing.T) {
 	expectedLastGoodIdx := lenTargetStr - 1
 	expectedEndOfLineDelimiterIdx := -1
 	startIdx := 0
-	leadingKeyWordDelimiters := make([]string,0)
+	leadingKeyWordDelimiters := make([]string, 0)
 	expectedDataFieldStr := "Good morning America!"
 	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
 	expectedDataFieldLength := len(expectedDataFieldStr)
@@ -1634,7 +1634,7 @@ func TestStrOps_ExtractDataField_15(t *testing.T) {
 	leadingKeyWordDelimiters := []string{"Zone:"}
 
 	_,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiters,
 		startIdx,
@@ -1673,7 +1673,7 @@ func TestStrOps_ExtractDataField_16(t *testing.T) {
 	leadingKeyWordDelimiters := []string{"Zone:"}
 
 	_,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiters,
 		startIdx,
@@ -1692,7 +1692,7 @@ func TestStrOps_ExtractDataField_16(t *testing.T) {
 
 func TestStrOps_ExtractDataField_17(t *testing.T) {
 
-	endOfLineDelimiters := []string{"", "",""}
+	endOfLineDelimiters := []string{"", "", ""}
 	commentDelimiters := []string{"#"}
 	leadingFieldDelimiters := []string{
 		"\t",
@@ -1713,7 +1713,7 @@ func TestStrOps_ExtractDataField_17(t *testing.T) {
 	leadingKeyWordDelimiters := []string{"Zone:"}
 
 	_,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiters,
 		startIdx,
@@ -1733,7 +1733,7 @@ func TestStrOps_ExtractDataField_17(t *testing.T) {
 func TestStrOps_ExtractDataField_18(t *testing.T) {
 
 	endOfLineDelimiters := []string{"\n"}
-	commentDelimiters := []string{"","",""}
+	commentDelimiters := []string{"", "", ""}
 	leadingFieldDelimiters := []string{
 		"\t",
 		"\r",
@@ -1753,7 +1753,7 @@ func TestStrOps_ExtractDataField_18(t *testing.T) {
 	leadingKeyWordDelimiters := []string{"Zone:"}
 
 	_,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiters,
 		startIdx,
@@ -1790,10 +1790,10 @@ func TestStrOps_ExtractDataField_19(t *testing.T) {
 
 	targetStr := "#Zone:\t America/Chicago\tLink:\t US/Central\t Good morning America!\n"
 	startIdx := 0
-	leadingKeyWordDelimiters := []string{"Zone:","Link:"}
+	leadingKeyWordDelimiters := []string{"Zone:", "Link:"}
 
 	fieldDto,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiters,
 		startIdx,
@@ -1803,13 +1803,13 @@ func TestStrOps_ExtractDataField_19(t *testing.T) {
 		endOfLineDelimiters)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n" +
-			"Error='%v'\n",err.Error())
+		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
+			"Error='%v'\n", err.Error())
 		return
 	}
 
 	if fieldDto.TargetStrLastGoodIndex != -1 {
-		t.Errorf("Expected TargetStrLastGoodIndex==-1.\n" +
+		t.Errorf("Expected TargetStrLastGoodIndex==-1.\n"+
 			"Instead, TargetStrLastGoodIndex='%v'\n", fieldDto.TargetStrLastGoodIndex)
 	}
 }
@@ -1834,10 +1834,10 @@ func TestStrOps_ExtractDataField_20(t *testing.T) {
 
 	targetStr := "\nZone:\t America/Chicago\tLink:\t US/Central\t Good morning America!\n"
 	startIdx := 0
-	leadingKeyWordDelimiters := []string{"Zone:","Link:"}
+	leadingKeyWordDelimiters := []string{"Zone:", "Link:"}
 
 	fieldDto,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiters,
 		startIdx,
@@ -1847,13 +1847,13 @@ func TestStrOps_ExtractDataField_20(t *testing.T) {
 		endOfLineDelimiters)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n" +
-			"Error='%v'\n",err.Error())
+		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
+			"Error='%v'\n", err.Error())
 		return
 	}
 
 	if fieldDto.TargetStrLastGoodIndex != -1 {
-		t.Errorf("Expected TargetStrLastGoodIndex==-1.\n" +
+		t.Errorf("Expected TargetStrLastGoodIndex==-1.\n"+
 			"Instead, TargetStrLastGoodIndex='%v'\n", fieldDto.TargetStrLastGoodIndex)
 	}
 }
@@ -1884,7 +1884,7 @@ func TestStrOps_ExtractDataField_21(t *testing.T) {
 		""}
 
 	_,
-	err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiters,
 		startIdx,
