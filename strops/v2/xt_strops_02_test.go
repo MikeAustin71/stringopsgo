@@ -1,1087 +1,1623 @@
 package strops
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
-func TestStrOps_FindFirstNonSpaceChar_01(t *testing.T) {
-	//012345678901234
-	testStr := "   Hello World"
+func TestStrOps_ExtractDataField_01(t *testing.T) {
 
-	firstNonSpaceIdx, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 0, 4)
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
-			"Error='%v' ", err.Error())
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	targetStr := " Zone:\t America/Chicago\t Link:\t US/Central\t\n"
+	lenTargetStr := len(targetStr)
+	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+	expectedEndOfLineDelimiterIdx := expectedLastGoodIdx
+	expectedLastGoodIdx--
+	startIdx := 0
+	leadingKeyWordDelimiters := []string{"Zone:", "Link:"}
+	expectedDataFieldStr := "America/Chicago"
+	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
+	expectedDataFieldLength := len(expectedDataFieldStr)
+	expectedDataFieldTrailingDelimiter := "\t"
+	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfField()
+	expectedLeadingWordDelimiter := leadingKeyWordDelimiters[0]
+	expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, expectedLeadingWordDelimiter)
+	expectedEndOfLineDelimiter := "\n"
+	expectedCommentDelimiter := ""
+	expectedCommentDelimiterIndex := -1
+
+	expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
+
+	if expectedNextTargetIdx > expectedLastGoodIdx {
+		expectedNextTargetIdx = -1
 	}
 
-	if 3 != firstNonSpaceIdx {
-		t.Errorf("Error: Expected firstNonSpaceIdx='3'. Instead, Idx='%v' ",
-			firstNonSpaceIdx)
+	datDto,
+		err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiters,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
+			"targetStr='%v'\tstartIdx='%v'\n"+
+			"Error='%v'\n", targetStr, startIdx, err.Error())
+		return
+	}
+
+	if targetStr != datDto.TargetStr {
+		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+			"Instead, datDto.TargetStr='%v'.\n",
+			targetStr, datDto.TargetStr)
+	}
+
+	if lenTargetStr != datDto.TargetStrLength {
+		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+			"Instead, datDto.TargetStrLength='%v'.\n",
+			lenTargetStr, datDto.TargetStrLength)
+	}
+
+	if startIdx != datDto.TargetStrStartIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+			"Instead, datDto.TargetStrStartIndex='%v'.\n",
+			startIdx, datDto.TargetStrStartIndex)
+	}
+
+	if expectedLeadingWordDelimiter != datDto.LeadingKeyWordDelimiter {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+			expectedLeadingWordDelimiter, datDto.LeadingKeyWordDelimiter)
+	}
+
+	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	}
+
+	if expectedDataFieldStr != datDto.DataFieldStr {
+		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+			"Instead, datDto.DataFieldStr='%v'.\n",
+			expectedDataFieldStr, datDto.DataFieldStr)
+	}
+
+	if expectedDataFieldLength != datDto.DataFieldLength {
+		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+			"Instead, datDto.DataFieldLength='%v'.\n",
+			expectedDataFieldLength, datDto.DataFieldLength)
+	}
+
+	if expectedDataFieldIdx != datDto.DataFieldIndex {
+		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+			"Instead, datDto.DataFieldIndex='%v'.\n",
+			expectedDataFieldIdx, datDto.DataFieldIndex)
+	}
+
+	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedDataFieldTrailingDelimiter), true),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.DataFieldTrailingDelimiter), true))
+	}
+
+	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+	}
+
+	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+	}
+
+	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
+		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+			"Instead, datDto.NextTargetStrIndex='%v'.\n",
+			expectedNextTargetIdx, datDto.NextTargetStrIndex)
+	}
+
+	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
+	}
+
+	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
+	}
+
+	if expectedCommentDelimiter != datDto.CommentDelimiter {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
+			"Instead, datDto.CommentDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
+	}
+
+	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
+			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
 	}
 
 }
 
-func TestStrOps_FindFirstNonSpaceChar_02(t *testing.T) {
+func TestStrOps_ExtractDataField_02(t *testing.T) {
 
-	//012345678901234
-	testStr := "       Hello"
+	endOfLineDelimiters := []string{"\n"}
 
-	firstNonSpaceIdx, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 0, 6)
+	commentDelimiters := []string{"#"}
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
-			"Error='%v' ", err.Error())
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	targetStr := " Zone:\t America/Chicago Good morning America!\n"
+	lenTargetStr := len(targetStr)
+	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+	expectedEndOfLineDelimiterIdx := expectedLastGoodIdx
+	expectedLastGoodIdx--
+	startIdx := 0
+	leadingKeyWordDelimiters := []string{"Link:","Duplicate:","Zone:"}
+	expectedLeadingKeyWordDelimiter := leadingKeyWordDelimiters[2]
+	expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, expectedLeadingKeyWordDelimiter)
+	expectedDataFieldStr := "America/Chicago"
+	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
+	expectedDataFieldLength := len(expectedDataFieldStr)
+	expectedDataFieldTrailingDelimiter := " "
+	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfField()
+	expectedEndOfLineDelimiter := "\n"
+	expectedCommentDelimiter := ""
+	expectedCommentDelimiterIndex := -1
+
+	expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
+
+	if expectedNextTargetIdx > expectedLastGoodIdx {
+		expectedNextTargetIdx = -1
 	}
 
-	if -1 != firstNonSpaceIdx {
-		t.Errorf("Error: Expected firstNonSpaceIdx='-1'. Instead, Idx='%v' ",
-			firstNonSpaceIdx)
+	datDto,
+		err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiters,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
+			"targetStr='%v'\tstartIdx='%v'\n"+
+			"Error='%v'\n", targetStr, startIdx, err.Error())
+		return
+	}
+
+	if targetStr != datDto.TargetStr {
+		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+			"Instead, datDto.TargetStr='%v'.\n",
+			targetStr, datDto.TargetStr)
+	}
+
+	if lenTargetStr != datDto.TargetStrLength {
+		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+			"Instead, datDto.TargetStrLength='%v'.\n",
+			lenTargetStr, datDto.TargetStrLength)
+	}
+
+	if startIdx != datDto.TargetStrStartIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+			"Instead, datDto.TargetStrStartIndex='%v'.\n",
+			startIdx, datDto.TargetStrStartIndex)
+	}
+
+	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+			expectedLeadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+	}
+
+	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	}
+
+	if expectedDataFieldStr != datDto.DataFieldStr {
+		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+			"Instead, datDto.DataFieldStr='%v'.\n",
+			expectedDataFieldStr, datDto.DataFieldStr)
+	}
+
+	if expectedDataFieldLength != datDto.DataFieldLength {
+		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+			"Instead, datDto.DataFieldLength='%v'.\n",
+			expectedDataFieldLength, datDto.DataFieldLength)
+	}
+
+	if expectedDataFieldIdx != datDto.DataFieldIndex {
+		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+			"Instead, datDto.DataFieldIndex='%v'.\n",
+			expectedDataFieldIdx, datDto.DataFieldIndex)
+	}
+
+	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+			expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+	}
+
+	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+	}
+
+	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+	}
+
+	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
+		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+			"Instead, datDto.NextTargetStrIndex='%v'.\n",
+			expectedNextTargetIdx, datDto.NextTargetStrIndex)
+	}
+
+	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
+	}
+
+	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
+	}
+
+	if expectedCommentDelimiter != datDto.CommentDelimiter {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
+			"Instead, datDto.CommentDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
+	}
+
+	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
+			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
 	}
 
 }
 
-func TestStrOps_FindFirstNonSpaceChar_03(t *testing.T) {
+func TestStrOps_ExtractDataField_03(t *testing.T) {
 
-	//012345678901234
-	testStr := "Hello  There"
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
 
-	firstNonSpaceIdx, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 7, 9)
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+	targetStr := " America/Chicago Good morning America!\n"
+	lenTargetStr := len(targetStr)
+	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+	expectedEndOfLineDelimiterIdx := expectedLastGoodIdx
+	expectedLastGoodIdx--
+	startIdx := 0
+	leadingKeyWordDelimiters := []string{"Zone:","Link:","Duplicate:"}
+	expectedDataFieldStr := ""
+	expectedDataFieldIdx := -1
+	expectedDataFieldLength := len(expectedDataFieldStr)
+	expectedDataFieldTrailingDelimiter := "\n"
+	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfLine()
+	expectedLeadingKeyWordDelimiter := ""
+	expectedLeadingKeyWordDelimiterIndex := -1
+	expectedEndOfLineDelimiter := "\n"
+	expectedCommentDelimiter := ""
+	expectedCommentDelimiterIndex := -1
+	expectedNextTargetIdx := -1
+
+	datDto,
+		err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiters,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
-			"Error='%v' ", err.Error())
+		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
+			"targetStr='%v'\tstartIdx='%v'\n"+
+			"Error='%v'\n", targetStr, startIdx, err.Error())
+		return
 	}
 
-	if 7 != firstNonSpaceIdx {
-		t.Errorf("Error: Expected firstNonSpaceIdx='7'. Instead, Idx='%v' ",
-			firstNonSpaceIdx)
+	if targetStr != datDto.TargetStr {
+		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+			"Instead, datDto.TargetStr='%v'.\n",
+			targetStr, datDto.TargetStr)
+	}
+
+	if lenTargetStr != datDto.TargetStrLength {
+		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+			"Instead, datDto.TargetStrLength='%v'.\n",
+			lenTargetStr, datDto.TargetStrLength)
+	}
+
+	if startIdx != datDto.TargetStrStartIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+			"Instead, datDto.TargetStrStartIndex='%v'.\n",
+			startIdx, datDto.TargetStrStartIndex)
+	}
+
+	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+			expectedLeadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+	}
+
+	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	}
+
+	if expectedDataFieldStr != datDto.DataFieldStr {
+		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+			"Instead, datDto.DataFieldStr='%v'.\n",
+			expectedDataFieldStr, datDto.DataFieldStr)
+	}
+
+	if expectedDataFieldLength != datDto.DataFieldLength {
+		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+			"Instead, datDto.DataFieldLength='%v'.\n",
+			expectedDataFieldLength, datDto.DataFieldLength)
+	}
+
+	if expectedDataFieldIdx != datDto.DataFieldIndex {
+		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+			"Instead, datDto.DataFieldIndex='%v'.\n",
+			expectedDataFieldIdx, datDto.DataFieldIndex)
+	}
+
+	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+			expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+	}
+
+	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+	}
+
+	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+	}
+
+	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
+		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+			"Instead, datDto.NextTargetStrIndex='%v'.\n",
+			expectedNextTargetIdx, datDto.NextTargetStrIndex)
+	}
+
+	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
+	}
+
+	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
+	}
+
+	if expectedCommentDelimiter != datDto.CommentDelimiter {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
+			"Instead, datDto.CommentDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
+	}
+
+	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
+			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
 	}
 
 }
 
-func TestStrOps_FindFirstNonSpaceChar_04(t *testing.T) {
-	//012345678901234
-	testStr := "xx       H"
+func TestStrOps_ExtractDataField_04(t *testing.T) {
 
-	firstNonSpaceIdx, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 2, 9)
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
-			"Error='%v' ", err.Error())
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	targetStr := " Zone:\t America/Chicago Good morning America!\n"
+	lenTargetStr := len(targetStr)
+	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+	expectedEndOfLineDelimiterIdx := expectedLastGoodIdx
+	expectedLastGoodIdx--
+	startIdx := 6
+	// leadingKeyWordDelimiters consisting if a zero length
+	// array or an array of empty strings are ignored.
+	leadingKeyWordDelimiters := []string {""}
+	expectedLeadingKeyWordDelimiter := ""
+	expectedLeadingKeyWordDelimiterIndex := -1
+	expectedDataFieldStr := "America/Chicago"
+	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
+	expectedDataFieldLength := len(expectedDataFieldStr)
+	expectedDataFieldTrailingDelimiter := " "
+	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfField()
+	expectedEndOfLineDelimiter := "\n"
+	expectedCommentDelimiter := ""
+	expectedCommentDelimiterIndex := -1
+	expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
+
+	if expectedNextTargetIdx > expectedLastGoodIdx {
+		expectedNextTargetIdx = -1
 	}
 
-	if 9 != firstNonSpaceIdx {
-		t.Errorf("Error: Expected firstNonSpaceIdx='9'. Instead, Idx='%v' ",
-			firstNonSpaceIdx)
+	datDto,
+	err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiters,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
+			"targetStr='%v'\tstartIdx='%v'\n"+
+			"Error='%v'\n", targetStr, startIdx, err.Error())
+		return
+	}
+
+	if targetStr != datDto.TargetStr {
+		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+			"Instead, datDto.TargetStr='%v'.\n",
+			targetStr, datDto.TargetStr)
+	}
+
+	if lenTargetStr != datDto.TargetStrLength {
+		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+			"Instead, datDto.TargetStrLength='%v'.\n",
+			lenTargetStr, datDto.TargetStrLength)
+	}
+
+	if startIdx != datDto.TargetStrStartIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+			"Instead, datDto.TargetStrStartIndex='%v'.\n",
+			startIdx, datDto.TargetStrStartIndex)
+	}
+
+	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+			expectedLeadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+	}
+
+	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	}
+
+	if expectedDataFieldStr != datDto.DataFieldStr {
+		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+			"Instead, datDto.DataFieldStr='%v'.\n",
+			expectedDataFieldStr, datDto.DataFieldStr)
+	}
+
+	if expectedDataFieldLength != datDto.DataFieldLength {
+		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+			"Instead, datDto.DataFieldLength='%v'.\n",
+			expectedDataFieldLength, datDto.DataFieldLength)
+	}
+
+	if expectedDataFieldIdx != datDto.DataFieldIndex {
+		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+			"Instead, datDto.DataFieldIndex='%v'.\n",
+			expectedDataFieldIdx, datDto.DataFieldIndex)
+	}
+
+	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+			expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+	}
+
+	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+	}
+
+	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+	}
+
+	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
+		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+			"Instead, datDto.NextTargetStrIndex='%v'.\n",
+			expectedNextTargetIdx, datDto.NextTargetStrIndex)
+	}
+
+	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
+	}
+
+	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
+	}
+
+	if expectedCommentDelimiter != datDto.CommentDelimiter {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
+			"Instead, datDto.CommentDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
+	}
+
+	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
+			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
 	}
 
 }
 
-func TestStrOps_FindFirstNonSpaceChar_05(t *testing.T) {
-	//012345678901234
-	testStr := "      Hello World"
+func TestStrOps_ExtractDataField_05(t *testing.T) {
 
-	firstNonSpaceIdx, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 0, 9)
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	targetStr := " Zone:\t #America/Chicago\t Link:\tUS/Pacific\tGood morning America!\n"
+	lenTargetStr := len(targetStr)
+	expectedLastGoodIdx := strings.Index(targetStr, "#")
+	expectedLastGoodIdx--
+	startIdx := 0
+	leadingKeyWordDelimiters := []string{"Link:", "Duplicate:","Zone:"}
+	expectedDataFieldStr := ""
+	expectedDataFieldIdx := -1
+	expectedDataFieldLength := len(expectedDataFieldStr)
+	expectedDataFieldTrailingDelimiter := "#"
+	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.Comment()
+	expectedLeadingKeyWordDelimiter := leadingKeyWordDelimiters[2]
+	expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, expectedLeadingKeyWordDelimiter)
+	expectedNextTargetIdx := -1
+	expectedEndOfLineDelimiter := "\n"
+	expectedEndOfLineDelimiterIdx := strings.Index(targetStr, "\n")
+
+	expectedCommentDelimiter := "#"
+	expectedCommentDelimiterIndex := strings.Index(targetStr, "#")
+
+	datDto,
+		err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiters,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
-			"Error='%v' ", err.Error())
+		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
+			"targetStr='%v'\tstartIdx='%v'\n"+
+			"Error='%v'\n", targetStr, startIdx, err.Error())
+		return
 	}
 
-	if 6 != firstNonSpaceIdx {
-		t.Errorf("Error: Expected firstNonSpaceIdx='6'. Instead, Idx='%v' ",
-			firstNonSpaceIdx)
+	if targetStr != datDto.TargetStr {
+		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+			"Instead, datDto.TargetStr='%v'.\n",
+			targetStr, datDto.TargetStr)
 	}
 
+	if lenTargetStr != datDto.TargetStrLength {
+		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+			"Instead, datDto.TargetStrLength='%v'.\n",
+			lenTargetStr, datDto.TargetStrLength)
+	}
+
+	if startIdx != datDto.TargetStrStartIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+			"Instead, datDto.TargetStrStartIndex='%v'.\n",
+			startIdx, datDto.TargetStrStartIndex)
+	}
+
+	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+			expectedLeadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+	}
+
+	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	}
+
+	if expectedDataFieldStr != datDto.DataFieldStr {
+		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+			"Instead, datDto.DataFieldStr='%v'.\n",
+			expectedDataFieldStr, datDto.DataFieldStr)
+	}
+
+	if expectedDataFieldLength != datDto.DataFieldLength {
+		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+			"Instead, datDto.DataFieldLength='%v'.\n",
+			expectedDataFieldLength, datDto.DataFieldLength)
+	}
+
+	if expectedDataFieldIdx != datDto.DataFieldIndex {
+		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+			"Instead, datDto.DataFieldIndex='%v'.\n",
+			expectedDataFieldIdx, datDto.DataFieldIndex)
+	}
+
+	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+			expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+	}
+
+	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+	}
+
+	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+	}
+
+	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
+		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+			"Instead, datDto.NextTargetStrIndex='%v'.\n",
+			expectedNextTargetIdx, datDto.NextTargetStrIndex)
+	}
+
+	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
+	}
+
+	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
+	}
+
+	if expectedCommentDelimiter != datDto.CommentDelimiter {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
+			"Instead, datDto.CommentDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
+	}
+
+	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
+			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
+	}
 }
 
-func TestStrOps_FindFirstNonSpaceChar_06(t *testing.T) {
-	//012345678901234
-	testStr := "Hello World"
+func TestStrOps_ExtractDataField_06(t *testing.T) {
 
-	_, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, -1, 9)
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	targetStr := " #Zone:\t America/Chicago\t Duplicate:\tGood morning America!\n"
+	lenTargetStr := len(targetStr)
+	expectedLastGoodIdx := strings.LastIndex(targetStr, "#")
+	expectedLastGoodIdx--
+	startIdx := 0
+	leadingKeyWordDelimiters := []string{"Link:", "Duplicate:", "Zone:"}
+	expectedDataFieldStr := ""
+	expectedDataFieldIdx := -1
+	expectedDataFieldLength := len(expectedDataFieldStr)
+	expectedDataFieldTrailingDelimiter := "#"
+	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.Comment()
+	expectedLeadingKeyWordDelimiters := ""
+	expectedLeadingKeyWordDelimiterIndex := -1
+	expectedNextTargetIdx := -1
+	expectedEndOfLineDelimiter := "\n"
+	expectedEndOfLineDelimiterIdx := strings.Index(targetStr, "\n")
+	expectedCommentDelimiter := "#"
+	expectedCommentDelimiterIndex := strings.Index(targetStr, "#")
+
+	datDto,
+		err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiters,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
+			"targetStr='%v'\tstartIdx='%v'\n"+
+			"Error='%v'\n", targetStr, startIdx, err.Error())
+		return
+	}
+
+	if targetStr != datDto.TargetStr {
+		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+			"Instead, datDto.TargetStr='%v'.\n",
+			targetStr, datDto.TargetStr)
+	}
+
+	if lenTargetStr != datDto.TargetStrLength {
+		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+			"Instead, datDto.TargetStrLength='%v'.\n",
+			lenTargetStr, datDto.TargetStrLength)
+	}
+
+	if startIdx != datDto.TargetStrStartIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+			"Instead, datDto.TargetStrStartIndex='%v'.\n",
+			startIdx, datDto.TargetStrStartIndex)
+	}
+
+	if expectedLeadingKeyWordDelimiters != datDto.LeadingKeyWordDelimiter {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+			expectedLeadingKeyWordDelimiters, datDto.LeadingKeyWordDelimiter)
+	}
+
+	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	}
+
+	if expectedDataFieldStr != datDto.DataFieldStr {
+		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+			"Instead, datDto.DataFieldStr='%v'.\n",
+			expectedDataFieldStr, datDto.DataFieldStr)
+	}
+
+	if expectedDataFieldLength != datDto.DataFieldLength {
+		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+			"Instead, datDto.DataFieldLength='%v'.\n",
+			expectedDataFieldLength, datDto.DataFieldLength)
+	}
+
+	if expectedDataFieldIdx != datDto.DataFieldIndex {
+		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+			"Instead, datDto.DataFieldIndex='%v'.\n",
+			expectedDataFieldIdx, datDto.DataFieldIndex)
+	}
+
+	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+			expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+	}
+
+	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+	}
+
+	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+	}
+
+	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
+		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+			"Instead, datDto.NextTargetStrIndex='%v'.\n",
+			expectedNextTargetIdx, datDto.NextTargetStrIndex)
+	}
+
+	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
+	}
+
+	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
+	}
+
+	if expectedCommentDelimiter != datDto.CommentDelimiter {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
+			"Instead, datDto.CommentDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
+	}
+
+	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
+			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
+	}
+}
+
+func TestStrOps_ExtractDataField_07(t *testing.T) {
+
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	targetStr := "\tZone:\tAmerica/Chicago\t\tLink:\tAmerica/New_York\t\tZone:\tAmerica/Los_Angeles\n"
+	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
+	expectedEndOfLineDelimiterIdx := expectedLastGoodIdx
+	expectedLastGoodIdx--
+	lenTargetStr := len(targetStr)
+	startIdx := 0
+	expectedStartIdx := 46
+	leadingKeyWordDelimiters := []string{"Zone:","Link:", "Duplicate:"}
+	expectedDataFieldStr := "America/Los_Angeles"
+	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
+	expectedDataFieldLength := len(expectedDataFieldStr)
+	expectedDataFieldTrailingDelimiter := "\n"
+	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfLine()
+	expectedLeadingKeyWordDelimiter := "Zone"
+	expectedLeadingKeyWordDelimiterIndex := strings.LastIndex(targetStr, expectedLeadingKeyWordDelimiter)
+	expectedEndOfLineDelimiter := "\n"
+	expectedCommentDelimiter := ""
+	expectedCommentDelimiterIndex := -1
+	expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
+
+	if expectedNextTargetIdx > expectedLastGoodIdx {
+		expectedNextTargetIdx = -1
+	}
+
+	var datDto DataFieldProfileDto
+	var err error
+
+	for i := 0; i < 3; i++ {
+
+		datDto,
+			err = StrOps{}.ExtractDataField(
+			targetStr,
+			leadingKeyWordDelimiters,
+			startIdx,
+			leadingFieldDelimiters,
+			trailingFieldDelimiters,
+			commentDelimiters,
+			endOfLineDelimiters)
+
+		if err != nil {
+			t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
+				"Cycle No='%v'\n"+
+				"targetStr='%v'\tstartIdx='%v'\n"+
+				"Error='%v'\n", i, targetStr, startIdx, err.Error())
+			return
+		}
+
+		startIdx = datDto.NextTargetStrIndex
+	}
+
+	if targetStr != datDto.TargetStr {
+		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+			"Instead, datDto.TargetStr='%v'.\n",
+			targetStr, datDto.TargetStr)
+	}
+
+	if lenTargetStr != datDto.TargetStrLength {
+		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+			"Instead, datDto.TargetStrLength='%v'.\n",
+			lenTargetStr, datDto.TargetStrLength)
+	}
+
+	if expectedStartIdx != datDto.TargetStrStartIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+			"Instead, datDto.TargetStrStartIndex='%v'.\n",
+			expectedStartIdx, datDto.TargetStrStartIndex)
+	}
+
+	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+			leadingKeyWordDelimiters, datDto.LeadingKeyWordDelimiter)
+	}
+
+	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	}
+
+	if expectedDataFieldStr != datDto.DataFieldStr {
+		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+			"Instead, datDto.DataFieldStr='%v'.\n",
+			expectedDataFieldStr, datDto.DataFieldStr)
+	}
+
+	if expectedDataFieldLength != datDto.DataFieldLength {
+		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+			"Instead, datDto.DataFieldLength='%v'.\n",
+			expectedDataFieldLength, datDto.DataFieldLength)
+	}
+
+	if expectedDataFieldIdx != datDto.DataFieldIndex {
+		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+			"Instead, datDto.DataFieldIndex='%v'.\n",
+			expectedDataFieldIdx, datDto.DataFieldIndex)
+	}
+
+	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+			expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+	}
+
+	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+	}
+
+	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+	}
+
+	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
+		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+			"Instead, datDto.NextTargetStrIndex='%v'.\n",
+			expectedNextTargetIdx, datDto.NextTargetStrIndex)
+	}
+
+	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
+	}
+
+	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
+	}
+
+	if expectedCommentDelimiter != datDto.CommentDelimiter {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
+			"Instead, datDto.CommentDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
+	}
+
+	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
+			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
+	}
+}
+
+func TestStrOps_ExtractDataField_08(t *testing.T) {
+
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	targetStr := "\tZone:\tAmerica/Chicago\t\t#Zone:\tAmerica/New_York\t\tLink:\tAmerica/Los_Angeles\n"
+	expectedLastGoodIdx := strings.LastIndex(targetStr, "#")
+	expectedLastGoodIdx--
+	lenTargetStr := len(targetStr)
+	startIdx := 3
+	expectedStartIdx := 3
+	leadingKeyWordDelimiters := []string{"Zone:", "Link:"}
+	expectedLeadingKeyWordDelimiter := ""
+	expectedLeadingKeyWordDelimiterIndex := -1
+	expectedDataFieldStr := ""
+	expectedDataFieldIdx := -1
+	expectedDataFieldLength := len(expectedDataFieldStr)
+	expectedDataFieldTrailingDelimiter := "#"
+	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.Comment()
+	expectedEndOfLineDelimiter := "\n"
+	expectedEndOfLineDelimiterIdx := strings.Index(targetStr, "\n")
+	expectedCommentDelimiter := "#"
+	expectedCommentDelimiterIndex := strings.Index(targetStr, "#")
+	expectedNextTargetIdx := -1
+
+	var datDto DataFieldProfileDto
+	var err error
+
+	datDto,
+		err = StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiters,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
+			"targetStr='%v'\tstartIdx='%v'\n"+
+			"Error='%v'\n", targetStr, startIdx, err.Error())
+		return
+	}
+
+	if targetStr != datDto.TargetStr {
+		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+			"Instead, datDto.TargetStr='%v'.\n",
+			targetStr, datDto.TargetStr)
+	}
+
+	if lenTargetStr != datDto.TargetStrLength {
+		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+			"Instead, datDto.TargetStrLength='%v'.\n",
+			lenTargetStr, datDto.TargetStrLength)
+	}
+
+	if expectedStartIdx != datDto.TargetStrStartIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+			"Instead, datDto.TargetStrStartIndex='%v'.\n",
+			expectedStartIdx, datDto.TargetStrStartIndex)
+	}
+
+	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+			leadingKeyWordDelimiters, datDto.LeadingKeyWordDelimiter)
+	}
+
+	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	}
+
+	if expectedDataFieldStr != datDto.DataFieldStr {
+		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+			"Instead, datDto.DataFieldStr='%v'.\n",
+			expectedDataFieldStr, datDto.DataFieldStr)
+	}
+
+	if expectedDataFieldLength != datDto.DataFieldLength {
+		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+			"Instead, datDto.DataFieldLength='%v'.\n",
+			expectedDataFieldLength, datDto.DataFieldLength)
+	}
+
+	if expectedDataFieldIdx != datDto.DataFieldIndex {
+		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+			"Instead, datDto.DataFieldIndex='%v'.\n",
+			expectedDataFieldIdx, datDto.DataFieldIndex)
+	}
+
+	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+			expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
+	}
+
+	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+	}
+
+	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+	}
+
+	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
+		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+			"Instead, datDto.NextTargetStrIndex='%v'.\n",
+			expectedNextTargetIdx, datDto.NextTargetStrIndex)
+	}
+
+	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
+	}
+
+	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
+	}
+
+	if expectedCommentDelimiter != datDto.CommentDelimiter {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
+			"Instead, datDto.CommentDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
+	}
+
+	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
+			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
+	}
+}
+
+func TestStrOps_ExtractDataField_09(t *testing.T) {
+
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	targetStr := " Zone:\t America/Chicago\tLink:\t US/Central/t Good morning America!\n"
+	startIdx := 0
+	leadingKeyWordDelimiters := []string{"Link:", "Zone:","Duplicate:"}
+
+	_,
+		err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiters,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
 
 	if err == nil {
-		t.Error("Expected an ERROR return. NO ERROR RETURNED!")
+		t.Error("Expected an error return for X\n" +
+			"because input parameter 'leadingFieldDelimiters' is an empty string array.\n" +
+			"However, NO ERROR WAS RETURNED!")
 	}
 
 }
 
-func TestStrOps_FindFirstNonSpaceChar_07(t *testing.T) {
+/*
 
-	//          012345678901234
-	testStr := "        Hello "
+func TestStrOps_ExtractDataField_10(t *testing.T) {
 
-	_, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 10, 9)
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	trailingFieldDelimiters := []string{}
+
+	targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
+	startIdx := 0
+	leadingKeyWordDelimiter := "Zone:"
+
+	_,
+		err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiter,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
 
 	if err == nil {
-		t.Error("Expected an ERROR return. NO ERROR RETURNED!")
+		t.Error("Expected an error return for X\n" +
+			"because input parameter 'trailingFieldDelimiters' is an empty string array.\n" +
+			"However, NO ERROR WAS RETURNED!")
 	}
 
 }
 
-func TestStrOps_FindFirstNonSpaceChar_08(t *testing.T) {
+func TestStrOps_ExtractDataField_11(t *testing.T) {
 
-	//          012345678901234
-	testStr := "012345 78901234"
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
 
-	_, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 0, 15)
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	targetStr := ""
+	startIdx := 0
+	leadingKeyWordDelimiter := "Zone:"
+
+	_,
+		err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiter,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
 
 	if err == nil {
-		t.Error("Expected an ERROR return. NO ERROR RETURNED!")
+		t.Error("Expected an error return for X\n" +
+			"because input parameter 'targetStr' is an empty string.\n" +
+			"However, NO ERROR WAS RETURNED!")
 	}
 
 }
 
-func TestStrOps_FindFirstNonSpaceChar_09(t *testing.T) {
+func TestStrOps_ExtractDataField_12(t *testing.T) {
 
-	//          012345678901234
-	testStr := "012345 78901234"
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
 
-	_, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 0, -1)
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
+
+	targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
+	startIdx := -1
+	leadingKeyWordDelimiter := "Zone:"
+
+	_,
+		err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiter,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
 
 	if err == nil {
-		t.Error("Expected an ERROR return. NO ERROR RETURNED!")
+		t.Error("Expected an error return for X\n" +
+			"because input parameter 'startIdx' is less than zero.\n" +
+			"However, NO ERROR WAS RETURNED!")
 	}
 
 }
 
-func TestStrOps_FindFirstNonSpaceChar_10(t *testing.T) {
-	//012345678901234
-	testStr := "xx       Hxglt"
+func TestStrOps_ExtractDataField_13(t *testing.T) {
 
-	firstNonSpaceIdx, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 2, 9)
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
 
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4). "+
-			"Error='%v' ", err.Error())
-	}
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
 
-	if 9 != firstNonSpaceIdx {
-		t.Errorf("Error: Expected firstNonSpaceIdx='9'. Instead, Idx='%v' ",
-			firstNonSpaceIdx)
-	}
-}
+	targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
+	startIdx := 999
+	leadingKeyWordDelimiter := "Zone:"
 
-func TestStrOps_FindFirstNonSpaceChar_11(t *testing.T) {
-	//012345678901234
-	testStr := "  "
-
-	index, err :=
-		StrOps{}.FindFirstNonSpaceChar(testStr, 0, 4)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4)\n"+
-			"Error='%v'\n", err.Error())
-	}
-
-	if index != -1 {
-		t.Errorf("Expected 'index' returned by StrOps{}.FindFirstNonSpaceChar(testStr,0,4)\n"+
-			"would be equal to -1 because parameter, 'testStr' consists entirely of spaces.\n"+
-			"However, the returned index was %v.", index)
-	}
-}
-
-func TestStrOps_FindLastNonSpaceChar_01(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "xx       Hxgltx     "
-
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 19)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if 14 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='14'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
-
-}
-
-func TestStrOps_FindLastNonSpaceChar_02(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "Now is the time for all good men to come to the aid of their country."
-
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 68)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if 68 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='68'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
-
-}
-
-func TestStrOps_FindLastNonSpaceChar_03(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "Now is the time for all good men to come to the aid of their country.           "
-
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 79)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if 68 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='68'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
-
-}
-
-func TestStrOps_FindLastNonSpaceChar_04(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "Now is the time for all good men to come to the aid of their country.           "
-
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 68, 79)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if 68 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='68'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
-
-}
-
-func TestStrOps_FindLastNonSpaceChar_05(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "Now is the time for all good men to come to the aid of their country.           "
-
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 59, 79)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if 68 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='68'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
-
-}
-
-func TestStrOps_FindLastNonSpaceChar_06(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "                                                                                 "
-
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 80)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if -1 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='-1'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
-
-}
-
-func TestStrOps_FindLastNonSpaceChar_07(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "        XX        XX          XX             XXX      XXX.                       "
-
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 40, 80)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if 57 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='57'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
-
-}
-
-func TestStrOps_FindLastNonSpaceChar_08(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := " The cow jumped over the moon."
-
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 10, 29)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if 29 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='57'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
-	}
-
-}
-
-func TestStrOps_FindLastNonSpaceChar_09(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := " The cow jumped over the moon.    "
-
-	_, err := StrOps{}.FindLastNonSpaceChar(tStr, 34, 33)
+	_,
+		err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiter,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
 
 	if err == nil {
-		t.Error("Expected an Error return.  NO ERROR RETURNED!")
+		t.Error("Expected an error return for X\n" +
+			"because input parameter 'startIdx' is exceeds the outer boundary of 'targetStr'.\n" +
+			"However, NO ERROR WAS RETURNED!")
 	}
+
 }
 
-func TestStrOps_FindLastNonSpaceChar_10(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := ""
+func TestStrOps_ExtractDataField_14(t *testing.T) {
 
-	_, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 0)
+	endOfLineDelimiters := []string{"\n"}
+	commentDelimiters := []string{"#"}
+	leadingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v",
+		" "}
 
-	if err == nil {
-		t.Error("Expected an Error return.  NO ERROR RETURNED!")
-	}
-}
+	trailingFieldDelimiters := []string{
+		"\t",
+		"\r",
+		"\f",
+		"\v"}
 
-func TestStrOps_FindLastNonSpaceChar_12(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "The cow jumped over the dark side of the moon.   "
+	targetStr := "Good morning America!"
 
-	_, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, 49)
+	lenTargetStr := len(targetStr)
+	expectedLastGoodIdx := lenTargetStr - 1
+	expectedEndOfLineDelimiterIdx := -1
+	startIdx := 0
+	leadingKeyWordDelimiter := ""
+	expectedDataFieldStr := "Good morning America!"
+	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
+	expectedDataFieldLength := len(expectedDataFieldStr)
+	expectedDataFieldTrailingDelimiter := ""
+	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfString()
+	expectedLeadingKeyWordDelimiterIndex := -1
+	expectedEndOfLineDelimiter := ""
+	expectedCommentDelimiter := ""
+	expectedCommentDelimiterIndex := -1
 
-	if err == nil {
-		t.Error("Expected an Error return.  NO ERROR RETURNED!")
-	}
-}
+	expectedNextTargetIdx := -1
 
-func TestStrOps_FindLastNonSpaceChar_13(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "The cow jumped over the dark side of the moon.   "
-
-	_, err := StrOps{}.FindLastNonSpaceChar(tStr, 49, 50)
-
-	if err == nil {
-		t.Error("Expected an Error return.  NO ERROR RETURNED!")
-	}
-}
-
-func TestStrOps_FindLastNonSpaceChar_14(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "The cow jumped over the dark side of the moon.   "
-
-	_, err := StrOps{}.FindLastNonSpaceChar(tStr, -1, 47)
-
-	if err == nil {
-		t.Error("Expected an Error return.  NO ERROR RETURNED!")
-	}
-}
-
-func TestStrOps_FindLastNonSpaceChar_15(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "The cow jumped over the dark side of the moon.   "
-
-	_, err := StrOps{}.FindLastNonSpaceChar(tStr, 0, -1)
-
-	if err == nil {
-		t.Error("Expected an Error return.  NO ERROR RETURNED!")
-	}
-}
-
-func TestStrOps_FindLastNonSpaceChar_16(t *testing.T) {
-	//                 1         2         3         4         5         6         7         8
-	//       012345678901234567890123456789012345678901234567890123456789012345678901234567890
-	tStr := "Now is the time for all good men to come to the aid of their country.           "
-
-	lastNonSpaceChar, err := StrOps{}.FindLastNonSpaceChar(tStr, 10, 62)
+	datDto,
+		err := StrOps{}.ExtractDataField(
+		targetStr,
+		leadingKeyWordDelimiter,
+		startIdx,
+		leadingFieldDelimiters,
+		trailingFieldDelimiters,
+		commentDelimiters,
+		endOfLineDelimiters)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastNonSpaceChar(...). "+
-			"Error='%v' ", err.Error())
+		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
+			"targetStr='%v'\tstartIdx='%v'\n"+
+			"Error='%v'\n", targetStr, startIdx, err.Error())
+		return
 	}
 
-	if 62 != lastNonSpaceChar {
-		t.Errorf("Error: Expected last non-space char idx='62'.  Instead, idx='%v' ",
-			lastNonSpaceChar)
+	if targetStr != datDto.TargetStr {
+		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
+			"Instead, datDto.TargetStr='%v'.\n",
+			targetStr, datDto.TargetStr)
 	}
 
-}
-
-func TestStrOps_FindLastSpace_01(t *testing.T) {
-
-	//          012345678901234
-	testStr := "xx       Hxgltx"
-
-	lastSpaceIdx, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 14)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
-			"Error='%v' ", err.Error())
+	if lenTargetStr != datDto.TargetStrLength {
+		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
+			"Instead, datDto.TargetStrLength='%v'.\n",
+			lenTargetStr, datDto.TargetStrLength)
 	}
 
-	if 8 != lastSpaceIdx {
-		t.Errorf("Error: Expected lastSpaceIdx='8'. Instead, Idx='%v' ",
-			lastSpaceIdx)
-	}
-}
-
-func TestStrOps_FindLastSpace_02(t *testing.T) {
-
-	//          012345678901234
-	testStr := "xx1111111Hxglt "
-
-	lastSpaceIdx, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 14)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
-			"Error='%v' ", err.Error())
+	if startIdx != datDto.TargetStrStartIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
+			"Instead, datDto.TargetStrStartIndex='%v'.\n",
+			startIdx, datDto.TargetStrStartIndex)
 	}
 
-	if 14 != lastSpaceIdx {
-		t.Errorf("Error: Expected lastSpaceIdx='14'. Instead, Idx='%v' ",
-			lastSpaceIdx)
-	}
-}
-
-func TestStrOps_FindLastSpace_03(t *testing.T) {
-
-	//          012345678901234
-	testStr := " x1111111Hxgltf"
-
-	lastSpaceIdx, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 14)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
-			"Error='%v' ", err.Error())
+	if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
+			leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
 	}
 
-	if 0 != lastSpaceIdx {
-		t.Errorf("Error: Expected lastSpaceIdx='0'. Instead, Idx='%v' ",
-			lastSpaceIdx)
-	}
-}
-
-func TestStrOps_FindLastSpace_04(t *testing.T) {
-
-	//          012345678901234
-	testStr := " x1111111Hxglt "
-
-	lastSpaceIdx, err :=
-		StrOps{}.FindLastSpace(testStr, 1, 13)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 1, 13). "+
-			"Error='%v' ", err.Error())
+	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
+			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
+			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
 	}
 
-	if -1 != lastSpaceIdx {
-		t.Errorf("Error: Expected lastSpaceIdx='-1'. Instead, Idx='%v' ",
-			lastSpaceIdx)
-	}
-}
-
-func TestStrOps_FindLastSpace_05(t *testing.T) {
-
-	//          012345678901234
-	testStr := " x1111   Hxgl  "
-
-	lastSpaceIdx, err :=
-		StrOps{}.FindLastSpace(testStr, 5, 12)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 5, 12). "+
-			"Error='%v' ", err.Error())
+	if expectedDataFieldStr != datDto.DataFieldStr {
+		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
+			"Instead, datDto.DataFieldStr='%v'.\n",
+			expectedDataFieldStr, datDto.DataFieldStr)
 	}
 
-	if 8 != lastSpaceIdx {
-		t.Errorf("Error: Expected lastSpaceIdx='8'. Instead, Idx='%v' ",
-			lastSpaceIdx)
-	}
-}
-
-func TestStrOps_FindLastSpace_06(t *testing.T) {
-
-	//          012345678901234
-	testStr := "fx1111rg3luHxgl"
-
-	lastSpaceIdx, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 14)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
-			"Error='%v' ", err.Error())
+	if expectedDataFieldLength != datDto.DataFieldLength {
+		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
+			"Instead, datDto.DataFieldLength='%v'.\n",
+			expectedDataFieldLength, datDto.DataFieldLength)
 	}
 
-	if -1 != lastSpaceIdx {
-		t.Errorf("Error: Expected lastSpaceIdx='-1'. Instead, Idx='%v' ",
-			lastSpaceIdx)
+	if expectedDataFieldIdx != datDto.DataFieldIndex {
+		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
+			"Instead, datDto.DataFieldIndex='%v'.\n",
+			expectedDataFieldIdx, datDto.DataFieldIndex)
+	}
+
+	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedDataFieldTrailingDelimiter), true),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.DataFieldTrailingDelimiter), true))
+	}
+
+	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
+		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
+			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
+			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
+	}
+
+	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
+		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
+			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
+			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
+	}
+
+	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
+		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
+			"Instead, datDto.NextTargetStrIndex='%v'.\n",
+			expectedNextTargetIdx, datDto.NextTargetStrIndex)
+	}
+
+	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
+	}
+
+	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
+			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
+	}
+
+	if expectedCommentDelimiter != datDto.CommentDelimiter {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
+			"Instead, datDto.CommentDelimiter='%v'.\n",
+			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
+			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
+	}
+
+	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
+		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
+			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
+			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
 	}
 }
 
-func TestStrOps_FindLastSpace_07(t *testing.T) {
-
-	//          012345678901234
-	testStr := "fx1111  3luHxgl"
-
-	lastSpaceIdx, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 14)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastSpace(testStr, 0, 14). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if 7 != lastSpaceIdx {
-		t.Errorf("Error: Expected lastSpaceIdx='7'. Instead, Idx='%v' ",
-			lastSpaceIdx)
-	}
-}
-
-func TestStrOps_FindLastSpace_08(t *testing.T) {
-
-	//          012345678901234
-	testStr := "fx1111  3luHxgl"
-
-	_, err :=
-		StrOps{}.FindLastSpace(testStr, -1, 14)
-
-	if err == nil {
-		t.Error("Error: Expected an Error return from FindLastSpace(). " +
-			"NO ERROR RETURNED!")
-	}
-}
-
-func TestStrOps_FindLastSpace_09(t *testing.T) {
-
-	//          012345678901234
-	testStr := "fx1111  3luHxgl"
-
-	_, err :=
-		StrOps{}.FindLastSpace(testStr, 0, -1)
-
-	if err == nil {
-		t.Error("Error: Expected an Error return from FindLastSpace(). " +
-			"NO ERROR RETURNED!")
-	}
-}
-
-func TestStrOps_FindLastSpace_10(t *testing.T) {
-
-	//          012345678901234
-	testStr := "fx1111  3luHxgl"
-
-	_, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 15)
-
-	if err == nil {
-		t.Error("Error: Expected an Error return from FindLastSpace(). " +
-			"NO ERROR RETURNED!")
-	}
-}
-
-func TestStrOps_FindLastSpace_11(t *testing.T) {
-
-	//          012345678901234
-	testStr := "fx1111  3luHxgl"
-
-	_, err :=
-		StrOps{}.FindLastSpace(testStr, 19, 14)
-
-	if err == nil {
-		t.Error("Error: Expected an Error return from FindLastSpace(). " +
-			"NO ERROR RETURNED!")
-	}
-}
-
-func TestStrOps_FindLastSpace_12(t *testing.T) {
-
-	//          012345678901234
-	testStr := "fx1111  3luHxgl"
-
-	_, err :=
-		StrOps{}.FindLastSpace(testStr, 5, 3)
-
-	if err == nil {
-		t.Error("Error: Expected an Error return from FindLastSpace(). " +
-			"NO ERROR RETURNED!")
-	}
-}
-
-func TestStrOps_FindLastSpace_13(t *testing.T) {
-
-	//          012345678901234
-	testStr := ""
-
-	_, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 0)
-
-	if err == nil {
-		t.Error("Error: Expected an Error return from FindLastSpace(). " +
-			"NO ERROR RETURNED!")
-	}
-}
-
-func TestStrOps_FindLastSpace_14(t *testing.T) {
-
-	//          012345678901234
-	testStr := ""
-
-	_, err :=
-		StrOps{}.FindLastSpace(testStr, 0, 9)
-
-	if err == nil {
-		t.Error("Error: Expected an Error return from FindLastSpace(). " +
-			"NO ERROR RETURNED!")
-	}
-}
-
-func TestStrOps_FindLastWord_01(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          01234567890123456789012345678901234567890123456789012345678901234567890
-	testStr := "Now is the time for all good men to come to the aid of their country.  "
-
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 0, 70)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
-
-	if 61 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='61'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
-
-	if 68 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='68'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
-
-	if false != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
-
-	if false != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
-
-}
-
-func TestStrOps_FindLastWord_02(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          01234567890123456789012345678901234567890123456789012345678901234567890
-	testStr := "Now is the time for all good men to come to the aid of their country.  "
-	//                    xxxxxx
-
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 10, 15)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
-
-	if 11 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='11'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
-
-	if 14 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='14'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
-
-	if false != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
-
-	if false != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
-
-}
-
-func TestStrOps_FindLastWord_03(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "  Now is the time for all good men to come to the aid of their country.  "
-	//          xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 0, 72)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
-
-	if 63 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='63'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
-
-	if 70 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='70'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
-
-	if false != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
-
-	if false != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
-
-}
-
-func TestStrOps_FindLastWord_04(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "                                                                         "
-	//          xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 0, 72)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
-
-	if -1 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='-1'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
-
-	if -1 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='-1'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
-
-	if false != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
-
-	if true != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='true'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
-
-}
-
-func TestStrOps_FindLastWord_05(t *testing.T) {
-	//          0         1         2         4         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-	//          xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 0, 72)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
-
-	if 0 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='0'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
-
-	if 72 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='72'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
-
-	if true != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='true'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
-
-	if false != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
-
-}
-
-func TestStrOps_FindLastWord_06(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "                xxxxxxxxxxxxxxxxxxxxxxxxxxxxx                            "
-	//            xxxxxxx
-
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 2, 8)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
-
-	if -1 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='-1'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
-
-	if -1 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='-1'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
-
-	if false != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
-
-	if true != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='true'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
-
-}
-
-func TestStrOps_FindLastWord_07(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "  Now is the time for all good men to come to the aid of their country . "
-	//                                                       xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 55, 72)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
-
-	if 71 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='71'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
-
-	if 71 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='71'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
-
-	if false != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
-
-	if false != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
-
-}
-
-func TestStrOps_FindLastWord_08(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "  Now is the time for all good men to come to the aid of their country "
-	//                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-	begWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, 40, 67)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
-
-	if 63 != begWrdIdx {
-		t.Errorf("Error: Expected begWrdIdx='63'. Instead, begWrdIdx='%v' ", begWrdIdx)
-	}
-
-	if 67 != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='67'. Instead, endWrdIdx='%v' ", endWrdIdx)
-	}
-
-	if false != isAllOneWord {
-		t.Errorf("Error: Expected isAllOneWord='false'. Instead, isAllOneWord='%v' ", isAllOneWord)
-	}
-
-	if false != isAllSpaces {
-		t.Errorf("Error: Expected isAllSpaces='false'. Instead, isAllSpaces='%v' ", isAllSpaces)
-	}
-
-}
-
-func TestStrOps_FindLastWord_09(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "  Now is the time for all good men to come to the aid of their country "
-	//                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-	_, _, _, _, err :=
-		StrOps{}.FindLastWord(testStr, -1, 67)
-
-	if err == nil {
-		t.Error("Expected an error to be returned. NO ERROR RETURNED!")
-	}
-
-}
-
-func TestStrOps_FindLastWord_10(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "  Now is the time for all good men to come to the aid of their country "
-	//                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-	_, _, _, _, err :=
-		StrOps{}.FindLastWord(testStr, 40, -1)
-
-	if err == nil {
-		t.Error("Expected an error to be returned. NO ERROR RETURNED!")
-	}
-
-}
-
-func TestStrOps_FindLastWord_11(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "  Now is the time for all good men to come to the aid of their country "
-	//                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-	_, _, _, _, err :=
-		StrOps{}.FindLastWord(testStr, 72, 72)
-
-	if err == nil {
-		t.Error("Expected an error to be returned. NO ERROR RETURNED!")
-	}
-
-}
-
-func TestStrOps_FindLastWord_12(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := ""
-	//           xx
-
-	_, _, _, _, err :=
-		StrOps{}.FindLastWord(testStr, 1, 2)
-
-	if err == nil {
-		t.Error("Expected an error to be returned. NO ERROR RETURNED!")
-	}
-
-}
-
-func TestStrOps_FindLastWord_13(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "  Now is the time for all good men to come to the aid of their country "
-	//                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-	_, _, _, _, err :=
-		StrOps{}.FindLastWord(testStr, 0, 71)
-
-	if err == nil {
-		t.Error("Expected an error to be returned. NO ERROR RETURNED!")
-	}
-
-}
-
-func TestStrOps_FindLastWord_14(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          0123456789012345678901234567890123456789012345678901234567890123456789012
-	testStr := "  Now is the time for all good men to come to the aid of their country "
-	//                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-	_, _, _, _, err :=
-		StrOps{}.FindLastWord(testStr, 6, 5)
-
-	if err == nil {
-		t.Error("Expected an error to be returned. NO ERROR RETURNED!")
-	}
-
-}
-
-func TestStrOps_FindLastWord_15(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          01234567890123456789012345678901234567890123456789012345678901234567890
-	testStr := "Now is the time for all good men to come to the aid of their country.  "
-
-	startIndex := 67
-
-	beginWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, startIndex, startIndex)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
-
-	if startIndex != beginWrdIdx {
-		t.Errorf("Error: Expected beginWrdIdx='%v'.\n"+
-			"Instead, beginWrdIdx='%v'.\n",
-			startIndex, beginWrdIdx)
-	}
-
-	if startIndex != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='%v'.\n"+
-			"Instead, endWrdIdx='%v'.\n",
-			startIndex, endWrdIdx)
-	}
-
-	if isAllOneWord != true {
-		t.Error("Error: Expected isAllOneWord='true'.\n" +
-			"Instead, isAllOneWord='false'.\n")
-	}
-
-	if isAllSpaces != false {
-		t.Error("Error: Expected isAllSpaces='false'.\n" +
-			"Instead, isAllSpaces='true'.\n")
-	}
-}
-
-func TestStrOps_FindLastWord_16(t *testing.T) {
-	//          0         1         2         3         4         5         6         7
-	//          01234567890123456789012345678901234567890123456789012345678901234567890
-	testStr := "Now is the time for all good men to come to the aid of their country.  "
-
-	startIndex := 60 // A space character
-
-	beginWrdIdx, endWrdIdx, isAllOneWord, isAllSpaces, err :=
-		StrOps{}.FindLastWord(testStr, startIndex, startIndex)
-
-	if err != nil {
-		t.Errorf("Error returned by StrOps{}.FindLastWord(). \n "+
-			"Error='%v' ", err.Error())
-	}
-
-	if startIndex != beginWrdIdx {
-		t.Errorf("Error: Expected beginWrdIdx='%v'.\n"+
-			"Instead, beginWrdIdx='%v'.\n",
-			startIndex, beginWrdIdx)
-	}
-
-	if startIndex != endWrdIdx {
-		t.Errorf("Error: Expected endWrdIdx='%v'.\n"+
-			"Instead, endWrdIdx='%v'.\n",
-			startIndex, endWrdIdx)
-	}
-
-	if isAllOneWord != false {
-		t.Error("Error: Expected isAllOneWord='false'.\n" +
-			"Instead, isAllOneWord='true'.\n")
-	}
-
-	if isAllSpaces != true {
-		t.Error("Error: Expected isAllSpaces='true'.\n" +
-			"Instead, isAllSpaces='false'.\n")
-	}
-}
+*/

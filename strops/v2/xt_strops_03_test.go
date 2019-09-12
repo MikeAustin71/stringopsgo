@@ -5,1619 +5,1212 @@ import (
 	"testing"
 )
 
-func TestStrOps_ExtractDataField_01(t *testing.T) {
+func TestStrOps_ExtractNumericDigits_01(t *testing.T) {
 
-	endOfLineDelimiters := []string{"\n"}
-	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	targetStr := "November 12, 2016 1:6:3pm +0000 UTC"
+	startIndex := 0
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
 
-	trailingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	expectedNumStr := "12"
+	expectedNumStrLen := len(expectedNumStr)
+	expectedLeadingSignChar := ""
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedLeadingSignCharIndex := -1
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
 
-	targetStr := " Zone:\t America/Chicago\t Link:\t US/Central\t\n"
-	lenTargetStr := len(targetStr)
-	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
-	expectedEndOfLineDelimiterIdx := expectedLastGoodIdx
-	expectedLastGoodIdx--
-	startIdx := 0
-	leadingKeyWordDelimiters := []string{"Zone:", "Link:"}
-	expectedDataFieldStr := "America/Chicago"
-	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
-	expectedDataFieldLength := len(expectedDataFieldStr)
-	expectedDataFieldTrailingDelimiter := "\t"
-	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfField()
-	expectedLeadingWordDelimiter := leadingKeyWordDelimiters[0]
-	expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, expectedLeadingWordDelimiter)
-	expectedEndOfLineDelimiter := "\n"
-	expectedCommentDelimiter := ""
-	expectedCommentDelimiterIndex := -1
-
-	expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
-
-	if expectedNextTargetIdx > expectedLastGoodIdx {
-		expectedNextTargetIdx = -1
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
 	}
 
-	datDto,
-		err := StrOps{}.ExtractDataField(
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
 		targetStr,
-		leadingKeyWordDelimiters,
-		startIdx,
-		leadingFieldDelimiters,
-		trailingFieldDelimiters,
-		commentDelimiters,
-		endOfLineDelimiters)
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
-			"targetStr='%v'\tstartIdx='%v'\n"+
-			"Error='%v'\n", targetStr, startIdx, err.Error())
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
 		return
 	}
 
-	if targetStr != datDto.TargetStr {
-		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
-			"Instead, datDto.TargetStr='%v'.\n",
-			targetStr, datDto.TargetStr)
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
 	}
 
-	if lenTargetStr != datDto.TargetStrLength {
-		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
-			"Instead, datDto.TargetStrLength='%v'.\n",
-			lenTargetStr, datDto.TargetStrLength)
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
 	}
 
-	if startIdx != datDto.TargetStrStartIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
-			"Instead, datDto.TargetStrStartIndex='%v'.\n",
-			startIdx, datDto.TargetStrStartIndex)
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
 	}
 
-	if expectedLeadingWordDelimiter != datDto.LeadingKeyWordDelimiter {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-			expectedLeadingWordDelimiter, datDto.LeadingKeyWordDelimiter)
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
 	}
 
-	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
 	}
 
-	if expectedDataFieldStr != datDto.DataFieldStr {
-		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
-			"Instead, datDto.DataFieldStr='%v'.\n",
-			expectedDataFieldStr, datDto.DataFieldStr)
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
 	}
-
-	if expectedDataFieldLength != datDto.DataFieldLength {
-		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
-			"Instead, datDto.DataFieldLength='%v'.\n",
-			expectedDataFieldLength, datDto.DataFieldLength)
-	}
-
-	if expectedDataFieldIdx != datDto.DataFieldIndex {
-		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
-			"Instead, datDto.DataFieldIndex='%v'.\n",
-			expectedDataFieldIdx, datDto.DataFieldIndex)
-	}
-
-	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedDataFieldTrailingDelimiter), true),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.DataFieldTrailingDelimiter), true))
-	}
-
-	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
-			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
-	}
-
-	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
-			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
-			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
-	}
-
-	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
-		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
-			"Instead, datDto.NextTargetStrIndex='%v'.\n",
-			expectedNextTargetIdx, datDto.NextTargetStrIndex)
-	}
-
-	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
-	}
-
-	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
-	}
-
-	if expectedCommentDelimiter != datDto.CommentDelimiter {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
-			"Instead, datDto.CommentDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
-	}
-
-	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
-			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
-	}
-
 }
 
-func TestStrOps_ExtractDataField_02(t *testing.T) {
+func TestStrOps_ExtractNumericDigits_02(t *testing.T) {
 
-	endOfLineDelimiters := []string{"\n"}
+	targetStr := "Etc/GMT+11"
+	startIndex := 0
+	keepLeadingChars := "+"
+	keepInteriorChars := ""
+	keepTrailingChars := ""
 
-	commentDelimiters := []string{"#"}
+	expectedNumStr := "+11"
+	expectedNumStrLen := len(expectedNumStr)
+	expectedLeadingSignChar := "+"
+	expectedLeadingSignCharIndex := 0
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
 
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
 
-	trailingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
-
-	targetStr := " Zone:\t America/Chicago Good morning America!\n"
-	lenTargetStr := len(targetStr)
-	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
-	expectedEndOfLineDelimiterIdx := expectedLastGoodIdx
-	expectedLastGoodIdx--
-	startIdx := 0
-	leadingKeyWordDelimiters := []string{"Link:","Duplicate:","Zone:"}
-	expectedLeadingKeyWordDelimiter := leadingKeyWordDelimiters[2]
-	expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, expectedLeadingKeyWordDelimiter)
-	expectedDataFieldStr := "America/Chicago"
-	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
-	expectedDataFieldLength := len(expectedDataFieldStr)
-	expectedDataFieldTrailingDelimiter := " "
-	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfField()
-	expectedEndOfLineDelimiter := "\n"
-	expectedCommentDelimiter := ""
-	expectedCommentDelimiterIndex := -1
-
-	expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
-
-	if expectedNextTargetIdx > expectedLastGoodIdx {
-		expectedNextTargetIdx = -1
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
 	}
 
-	datDto,
-		err := StrOps{}.ExtractDataField(
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
 		targetStr,
-		leadingKeyWordDelimiters,
-		startIdx,
-		leadingFieldDelimiters,
-		trailingFieldDelimiters,
-		commentDelimiters,
-		endOfLineDelimiters)
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
-			"targetStr='%v'\tstartIdx='%v'\n"+
-			"Error='%v'\n", targetStr, startIdx, err.Error())
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
 		return
 	}
 
-	if targetStr != datDto.TargetStr {
-		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
-			"Instead, datDto.TargetStr='%v'.\n",
-			targetStr, datDto.TargetStr)
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
 	}
 
-	if lenTargetStr != datDto.TargetStrLength {
-		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
-			"Instead, datDto.TargetStrLength='%v'.\n",
-			lenTargetStr, datDto.TargetStrLength)
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
 	}
 
-	if startIdx != datDto.TargetStrStartIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
-			"Instead, datDto.TargetStrStartIndex='%v'.\n",
-			startIdx, datDto.TargetStrStartIndex)
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
 	}
 
-	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-			expectedLeadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
 	}
 
-	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
 	}
 
-	if expectedDataFieldStr != datDto.DataFieldStr {
-		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
-			"Instead, datDto.DataFieldStr='%v'.\n",
-			expectedDataFieldStr, datDto.DataFieldStr)
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
 	}
-
-	if expectedDataFieldLength != datDto.DataFieldLength {
-		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
-			"Instead, datDto.DataFieldLength='%v'.\n",
-			expectedDataFieldLength, datDto.DataFieldLength)
-	}
-
-	if expectedDataFieldIdx != datDto.DataFieldIndex {
-		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
-			"Instead, datDto.DataFieldIndex='%v'.\n",
-			expectedDataFieldIdx, datDto.DataFieldIndex)
-	}
-
-	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
-			expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
-	}
-
-	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
-			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
-	}
-
-	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
-			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
-			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
-	}
-
-	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
-		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
-			"Instead, datDto.NextTargetStrIndex='%v'.\n",
-			expectedNextTargetIdx, datDto.NextTargetStrIndex)
-	}
-
-	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
-	}
-
-	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
-	}
-
-	if expectedCommentDelimiter != datDto.CommentDelimiter {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
-			"Instead, datDto.CommentDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
-	}
-
-	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
-			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
-	}
-
 }
 
-func TestStrOps_ExtractDataField_03(t *testing.T) {
+func TestStrOps_ExtractNumericDigits_03(t *testing.T) {
 
-	endOfLineDelimiters := []string{"\n"}
-	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	targetStr := "November 12, 2016 1:6:3pm +0000 UTC"
+	startIndex := 23
+	keepLeadingChars := "+-"
+	keepInteriorChars := ""
+	keepTrailingChars := ""
 
-	trailingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
-	targetStr := " America/Chicago Good morning America!\n"
-	lenTargetStr := len(targetStr)
-	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
-	expectedEndOfLineDelimiterIdx := expectedLastGoodIdx
-	expectedLastGoodIdx--
-	startIdx := 0
-	leadingKeyWordDelimiters := []string{"Zone:","Link:","Duplicate:"}
-	expectedDataFieldStr := ""
-	expectedDataFieldIdx := -1
-	expectedDataFieldLength := len(expectedDataFieldStr)
-	expectedDataFieldTrailingDelimiter := "\n"
-	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfLine()
-	expectedLeadingKeyWordDelimiter := ""
-	expectedLeadingKeyWordDelimiterIndex := -1
-	expectedEndOfLineDelimiter := "\n"
-	expectedCommentDelimiter := ""
-	expectedCommentDelimiterIndex := -1
-	expectedNextTargetIdx := -1
+	expectedNumStr := "+0000"
+	expectedNumStrLen := len(expectedNumStr)
+	expectedLeadingSignChar := "+"
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedLeadingSignCharIndex := 0
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
 
-	datDto,
-		err := StrOps{}.ExtractDataField(
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
+	}
+
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
 		targetStr,
-		leadingKeyWordDelimiters,
-		startIdx,
-		leadingFieldDelimiters,
-		trailingFieldDelimiters,
-		commentDelimiters,
-		endOfLineDelimiters)
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
-			"targetStr='%v'\tstartIdx='%v'\n"+
-			"Error='%v'\n", targetStr, startIdx, err.Error())
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
 		return
 	}
 
-	if targetStr != datDto.TargetStr {
-		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
-			"Instead, datDto.TargetStr='%v'.\n",
-			targetStr, datDto.TargetStr)
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
 	}
 
-	if lenTargetStr != datDto.TargetStrLength {
-		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
-			"Instead, datDto.TargetStrLength='%v'.\n",
-			lenTargetStr, datDto.TargetStrLength)
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
 	}
 
-	if startIdx != datDto.TargetStrStartIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
-			"Instead, datDto.TargetStrStartIndex='%v'.\n",
-			startIdx, datDto.TargetStrStartIndex)
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
 	}
 
-	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-			expectedLeadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
 	}
 
-	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
 	}
 
-	if expectedDataFieldStr != datDto.DataFieldStr {
-		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
-			"Instead, datDto.DataFieldStr='%v'.\n",
-			expectedDataFieldStr, datDto.DataFieldStr)
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
 	}
-
-	if expectedDataFieldLength != datDto.DataFieldLength {
-		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
-			"Instead, datDto.DataFieldLength='%v'.\n",
-			expectedDataFieldLength, datDto.DataFieldLength)
-	}
-
-	if expectedDataFieldIdx != datDto.DataFieldIndex {
-		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
-			"Instead, datDto.DataFieldIndex='%v'.\n",
-			expectedDataFieldIdx, datDto.DataFieldIndex)
-	}
-
-	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
-			expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
-	}
-
-	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
-			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
-	}
-
-	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
-			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
-			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
-	}
-
-	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
-		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
-			"Instead, datDto.NextTargetStrIndex='%v'.\n",
-			expectedNextTargetIdx, datDto.NextTargetStrIndex)
-	}
-
-	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
-	}
-
-	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
-	}
-
-	if expectedCommentDelimiter != datDto.CommentDelimiter {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
-			"Instead, datDto.CommentDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
-	}
-
-	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
-			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
-	}
-
 }
 
-func TestStrOps_ExtractDataField_04(t *testing.T) {
+func TestStrOps_ExtractNumericDigits_04(t *testing.T) {
 
-	endOfLineDelimiters := []string{"\n"}
-	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	targetStr := "2016 1:6:3pm +0000 UTC"
+	startIndex := 0
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
 
-	trailingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	expectedNumStr := "2016"
+	expectedLeadingSignChar := ""
+	expectedLeadingSignCharIndex := -1
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
 
-	targetStr := " Zone:\t America/Chicago Good morning America!\n"
-	lenTargetStr := len(targetStr)
-	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
-	expectedEndOfLineDelimiterIdx := expectedLastGoodIdx
-	expectedLastGoodIdx--
-	startIdx := 6
-	// leadingKeyWordDelimiters consisting if a zero length
-	// array or an array of empty strings are ignored.
-	leadingKeyWordDelimiters := []string {""}
-	expectedLeadingKeyWordDelimiter := ""
-	expectedLeadingKeyWordDelimiterIndex := -1
-	expectedDataFieldStr := "America/Chicago"
-	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
-	expectedDataFieldLength := len(expectedDataFieldStr)
-	expectedDataFieldTrailingDelimiter := " "
-	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfField()
-	expectedEndOfLineDelimiter := "\n"
-	expectedCommentDelimiter := ""
-	expectedCommentDelimiterIndex := -1
-	expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
-
-	if expectedNextTargetIdx > expectedLastGoodIdx {
-		expectedNextTargetIdx = -1
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
 	}
 
-	datDto,
-	err := StrOps{}.ExtractDataField(
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
 		targetStr,
-		leadingKeyWordDelimiters,
-		startIdx,
-		leadingFieldDelimiters,
-		trailingFieldDelimiters,
-		commentDelimiters,
-		endOfLineDelimiters)
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
-			"targetStr='%v'\tstartIdx='%v'\n"+
-			"Error='%v'\n", targetStr, startIdx, err.Error())
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
 		return
 	}
 
-	if targetStr != datDto.TargetStr {
-		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
-			"Instead, datDto.TargetStr='%v'.\n",
-			targetStr, datDto.TargetStr)
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
 	}
 
-	if lenTargetStr != datDto.TargetStrLength {
-		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
-			"Instead, datDto.TargetStrLength='%v'.\n",
-			lenTargetStr, datDto.TargetStrLength)
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
 	}
 
-	if startIdx != datDto.TargetStrStartIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
-			"Instead, datDto.TargetStrStartIndex='%v'.\n",
-			startIdx, datDto.TargetStrStartIndex)
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
 	}
 
-	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-			expectedLeadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
 	}
 
-	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
 	}
 
-	if expectedDataFieldStr != datDto.DataFieldStr {
-		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
-			"Instead, datDto.DataFieldStr='%v'.\n",
-			expectedDataFieldStr, datDto.DataFieldStr)
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
 	}
-
-	if expectedDataFieldLength != datDto.DataFieldLength {
-		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
-			"Instead, datDto.DataFieldLength='%v'.\n",
-			expectedDataFieldLength, datDto.DataFieldLength)
-	}
-
-	if expectedDataFieldIdx != datDto.DataFieldIndex {
-		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
-			"Instead, datDto.DataFieldIndex='%v'.\n",
-			expectedDataFieldIdx, datDto.DataFieldIndex)
-	}
-
-	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
-			expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
-	}
-
-	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
-			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
-	}
-
-	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
-			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
-			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
-	}
-
-	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
-		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
-			"Instead, datDto.NextTargetStrIndex='%v'.\n",
-			expectedNextTargetIdx, datDto.NextTargetStrIndex)
-	}
-
-	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
-	}
-
-	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
-	}
-
-	if expectedCommentDelimiter != datDto.CommentDelimiter {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
-			"Instead, datDto.CommentDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
-	}
-
-	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
-			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
-	}
-
 }
 
-func TestStrOps_ExtractDataField_05(t *testing.T) {
+func TestStrOps_ExtractNumericDigits_05(t *testing.T) {
 
-	endOfLineDelimiters := []string{"\n"}
-	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	targetStr := "2016"
+	startIndex := 0
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
 
-	trailingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	expectedNumStr := "2016"
+	expectedLeadingSignChar := ""
+	expectedLeadingSignCharIndex := -1
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
 
-	targetStr := " Zone:\t #America/Chicago\t Link:\tUS/Pacific\tGood morning America!\n"
-	lenTargetStr := len(targetStr)
-	expectedLastGoodIdx := strings.Index(targetStr, "#")
-	expectedLastGoodIdx--
-	startIdx := 0
-	leadingKeyWordDelimiters := []string{"Link:", "Duplicate:","Zone:"}
-	expectedDataFieldStr := ""
-	expectedDataFieldIdx := -1
-	expectedDataFieldLength := len(expectedDataFieldStr)
-	expectedDataFieldTrailingDelimiter := "#"
-	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.Comment()
-	expectedLeadingKeyWordDelimiter := leadingKeyWordDelimiters[2]
-	expectedLeadingKeyWordDelimiterIndex := strings.Index(targetStr, expectedLeadingKeyWordDelimiter)
-	expectedNextTargetIdx := -1
-	expectedEndOfLineDelimiter := "\n"
-	expectedEndOfLineDelimiterIdx := strings.Index(targetStr, "\n")
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
+	}
 
-	expectedCommentDelimiter := "#"
-	expectedCommentDelimiterIndex := strings.Index(targetStr, "#")
-
-	datDto,
-		err := StrOps{}.ExtractDataField(
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
 		targetStr,
-		leadingKeyWordDelimiters,
-		startIdx,
-		leadingFieldDelimiters,
-		trailingFieldDelimiters,
-		commentDelimiters,
-		endOfLineDelimiters)
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
-			"targetStr='%v'\tstartIdx='%v'\n"+
-			"Error='%v'\n", targetStr, startIdx, err.Error())
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
 		return
 	}
 
-	if targetStr != datDto.TargetStr {
-		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
-			"Instead, datDto.TargetStr='%v'.\n",
-			targetStr, datDto.TargetStr)
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
 	}
 
-	if lenTargetStr != datDto.TargetStrLength {
-		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
-			"Instead, datDto.TargetStrLength='%v'.\n",
-			lenTargetStr, datDto.TargetStrLength)
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
 	}
 
-	if startIdx != datDto.TargetStrStartIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
-			"Instead, datDto.TargetStrStartIndex='%v'.\n",
-			startIdx, datDto.TargetStrStartIndex)
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
 	}
 
-	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-			expectedLeadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
 	}
 
-	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
 	}
 
-	if expectedDataFieldStr != datDto.DataFieldStr {
-		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
-			"Instead, datDto.DataFieldStr='%v'.\n",
-			expectedDataFieldStr, datDto.DataFieldStr)
-	}
-
-	if expectedDataFieldLength != datDto.DataFieldLength {
-		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
-			"Instead, datDto.DataFieldLength='%v'.\n",
-			expectedDataFieldLength, datDto.DataFieldLength)
-	}
-
-	if expectedDataFieldIdx != datDto.DataFieldIndex {
-		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
-			"Instead, datDto.DataFieldIndex='%v'.\n",
-			expectedDataFieldIdx, datDto.DataFieldIndex)
-	}
-
-	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
-			expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
-	}
-
-	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
-			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
-	}
-
-	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
-			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
-			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
-	}
-
-	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
-		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
-			"Instead, datDto.NextTargetStrIndex='%v'.\n",
-			expectedNextTargetIdx, datDto.NextTargetStrIndex)
-	}
-
-	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
-	}
-
-	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
-	}
-
-	if expectedCommentDelimiter != datDto.CommentDelimiter {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
-			"Instead, datDto.CommentDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
-	}
-
-	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
-			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
 	}
 }
 
-func TestStrOps_ExtractDataField_06(t *testing.T) {
+func TestStrOps_ExtractNumericDigits_06(t *testing.T) {
 
-	endOfLineDelimiters := []string{"\n"}
-	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	targetStr := "Hello World! Your bank account =$(1,250,364.33).44 What do you think?"
+	startIndex := 0
+	keepLeadingChars := "$("
+	keepInteriorChars := ",."
+	keepTrailingChars := ")"
 
-	trailingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	expectedNumStr := "$(1,250,364.33)"
+	expectedLeadingSignChar := ""
+	expectedLeadingSignCharIndex := -1
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
 
-	targetStr := " #Zone:\t America/Chicago\t Duplicate:\tGood morning America!\n"
-	lenTargetStr := len(targetStr)
-	expectedLastGoodIdx := strings.LastIndex(targetStr, "#")
-	expectedLastGoodIdx--
-	startIdx := 0
-	leadingKeyWordDelimiters := []string{"Link:", "Duplicate:", "Zone:"}
-	expectedDataFieldStr := ""
-	expectedDataFieldIdx := -1
-	expectedDataFieldLength := len(expectedDataFieldStr)
-	expectedDataFieldTrailingDelimiter := "#"
-	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.Comment()
-	expectedLeadingKeyWordDelimiters := ""
-	expectedLeadingKeyWordDelimiterIndex := -1
-	expectedNextTargetIdx := -1
-	expectedEndOfLineDelimiter := "\n"
-	expectedEndOfLineDelimiterIdx := strings.Index(targetStr, "\n")
-	expectedCommentDelimiter := "#"
-	expectedCommentDelimiterIndex := strings.Index(targetStr, "#")
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
+	}
 
-	datDto,
-		err := StrOps{}.ExtractDataField(
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
 		targetStr,
-		leadingKeyWordDelimiters,
-		startIdx,
-		leadingFieldDelimiters,
-		trailingFieldDelimiters,
-		commentDelimiters,
-		endOfLineDelimiters)
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
-			"targetStr='%v'\tstartIdx='%v'\n"+
-			"Error='%v'\n", targetStr, startIdx, err.Error())
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
 		return
 	}
 
-	if targetStr != datDto.TargetStr {
-		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
-			"Instead, datDto.TargetStr='%v'.\n",
-			targetStr, datDto.TargetStr)
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
 	}
 
-	if lenTargetStr != datDto.TargetStrLength {
-		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
-			"Instead, datDto.TargetStrLength='%v'.\n",
-			lenTargetStr, datDto.TargetStrLength)
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
 	}
 
-	if startIdx != datDto.TargetStrStartIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
-			"Instead, datDto.TargetStrStartIndex='%v'.\n",
-			startIdx, datDto.TargetStrStartIndex)
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
 	}
 
-	if expectedLeadingKeyWordDelimiters != datDto.LeadingKeyWordDelimiter {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-			expectedLeadingKeyWordDelimiters, datDto.LeadingKeyWordDelimiter)
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
 	}
 
-	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
 	}
 
-	if expectedDataFieldStr != datDto.DataFieldStr {
-		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
-			"Instead, datDto.DataFieldStr='%v'.\n",
-			expectedDataFieldStr, datDto.DataFieldStr)
-	}
-
-	if expectedDataFieldLength != datDto.DataFieldLength {
-		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
-			"Instead, datDto.DataFieldLength='%v'.\n",
-			expectedDataFieldLength, datDto.DataFieldLength)
-	}
-
-	if expectedDataFieldIdx != datDto.DataFieldIndex {
-		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
-			"Instead, datDto.DataFieldIndex='%v'.\n",
-			expectedDataFieldIdx, datDto.DataFieldIndex)
-	}
-
-	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
-			expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
-	}
-
-	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
-			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
-	}
-
-	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
-			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
-			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
-	}
-
-	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
-		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
-			"Instead, datDto.NextTargetStrIndex='%v'.\n",
-			expectedNextTargetIdx, datDto.NextTargetStrIndex)
-	}
-
-	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
-	}
-
-	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
-	}
-
-	if expectedCommentDelimiter != datDto.CommentDelimiter {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
-			"Instead, datDto.CommentDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
-	}
-
-	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
-			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
 	}
 }
 
-func TestStrOps_ExtractDataField_07(t *testing.T) {
+func TestStrOps_ExtractNumericDigits_07(t *testing.T) {
 
-	endOfLineDelimiters := []string{"\n"}
-	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	targetStr := "Hello World! The time zone here is 'Etc/GMT+11'. What do you think?"
+	startIndex := 0
+	keepLeadingChars := "+-"
+	keepInteriorChars := ""
+	keepTrailingChars := ""
 
-	trailingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	expectedNumStr := "+11"
+	expectedLeadingSignChar := "+"
+	expectedLeadingSignCharIndex := 0
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
 
-	targetStr := "\tZone:\tAmerica/Chicago\t\tLink:\tAmerica/New_York\t\tZone:\tAmerica/Los_Angeles\n"
-	expectedLastGoodIdx := strings.LastIndex(targetStr, "\n")
-	expectedEndOfLineDelimiterIdx := expectedLastGoodIdx
-	expectedLastGoodIdx--
-	lenTargetStr := len(targetStr)
-	startIdx := 0
-	expectedStartIdx := 46
-	leadingKeyWordDelimiters := []string{"Zone:","Link:", "Duplicate:"}
-	expectedDataFieldStr := "America/Los_Angeles"
-	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
-	expectedDataFieldLength := len(expectedDataFieldStr)
-	expectedDataFieldTrailingDelimiter := "\n"
-	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfLine()
-	expectedLeadingKeyWordDelimiter := "Zone"
-	expectedLeadingKeyWordDelimiterIndex := strings.LastIndex(targetStr, expectedLeadingKeyWordDelimiter)
-	expectedEndOfLineDelimiter := "\n"
-	expectedCommentDelimiter := ""
-	expectedCommentDelimiterIndex := -1
-	expectedNextTargetIdx := expectedDataFieldIdx + expectedDataFieldLength
-
-	if expectedNextTargetIdx > expectedLastGoodIdx {
-		expectedNextTargetIdx = -1
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
 	}
 
-	var datDto DataFieldProfileDto
-	var err error
-
-	for i := 0; i < 3; i++ {
-
-		datDto,
-			err = StrOps{}.ExtractDataField(
-			targetStr,
-			leadingKeyWordDelimiters,
-			startIdx,
-			leadingFieldDelimiters,
-			trailingFieldDelimiters,
-			commentDelimiters,
-			endOfLineDelimiters)
-
-		if err != nil {
-			t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
-				"Cycle No='%v'\n"+
-				"targetStr='%v'\tstartIdx='%v'\n"+
-				"Error='%v'\n", i, targetStr, startIdx, err.Error())
-			return
-		}
-
-		startIdx = datDto.NextTargetStrIndex
-	}
-
-	if targetStr != datDto.TargetStr {
-		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
-			"Instead, datDto.TargetStr='%v'.\n",
-			targetStr, datDto.TargetStr)
-	}
-
-	if lenTargetStr != datDto.TargetStrLength {
-		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
-			"Instead, datDto.TargetStrLength='%v'.\n",
-			lenTargetStr, datDto.TargetStrLength)
-	}
-
-	if expectedStartIdx != datDto.TargetStrStartIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
-			"Instead, datDto.TargetStrStartIndex='%v'.\n",
-			expectedStartIdx, datDto.TargetStrStartIndex)
-	}
-
-	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-			leadingKeyWordDelimiters, datDto.LeadingKeyWordDelimiter)
-	}
-
-	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
-	}
-
-	if expectedDataFieldStr != datDto.DataFieldStr {
-		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
-			"Instead, datDto.DataFieldStr='%v'.\n",
-			expectedDataFieldStr, datDto.DataFieldStr)
-	}
-
-	if expectedDataFieldLength != datDto.DataFieldLength {
-		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
-			"Instead, datDto.DataFieldLength='%v'.\n",
-			expectedDataFieldLength, datDto.DataFieldLength)
-	}
-
-	if expectedDataFieldIdx != datDto.DataFieldIndex {
-		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
-			"Instead, datDto.DataFieldIndex='%v'.\n",
-			expectedDataFieldIdx, datDto.DataFieldIndex)
-	}
-
-	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
-			expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
-	}
-
-	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
-			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
-	}
-
-	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
-			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
-			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
-	}
-
-	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
-		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
-			"Instead, datDto.NextTargetStrIndex='%v'.\n",
-			expectedNextTargetIdx, datDto.NextTargetStrIndex)
-	}
-
-	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
-	}
-
-	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
-	}
-
-	if expectedCommentDelimiter != datDto.CommentDelimiter {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
-			"Instead, datDto.CommentDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
-	}
-
-	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
-			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
-	}
-}
-
-func TestStrOps_ExtractDataField_08(t *testing.T) {
-
-	endOfLineDelimiters := []string{"\n"}
-	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
-
-	trailingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
-
-	targetStr := "\tZone:\tAmerica/Chicago\t\t#Zone:\tAmerica/New_York\t\tLink:\tAmerica/Los_Angeles\n"
-	expectedLastGoodIdx := strings.LastIndex(targetStr, "#")
-	expectedLastGoodIdx--
-	lenTargetStr := len(targetStr)
-	startIdx := 3
-	expectedStartIdx := 3
-	leadingKeyWordDelimiters := []string{"Zone:", "Link:"}
-	expectedLeadingKeyWordDelimiter := ""
-	expectedLeadingKeyWordDelimiterIndex := -1
-	expectedDataFieldStr := ""
-	expectedDataFieldIdx := -1
-	expectedDataFieldLength := len(expectedDataFieldStr)
-	expectedDataFieldTrailingDelimiter := "#"
-	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.Comment()
-	expectedEndOfLineDelimiter := "\n"
-	expectedEndOfLineDelimiterIdx := strings.Index(targetStr, "\n")
-	expectedCommentDelimiter := "#"
-	expectedCommentDelimiterIndex := strings.Index(targetStr, "#")
-	expectedNextTargetIdx := -1
-
-	var datDto DataFieldProfileDto
-	var err error
-
-	datDto,
-		err = StrOps{}.ExtractDataField(
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
 		targetStr,
-		leadingKeyWordDelimiters,
-		startIdx,
-		leadingFieldDelimiters,
-		trailingFieldDelimiters,
-		commentDelimiters,
-		endOfLineDelimiters)
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
-			"targetStr='%v'\tstartIdx='%v'\n"+
-			"Error='%v'\n", targetStr, startIdx, err.Error())
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
 		return
 	}
 
-	if targetStr != datDto.TargetStr {
-		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
-			"Instead, datDto.TargetStr='%v'.\n",
-			targetStr, datDto.TargetStr)
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
 	}
 
-	if lenTargetStr != datDto.TargetStrLength {
-		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
-			"Instead, datDto.TargetStrLength='%v'.\n",
-			lenTargetStr, datDto.TargetStrLength)
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
 	}
 
-	if expectedStartIdx != datDto.TargetStrStartIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
-			"Instead, datDto.TargetStrStartIndex='%v'.\n",
-			expectedStartIdx, datDto.TargetStrStartIndex)
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
 	}
 
-	if expectedLeadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-			leadingKeyWordDelimiters, datDto.LeadingKeyWordDelimiter)
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
 	}
 
-	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
 	}
 
-	if expectedDataFieldStr != datDto.DataFieldStr {
-		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
-			"Instead, datDto.DataFieldStr='%v'.\n",
-			expectedDataFieldStr, datDto.DataFieldStr)
-	}
-
-	if expectedDataFieldLength != datDto.DataFieldLength {
-		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
-			"Instead, datDto.DataFieldLength='%v'.\n",
-			expectedDataFieldLength, datDto.DataFieldLength)
-	}
-
-	if expectedDataFieldIdx != datDto.DataFieldIndex {
-		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
-			"Instead, datDto.DataFieldIndex='%v'.\n",
-			expectedDataFieldIdx, datDto.DataFieldIndex)
-	}
-
-	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
-			expectedDataFieldTrailingDelimiter, datDto.DataFieldTrailingDelimiter)
-	}
-
-	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
-			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
-	}
-
-	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
-			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
-			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
-	}
-
-	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
-		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
-			"Instead, datDto.NextTargetStrIndex='%v'.\n",
-			expectedNextTargetIdx, datDto.NextTargetStrIndex)
-	}
-
-	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
-	}
-
-	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
-	}
-
-	if expectedCommentDelimiter != datDto.CommentDelimiter {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
-			"Instead, datDto.CommentDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
-	}
-
-	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
-			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
 	}
 }
 
-func TestStrOps_ExtractDataField_09(t *testing.T) {
+func TestStrOps_ExtractNumericDigits_08(t *testing.T) {
 
-	endOfLineDelimiters := []string{"\n"}
-	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	targetStr := "Etc/GMT-4"
+	startIndex := 0
+	keepLeadingChars := "+-"
+	keepInteriorChars := ""
+	keepTrailingChars := ""
 
-	trailingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	expectedNumStr := "-4"
+	expectedLeadingSignChar := "-"
+	expectedLeadingSignCharIndex := 0
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
 
-	targetStr := " Zone:\t America/Chicago\tLink:\t US/Central/t Good morning America!\n"
-	startIdx := 0
-	leadingKeyWordDelimiters := []string{"Link:", "Zone:","Duplicate:"}
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
+	}
 
-	_,
-		err := StrOps{}.ExtractDataField(
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
 		targetStr,
-		leadingKeyWordDelimiters,
-		startIdx,
-		leadingFieldDelimiters,
-		trailingFieldDelimiters,
-		commentDelimiters,
-		endOfLineDelimiters)
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
 
-	if err == nil {
-		t.Error("Expected an error return for X\n" +
-			"because input parameter 'leadingFieldDelimiters' is an empty string array.\n" +
-			"However, NO ERROR WAS RETURNED!")
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+		return
 	}
 
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
+	}
+
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
+	}
+
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
+	}
+
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+	}
+
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
+	}
+
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
+	}
 }
 
-/*
+func TestStrOps_ExtractNumericDigits_09(t *testing.T) {
 
-func TestStrOps_ExtractDataField_10(t *testing.T) {
+	targetStr := "+$697,621,911.77"
+	startIndex := 0
+	keepLeadingChars := "+-$"
+	keepInteriorChars := ",."
+	keepTrailingChars := ""
 
-	endOfLineDelimiters := []string{"\n"}
-	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	expectedNumStr := "+$697,621,911.77"
+	expectedLeadingSignChar := "+"
+	expectedLeadingSignCharIndex := 0
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
 
-	trailingFieldDelimiters := []string{}
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
+	}
 
-	targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
-	startIdx := 0
-	leadingKeyWordDelimiter := "Zone:"
-
-	_,
-		err := StrOps{}.ExtractDataField(
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
 		targetStr,
-		leadingKeyWordDelimiter,
-		startIdx,
-		leadingFieldDelimiters,
-		trailingFieldDelimiters,
-		commentDelimiters,
-		endOfLineDelimiters)
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
 
-	if err == nil {
-		t.Error("Expected an error return for X\n" +
-			"because input parameter 'trailingFieldDelimiters' is an empty string array.\n" +
-			"However, NO ERROR WAS RETURNED!")
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+		return
 	}
 
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
+	}
+
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
+	}
+
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
+	}
+
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+	}
+
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
+	}
+
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
+	}
 }
 
-func TestStrOps_ExtractDataField_11(t *testing.T) {
+func TestStrOps_ExtractNumericDigits_10(t *testing.T) {
 
-	endOfLineDelimiters := []string{"\n"}
-	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	targetStr := "Hello World\t+-$697,621,911.77\n"
+	startIndex := 0
+	keepLeadingChars := "+-$"
+	keepInteriorChars := ",."
+	keepTrailingChars := ""
 
-	trailingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	expectedNumStr := "-$697,621,911.77"
+	expectedLeadingSignChar := "-"
+	expectedLeadingSignCharIndex := 0
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
+
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
+	}
+
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+		return
+	}
+
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
+	}
+
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
+	}
+
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
+	}
+
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+	}
+
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
+	}
+
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
+	}
+}
+
+func TestStrOps_ExtractNumericDigits_11(t *testing.T) {
+
+	targetStr := "Hello World\t\n"
+	startIndex := 0
+	keepLeadingChars := "+-$"
+	keepInteriorChars := ",."
+	keepTrailingChars := ""
+
+	expectedNumStr := ""
+	expectedLeadingSignChar := ""
+	expectedLeadingSignCharIndex := -1
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := -1
+	expectedNextTargetStrIndex := -1
+
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+		return
+	}
+
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
+	}
+
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
+	}
+
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
+	}
+
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+	}
+
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
+	}
+
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
+	}
+}
+
+func TestStrOps_ExtractNumericDigits_12(t *testing.T) {
 
 	targetStr := ""
-	startIdx := 0
-	leadingKeyWordDelimiter := "Zone:"
+	startIndex := 0
+	keepLeadingChars := "+-$"
+	keepInteriorChars := ",."
+	keepTrailingChars := ""
 
 	_,
-		err := StrOps{}.ExtractDataField(
+		err := StrOps{}.ExtractNumericDigits(
 		targetStr,
-		leadingKeyWordDelimiter,
-		startIdx,
-		leadingFieldDelimiters,
-		trailingFieldDelimiters,
-		commentDelimiters,
-		endOfLineDelimiters)
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
 
 	if err == nil {
-		t.Error("Expected an error return for X\n" +
+		t.Error("Expected an error return from StrOps{}.ExtractNumericDigits(targetStr, 0)\n" +
 			"because input parameter 'targetStr' is an empty string.\n" +
-			"However, NO ERROR WAS RETURNED!")
+			"However, NO ERROR WAS RETURNED!!")
+		return
 	}
-
 }
 
-func TestStrOps_ExtractDataField_12(t *testing.T) {
+func TestStrOps_ExtractNumericDigits_13(t *testing.T) {
 
-	endOfLineDelimiters := []string{"\n"}
-	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	targetStr := "Hello World7Have a great day!"
+	startIndex := 0
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
 
-	trailingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
+	expectedNumStr := "7"
+	expectedLeadingSignChar := ""
+	expectedLeadingSignCharIndex := -1
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
 
-	targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
-	startIdx := -1
-	leadingKeyWordDelimiter := "Zone:"
-
-	_,
-		err := StrOps{}.ExtractDataField(
-		targetStr,
-		leadingKeyWordDelimiter,
-		startIdx,
-		leadingFieldDelimiters,
-		trailingFieldDelimiters,
-		commentDelimiters,
-		endOfLineDelimiters)
-
-	if err == nil {
-		t.Error("Expected an error return for X\n" +
-			"because input parameter 'startIdx' is less than zero.\n" +
-			"However, NO ERROR WAS RETURNED!")
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
 	}
 
-}
-
-func TestStrOps_ExtractDataField_13(t *testing.T) {
-
-	endOfLineDelimiters := []string{"\n"}
-	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
-
-	trailingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
-
-	targetStr := " Zone:\t America/Chicago\t Good morning America!\n"
-	startIdx := 999
-	leadingKeyWordDelimiter := "Zone:"
-
-	_,
-		err := StrOps{}.ExtractDataField(
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
 		targetStr,
-		leadingKeyWordDelimiter,
-		startIdx,
-		leadingFieldDelimiters,
-		trailingFieldDelimiters,
-		commentDelimiters,
-		endOfLineDelimiters)
-
-	if err == nil {
-		t.Error("Expected an error return for X\n" +
-			"because input parameter 'startIdx' is exceeds the outer boundary of 'targetStr'.\n" +
-			"However, NO ERROR WAS RETURNED!")
-	}
-
-}
-
-func TestStrOps_ExtractDataField_14(t *testing.T) {
-
-	endOfLineDelimiters := []string{"\n"}
-	commentDelimiters := []string{"#"}
-	leadingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v",
-		" "}
-
-	trailingFieldDelimiters := []string{
-		"\t",
-		"\r",
-		"\f",
-		"\v"}
-
-	targetStr := "Good morning America!"
-
-	lenTargetStr := len(targetStr)
-	expectedLastGoodIdx := lenTargetStr - 1
-	expectedEndOfLineDelimiterIdx := -1
-	startIdx := 0
-	leadingKeyWordDelimiter := ""
-	expectedDataFieldStr := "Good morning America!"
-	expectedDataFieldIdx := strings.Index(targetStr, expectedDataFieldStr)
-	expectedDataFieldLength := len(expectedDataFieldStr)
-	expectedDataFieldTrailingDelimiter := ""
-	expectedDataFieldTrailingDelimiterType := DfTrailDelimiter.EndOfString()
-	expectedLeadingKeyWordDelimiterIndex := -1
-	expectedEndOfLineDelimiter := ""
-	expectedCommentDelimiter := ""
-	expectedCommentDelimiterIndex := -1
-
-	expectedNextTargetIdx := -1
-
-	datDto,
-		err := StrOps{}.ExtractDataField(
-		targetStr,
-		leadingKeyWordDelimiter,
-		startIdx,
-		leadingFieldDelimiters,
-		trailingFieldDelimiters,
-		commentDelimiters,
-		endOfLineDelimiters)
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
 
 	if err != nil {
-		t.Errorf("Error returned by StrOps{}.ExtractDataField()\n"+
-			"targetStr='%v'\tstartIdx='%v'\n"+
-			"Error='%v'\n", targetStr, startIdx, err.Error())
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
 		return
 	}
 
-	if targetStr != datDto.TargetStr {
-		t.Errorf("ERROR: Expected datDto.TargetStr='%v'.\n"+
-			"Instead, datDto.TargetStr='%v'.\n",
-			targetStr, datDto.TargetStr)
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
 	}
 
-	if lenTargetStr != datDto.TargetStrLength {
-		t.Errorf("ERROR: Expected datDto.TargetStrLength='%v'.\n"+
-			"Instead, datDto.TargetStrLength='%v'.\n",
-			lenTargetStr, datDto.TargetStrLength)
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
 	}
 
-	if startIdx != datDto.TargetStrStartIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrStartIndex='%v'.\n"+
-			"Instead, datDto.TargetStrStartIndex='%v'.\n",
-			startIdx, datDto.TargetStrStartIndex)
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
 	}
 
-	if leadingKeyWordDelimiter != datDto.LeadingKeyWordDelimiter {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiter='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiter='%v'.\n",
-			leadingKeyWordDelimiter, datDto.LeadingKeyWordDelimiter)
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
 	}
 
-	if expectedLeadingKeyWordDelimiterIndex != datDto.LeadingKeyWordDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.LeadingKeyWordDelimiterIndex='%v'.\n"+
-			"Instead, datDto.LeadingKeyWordDelimiterIndex='%v'.\n",
-			expectedLeadingKeyWordDelimiterIndex, datDto.LeadingKeyWordDelimiterIndex)
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
 	}
 
-	if expectedDataFieldStr != datDto.DataFieldStr {
-		t.Errorf("ERROR: Expected datDto.DataFieldStr='%v'.\n"+
-			"Instead, datDto.DataFieldStr='%v'.\n",
-			expectedDataFieldStr, datDto.DataFieldStr)
-	}
-
-	if expectedDataFieldLength != datDto.DataFieldLength {
-		t.Errorf("ERROR: Expected datDto.DataFieldLength='%v'.\n"+
-			"Instead, datDto.DataFieldLength='%v'.\n",
-			expectedDataFieldLength, datDto.DataFieldLength)
-	}
-
-	if expectedDataFieldIdx != datDto.DataFieldIndex {
-		t.Errorf("ERROR: Expected datDto.DataFieldIndex='%v'.\n"+
-			"Instead, datDto.DataFieldIndex='%v'.\n",
-			expectedDataFieldIdx, datDto.DataFieldIndex)
-	}
-
-	if expectedDataFieldTrailingDelimiter != datDto.DataFieldTrailingDelimiter {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiter='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedDataFieldTrailingDelimiter), true),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.DataFieldTrailingDelimiter), true))
-	}
-
-	if expectedDataFieldTrailingDelimiterType != datDto.DataFieldTrailingDelimiterType {
-		t.Errorf("ERROR: Expected datDto.DataFieldTrailingDelimiterType='%v'.\n"+
-			"Instead, datDto.DataFieldTrailingDelimiterType='%v'.\n",
-			expectedDataFieldTrailingDelimiterType.String(), datDto.DataFieldTrailingDelimiterType.String())
-	}
-
-	if expectedLastGoodIdx != datDto.TargetStrLastGoodIndex {
-		t.Errorf("ERROR: Expected datDto.TargetStrLastGoodIndex='%v'.\n"+
-			"Instead, datDto.TargetStrLastGoodIndex='%v'.\n",
-			expectedLastGoodIdx, datDto.TargetStrLastGoodIndex)
-	}
-
-	if expectedNextTargetIdx != datDto.NextTargetStrIndex {
-		t.Errorf("ERROR: Expected datDto.NextTargetStrIndex='%v'.\n"+
-			"Instead, datDto.NextTargetStrIndex='%v'.\n",
-			expectedNextTargetIdx, datDto.NextTargetStrIndex)
-	}
-
-	if expectedEndOfLineDelimiter != datDto.EndOfLineDelimiter {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiter='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedEndOfLineDelimiter), false),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
-	}
-
-	if expectedEndOfLineDelimiterIdx != datDto.EndOfLineDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.EndOfLineDelimiterIndex='%v'.\n"+
-			"Instead, datDto.EndOfLineDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.EndOfLineDelimiterIndex)
-	}
-
-	if expectedCommentDelimiter != datDto.CommentDelimiter {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiter='%v'.\n"+
-			"Instead, datDto.CommentDelimiter='%v'.\n",
-			StrOps{}.ConvertNonPrintableChars([]rune(expectedCommentDelimiter), true),
-			StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), true))
-	}
-
-	if expectedCommentDelimiterIndex != datDto.CommentDelimiterIndex {
-		t.Errorf("ERROR: Expected datDto.CommentDelimiterIndex='%v'.\n"+
-			"Instead, datDto.CommentDelimiterIndex='%v'.\n",
-			expectedEndOfLineDelimiterIdx, datDto.CommentDelimiterIndex)
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
 	}
 }
 
-*/
+func TestStrOps_ExtractNumericDigits_14(t *testing.T) {
+
+	targetStr := "7Hello World Have a great day!"
+	startIndex := 0
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
+
+	expectedNumStr := "7"
+	expectedLeadingSignChar := ""
+	expectedLeadingSignCharIndex := -1
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
+
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
+	}
+
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+		return
+	}
+
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
+	}
+
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
+	}
+
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
+	}
+
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+	}
+
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
+	}
+
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
+	}
+}
+
+func TestStrOps_ExtractNumericDigits_15(t *testing.T) {
+
+	targetStr := "Hello World Have a great day!7"
+	startIndex := 0
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
+
+	expectedNumStr := "7"
+	expectedLeadingSignChar := ""
+	expectedLeadingSignCharIndex := -1
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
+
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
+	}
+
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+		return
+	}
+
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
+	}
+
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
+	}
+
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
+	}
+
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+	}
+
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
+	}
+
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
+	}
+}
+
+func TestStrOps_ExtractNumericDigits_16(t *testing.T) {
+
+	targetStr := "Hello World -7\t6 Have a great day!"
+	startIndex := 0
+	keepLeadingChars := "+-"
+	keepInteriorChars := ""
+	keepTrailingChars := ""
+
+	expectedNumStr := "-7"
+	expectedLeadingSignChar := "-"
+	expectedLeadingSignCharIndex := 0
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
+
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
+	}
+
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+		return
+	}
+
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
+	}
+
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
+	}
+
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
+	}
+
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+	}
+
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
+	}
+
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
+	}
+}
+
+func TestStrOps_ExtractNumericDigits_17(t *testing.T) {
+
+	targetStr := "Hello World.\t+$-697,621,911.77.\nHow are you.\n"
+	startIndex := 0
+	keepLeadingChars := "+-$"
+	keepInteriorChars := ",."
+	keepTrailingChars := ""
+
+	expectedNumStr := "$-697,621,911.77"
+	expectedLeadingSignChar := "-"
+	expectedLeadingSignCharIndex := 1
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
+
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
+	}
+
+	nStrDto,
+		err := StrOps{}.ExtractNumericDigits(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+		return
+	}
+
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
+	}
+
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
+	}
+
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
+	}
+
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+	}
+
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
+	}
+
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
+	}
+}
+
+func TestStrOps_ExtractNumericDigits_18(t *testing.T) {
+
+	targetStr := ""
+	startIndex := 0
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
+
+	_,
+		err := StrOps{}.ExtractNumericDigits(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err == nil {
+		t.Error("Expected an error return from StrOps{}.ExtractNumericDigits()\n" +
+			"because input parameter 'targetStr' is an empty string.\n" +
+			"However, NO ERROR WAS RETURNED!!\n")
+	}
+}
+
+func TestStrOps_ExtractNumericDigits_19(t *testing.T) {
+
+	targetStr := "November 12, 2016 1:6:3pm +0000 UTC"
+	startIndex := -1
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
+
+	_,
+		err := StrOps{}.ExtractNumericDigits(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err == nil {
+		t.Error("Expected an error return from StrOps{}.ExtractNumericDigits()\n" +
+			"because input parameter 'startIdx' is less than zero.\n" +
+			"However, NO ERROR WAS RETURNED!!\n")
+	}
+}
+
+func TestStrOps_ExtractNumericDigits_20(t *testing.T) {
+
+	targetStr := "November 12, 2016 1:6:3pm +0000 UTC"
+	startIndex := 999
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
+
+	_,
+		err := StrOps{}.ExtractNumericDigits(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err == nil {
+		t.Error("Expected an error return from StrOps{}.ExtractNumericDigits()\n" +
+			"because input parameter 'startIdx' is beyond the maximum boundary for 'targetStr'.\n" +
+			"However, NO ERROR WAS RETURNED!!\n")
+	}
+}
