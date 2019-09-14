@@ -121,10 +121,10 @@ func (sops StrOps) StrCenterInStr(strToCenter string, fieldLen int) (string, err
 //
 // Example:
 //
-//	fieldLen = 15
-//	strToJustify 	= "Hello World"
-//	Returned String = "Hello World    "
-//	String Index    =  012345648901234
+//  fieldLen        = 15
+//  strToJustify    = "Hello World"
+//  Returned String = "Hello World    "
+//  String Index    =  012345648901234
 //
 func (sops StrOps) StrLeftJustify(strToJustify string, fieldLen int) (string, error) {
 
