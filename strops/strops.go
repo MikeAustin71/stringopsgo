@@ -192,6 +192,7 @@ func (sops StrOps) StrPadLeftToCenter(strToCenter string, fieldLen int) (string,
 // StrGetRuneCnt - Uses utf8 Rune Count
 // function to return the number of characters
 // in a string.
+//
 func (sops StrOps) StrGetRuneCnt(targetStr string) int {
 	return utf8.RuneCountInString(targetStr)
 }
@@ -204,6 +205,7 @@ func (sops StrOps) StrGetCharCnt(targetStr string) int {
 }
 
 // TrimMultipleChars - Performs the following operations on strings:
+//
 // 1. Trims Right and Left for all instances of 'trimChar'
 // 2. Within the interior of a string, multiple instances
 // 		of 'trimChar' are reduce to a single instance.
