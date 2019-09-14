@@ -1,6 +1,6 @@
 # *strops* Version 2.0.4
 
-[![GoDoc](https://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v2?status.svg)](https://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v2) [![Go Report Card](https://goreportcard.com/badge/github.com/MikeAustin71/stringopsgo/strops/v2)](https://goreportcard.com/report/github.com/MikeAustin71/stringopsgo/strops/v2)
+[![GoDoc](https://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v2?status.svg)](https://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v2)
 
 *strops* is a software library or in *Go* parlance, a software *package*.
 

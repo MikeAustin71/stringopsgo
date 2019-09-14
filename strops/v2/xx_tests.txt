@@ -606,4 +606,4 @@
 --- PASS: TestDataFieldTrailingDelimiterType_Value_01 (0.00s)
 PASS
 coverage: 96.3% of statements
-ok  	github.com/MikeAustin71/stringopsgo/strops/v2	3.711s
+ok  	github.com/MikeAustin71/stringopsgo/strops/v2	2.979s
