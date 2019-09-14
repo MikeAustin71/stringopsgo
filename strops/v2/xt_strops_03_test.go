@@ -225,7 +225,7 @@ func TestStrOps_ExtractNumericDigits_04(t *testing.T) {
 	keepTrailingChars := ""
 
 	expectedNumStr := "2016"
-	expectedLeadingSignChar := ""
+
 	expectedLeadingSignCharIndex := -1
 	expectedNumStrLen := len(expectedNumStr)
 	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
@@ -267,10 +267,10 @@ func TestStrOps_ExtractNumericDigits_04(t *testing.T) {
 			expectedNumStrLen, nStrDto.NumStrLen)
 	}
 
-	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+	if "" != nStrDto.LeadingSignChar {
 		t.Errorf("Expected leading sign char ='%v'\n"+
 			"Instead, leading sign char ='%v'\n",
-			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+			"", nStrDto.LeadingSignChar)
 	}
 
 	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
