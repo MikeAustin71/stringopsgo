@@ -126,6 +126,8 @@
 --- PASS: TestStrOps_ExtractNumericDigits_19 (0.00s)
 === RUN   TestStrOps_ExtractNumericDigits_20
 --- PASS: TestStrOps_ExtractNumericDigits_20 (0.00s)
+=== RUN   TestStrOps_ExtractNumericDigits_21
+--- PASS: TestStrOps_ExtractNumericDigits_21 (0.00s)
 === RUN   TestStrOps_FindFirstNonSpaceChar_01
 --- PASS: TestStrOps_FindFirstNonSpaceChar_01 (0.00s)
 === RUN   TestStrOps_FindFirstNonSpaceChar_02
@@ -606,4 +608,4 @@
 --- PASS: TestDataFieldTrailingDelimiterType_Value_01 (0.00s)
 PASS
 coverage: 96.3% of statements
-ok  	github.com/MikeAustin71/stringopsgo/strops/v2	2.979s
+ok  	github.com/MikeAustin71/stringopsgo/strops/v2	3.182s

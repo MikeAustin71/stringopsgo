@@ -1129,6 +1129,10 @@ exitMainTargetLoop:
 //                                  '123789' because 'keepLeadingChars' characters must immediately
 //                                  precede the string of numeric digits in 'targetStr'.
 //
+//                                  Specifically, if the plus ('+') and minus ('-') sign are NOT
+//                                  included in 'keepLeadingChars' those leading number signs will
+//                                  never be included in the final number string.
+//
 //                                  Leading characters will not be repeated. If for some reason you
 //                                  wanted to retain two leading currency symbols ("$$") it would be
 //                                  necessary to include two currency characters in 'keepLeadingChars'.

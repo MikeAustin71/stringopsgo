@@ -1214,3 +1214,75 @@ func TestStrOps_ExtractNumericDigits_20(t *testing.T) {
 			"However, NO ERROR WAS RETURNED!!\n")
 	}
 }
+
+
+func TestStrOps_ExtractNumericDigits_21(t *testing.T) {
+
+	targetStr := "Etc/GMT-4"
+	startIndex := 0
+	keepLeadingChars := ""
+	keepInteriorChars := ""
+	keepTrailingChars := ""
+
+	expectedNumStr := "4"
+	expectedLeadingSignChar := ""
+	expectedLeadingSignCharIndex := -1
+	expectedNumStrLen := len(expectedNumStr)
+	expectedNumIdx := strings.Index(targetStr, expectedNumStr)
+	expectedNextTargetStrIndex := expectedNumIdx + expectedNumStrLen
+
+	if expectedNextTargetStrIndex >= len(targetStr) {
+		expectedNextTargetStrIndex = -1
+	}
+
+	nStrDto,
+	err := StrOps{}.ExtractNumericDigits(
+		targetStr,
+		startIndex,
+		keepLeadingChars,
+		keepInteriorChars,
+		keepTrailingChars)
+
+	if err != nil {
+		t.Errorf("Error returned by StrOps{}.ExtractNumericDigits(targetStr, 0)\n"+
+			"targetStr='%v'\nError='%v'\n", targetStr, err.Error())
+		return
+	}
+
+	if expectedNumIdx != nStrDto.FirstNumCharIndex {
+		t.Errorf("Expected starting numeric index='%v'\n"+
+			"Instead, staring numeric index='%v'\n",
+			expectedNumIdx, nStrDto.FirstNumCharIndex)
+	}
+
+	if expectedNumStr != nStrDto.NumStr {
+		t.Errorf("Expected number string ='%v'\n"+
+			"Instead, number string ='%v'\n",
+			expectedNumStr, nStrDto.NumStr)
+	}
+
+	if expectedNumStrLen != nStrDto.NumStrLen {
+		t.Errorf("Expected number string length ='%v'\n"+
+			"Instead, number string length ='%v'\n",
+			expectedNumStrLen, nStrDto.NumStrLen)
+	}
+
+	if expectedLeadingSignChar != nStrDto.LeadingSignChar {
+		t.Errorf("Expected leading sign char ='%v'\n"+
+			"Instead, leading sign char ='%v'\n",
+			expectedLeadingSignChar, nStrDto.LeadingSignChar)
+	}
+
+	if expectedLeadingSignCharIndex != nStrDto.LeadingSignIndex {
+		t.Errorf("Expected leading sign char index ='%v'\n"+
+			"Instead, leading sign char index ='%v'\n",
+			expectedLeadingSignCharIndex, nStrDto.LeadingSignIndex)
+	}
+
+	if expectedNextTargetStrIndex != nStrDto.NextTargetStrIndex {
+		t.Errorf("Expected next target index after number string ='%v'\n"+
+			"Instead, next target string index ='%v'\n",
+			expectedNextTargetStrIndex, nStrDto.NextTargetStrIndex)
+	}
+}
+
