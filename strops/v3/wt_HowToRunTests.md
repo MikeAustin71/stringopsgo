@@ -21,7 +21,7 @@ First pull down and install the `cover` package.
 Next, follow the test execution protocol.  
   
 ## Test Execution with Code Coverage
-Run this in *strops/v2* directory:
+Run this in *strops/v3* directory:
 
 ##### Windows Command
  `go test -cover -v > xx_tests.txt`  
@@ -32,7 +32,7 @@ Run this in *strops/v2* directory:
 ## Cover Profile
 
 Generate the code coverage detail. Run this command
-in the *stringopsgo/strops/v2* directory:
+in the *stringopsgo/strops/v3* directory:
 
 `go test -coverprofile=xx_coverage.out`
 
