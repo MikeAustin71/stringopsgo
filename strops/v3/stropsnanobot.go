@@ -130,7 +130,7 @@ func (sOpsNanobot *strOpsNanobot) strCenterInStrLeft(
 //       increased to a value equal to the length of 'strToJustify'.
 //
 //
-//  textJustify         StrOpsTextJustify
+//  textJustify         TextJustify
 //     - An enumeration value used to specify the type of text
 //       formatting which will be applied to 'strToJustify' when
 //       it is positioned inside of the returned text string,
@@ -199,7 +199,7 @@ func (sOpsNanobot *strOpsNanobot) strCenterInStrLeft(
 //   su.justifyTextInStrField(
 //               strToJustify,
 //               fieldLen,
-//               StrOpsTextJustify(0).Right()
+//               TextJustify(0).Right()
 //               ePrefix)
 //
 //  --------------------------------------------------------
@@ -210,7 +210,7 @@ func (sOpsNanobot *strOpsNanobot) strCenterInStrLeft(
 func (sOpsNanobot *strOpsNanobot) justifyTextInStrField(
 	strToJustify string,
 	fieldLen int,
-	textJustify StrOpsTextJustify,
+	textJustify TextJustify,
 	ePrefix string) (
 	justifiedStr string,
 	err error) {
@@ -272,7 +272,7 @@ func (sOpsNanobot *strOpsNanobot) justifyTextInStrField(
 	sOpsMolecule := strOpsMolecule{}
 
 	switch textJustify {
-	case StrOpsTextJustify(0).Left():
+	case TextJustify(0).Left():
 
 		justifiedStr,
 			err = sOpsMolecule.strLeftJustify(
@@ -280,7 +280,7 @@ func (sOpsNanobot *strOpsNanobot) justifyTextInStrField(
 			fieldLen,
 			ePrefix)
 
-	case StrOpsTextJustify(0).Right():
+	case TextJustify(0).Right():
 
 		justifiedStr,
 			err = sOpsMolecule.strRightJustify(
@@ -288,7 +288,7 @@ func (sOpsNanobot *strOpsNanobot) justifyTextInStrField(
 			fieldLen,
 			ePrefix)
 
-	case StrOpsTextJustify(0).Center():
+	case TextJustify(0).Center():
 
 		justifiedStr,
 			err = sOpsMolecule.strCenterInStr(

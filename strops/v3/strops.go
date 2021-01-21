@@ -1565,7 +1565,7 @@ func (sops *StrOps) IsEmptyOrWhiteSpace(targetStr string) bool {
 //       to the length of 'strToJustify'.
 //
 //
-//  textJustify         StrOpsTextJustify
+//  textJustify         TextJustify
 //     - An enumeration value used to specify the type of text
 //       formatting which will be applied to 'strToJustify' when
 //       it is positioned inside of the returned output string.
@@ -1634,7 +1634,7 @@ func (sops *StrOps) IsEmptyOrWhiteSpace(targetStr string) bool {
 //   su.justifyTextInStrField(
 //               strToJustify,
 //               fieldLen,
-//               StrOpsTextJustify(0).Right()
+//               TextJustify(0).Right()
 //               ePrefix)
 //
 //  --------------------------------------------------------
@@ -1645,7 +1645,7 @@ func (sops *StrOps) IsEmptyOrWhiteSpace(targetStr string) bool {
 func (sops *StrOps) JustifyTextInStrField(
 	strToJustify string,
 	fieldLen int,
-	textJustify StrOpsTextJustify,
+	textJustify TextJustify,
 	ePrefix string) (
 	string,
 	error) {

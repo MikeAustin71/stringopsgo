@@ -193,7 +193,7 @@ func (dfTrailDelimiter DataFieldTrailingDelimiterType) String() string {
 }
 
 // XIsValid - Returns a boolean value signaling whether the current
-// StrOpsTextJustify value is valid.
+// TextJustify value is valid.
 //
 // This is a standard utility method and is not part of the valid
 // enumerations for this type.

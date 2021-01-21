@@ -86,7 +86,7 @@ All the active production files are located in directory path:
 
 ## Tests
 Currently, the *strops/v2* package has 317 unit tests with a code coverage
-of 91%. 
+of 93%. 
 
 Test coverage and outcomes are documented in:
 
@@ -95,8 +95,10 @@ Test coverage and outcomes are documented in:
 [How To Run Tests Documentation](./strops/v3/wt_HowToRunTests.md)
 
 ## Version
-The latest version is Version 3.0.0. Version 2+ releases support
-*Go* modules. 
+The latest version is Version 3.0.0. Like Version 2+, Version 3+ also
+supports *Go* modules. 
+
+[Version 3.0.0 Release Notes](./strops/v3/releasenotes.md)
 
 ## License
 
