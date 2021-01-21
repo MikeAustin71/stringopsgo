@@ -9,4 +9,4 @@ following command:
 2. Go to your browser and enter the url for the local code. 
 Substitute your local path int the following url.  
 
-        http://localhost:6060/pkg/MikeAustin71/stringopsgo/strops/v2
+        http://localhost:6060/pkg/MikeAustin71/stringopsgo/strops/v3
