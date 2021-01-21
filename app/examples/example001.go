@@ -1,7 +1,7 @@
 package examples
 
 import (
-	"MikeAustin71/stringopsgo/strops/v2"
+	"MikeAustin71/stringopsgo/strops/v3"
 	"errors"
 	"fmt"
 	"io"
@@ -18,6 +18,9 @@ type MainTest struct {
 }
 
 func (mt MainTest) ExampleExtractDataField01() {
+
+	ePrefix := "ExampleExtractDataField01() "
+
 	// line feed (ascii character 12) and carriage return (ascii character 13)
 	endOfLineDelimiters := []string{"\n"}
 	commentDelimiters := []string{"#"}
@@ -49,14 +52,15 @@ func (mt MainTest) ExampleExtractDataField01() {
 	startTime = time.Now()
 
 	datDto,
-		err := strops.StrOps{}.ExtractDataField(
+		err := strops.StrOps{}.Ptr().ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiters,
 		startIdx,
 		leadingFieldSeparators,
 		trailingFieldSeparators,
 		commentDelimiters,
-		endOfLineDelimiters)
+		endOfLineDelimiters,
+		ePrefix)
 
 	endTime = time.Now()
 
@@ -212,6 +216,8 @@ func (mt MainTest) ExampleExtractDataField01() {
 
 func (mt MainTest) ExampleExtractDataField02() {
 
+	ePrefix := "ExampleExtractDataField02() "
+
 	endOfLineDelimiters := []string{"\n"}
 	commentDelimiters := []string{"#"}
 	leadingFieldSeparators := []string{"\t", " ", "\r", "\f", "\v"}
@@ -245,14 +251,15 @@ func (mt MainTest) ExampleExtractDataField02() {
 	for i := 0; i < 3; i++ {
 
 		datDto,
-			err = strops.StrOps{}.ExtractDataField(
+			err = strops.StrOps{}.Ptr().ExtractDataField(
 			targetStr,
 			leadingKeyWordDelimiters,
 			startIdx,
 			leadingFieldSeparators,
 			trailingFieldSeparators,
 			commentDelimiters,
-			endOfLineDelimiters)
+			endOfLineDelimiters,
+			ePrefix)
 
 		if err != nil {
 			fmt.Printf("Error returned by StrOps{}.ExtractDataField()\n"+
@@ -355,6 +362,7 @@ func (mt MainTest) ExampleExtractDataField02() {
 	}
 
 	elapsedTotalNanoSecs, elapsedTime := mt.Timer(startTime, endTime)
+	sops := strops.StrOps{}
 
 	fmt.Println("================================================")
 	fmt.Println("           ExampleExtractDataField02            ")
@@ -378,7 +386,7 @@ func (mt MainTest) ExampleExtractDataField02() {
 	fmt.Println("               Field Str Length: ", expectedDataFieldLength)
 	fmt.Println("                    Field Index: ", expectedDataFieldIdx)
 	fmt.Println("       Field Trailing Delimiter: ",
-		strops.StrOps{}.ConvertNonPrintableChars([]rune(expectedDataFieldTrailingDelimiter), false))
+		sops.ConvertNonPrintableChars([]rune(expectedDataFieldTrailingDelimiter), false))
 	fmt.Println("  Field Trailing Delimiter Type: ", expectedDataFieldTrailingDelimiterType.String())
 	fmt.Println("      Leading Keyword Delimiter: ", expectedLeadingKeyWordDelimiter)
 	fmt.Println("Leading Keyword Delimiter Index: ", expectedLeadingKeyWordDelimiterIndex)
@@ -391,13 +399,13 @@ func (mt MainTest) ExampleExtractDataField02() {
 	fmt.Println("              Field Str Length: ", datDto.DataFieldLength)
 	fmt.Println("                   Field Index: ", datDto.DataFieldIndex)
 	fmt.Println("      Field Trailing Delimiter: ",
-		strops.StrOps{}.ConvertNonPrintableChars([]rune(datDto.DataFieldTrailingDelimiter), false))
+		sops.ConvertNonPrintableChars([]rune(datDto.DataFieldTrailingDelimiter), false))
 	fmt.Println(" Field Trailing Delimiter Type: ", datDto.DataFieldTrailingDelimiterType.String())
 	fmt.Println("             Comment Delimiter: ",
-		strops.StrOps{}.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), false))
+		sops.ConvertNonPrintableChars([]rune(datDto.CommentDelimiter), false))
 	fmt.Println("       Comment Delimiter Index: ", datDto.CommentDelimiterIndex)
 	fmt.Println("         End Of Line Delimiter: ",
-		strops.StrOps{}.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
+		sops.ConvertNonPrintableChars([]rune(datDto.EndOfLineDelimiter), false))
 	fmt.Println("   End Of Line Delimiter Index: ", datDto.EndOfLineDelimiterIndex)
 	fmt.Println("             Next Target Index: ", datDto.NextTargetStrIndex)
 	fmt.Println("                 Target String: ", datDto.TargetStr)
@@ -415,6 +423,8 @@ func (mt MainTest) ExampleExtractDataField02() {
 }
 
 func (mt MainTest) ExampleExtractDataField03() {
+
+	ePrefix := "ExampleExtractDataField03() "
 
 	endOfLineDelimiters := []string{"\n"}
 	commentDelimiters := []string{"#"}
@@ -441,14 +451,15 @@ func (mt MainTest) ExampleExtractDataField03() {
 	startTime = time.Now()
 
 	datDto,
-		err := strops.StrOps{}.ExtractDataField(
+		err := strops.StrOps{}.Ptr().ExtractDataField(
 		targetStr,
 		leadingKeyWordDelimiter,
 		startIdx,
 		leadingFieldSeparators,
 		trailingFieldSeparators,
 		commentDelimiters,
-		endOfLineDelimiters)
+		endOfLineDelimiters,
+		ePrefix)
 
 	if err != nil {
 		fmt.Printf("Error returned by strops.StrOps{}.ExtractDataField()\n"+
@@ -599,6 +610,9 @@ func (mt MainTest) ExampleExtractDataField03() {
 }
 
 func (mt MainTest) ExampleExtractNumStr01() {
+
+	ePrefix := "ExampleExtractNumStr01() "
+
 	// Etc/GMT-4
 	// "Etc/GMT+11"
 	// "November 12, 2016 1:6:3pm -(+0000) UTC"
@@ -625,12 +639,13 @@ func (mt MainTest) ExampleExtractNumStr01() {
 	startTime = time.Now()
 
 	nStrDto,
-		err := strops.StrOps{}.ExtractNumericDigits(
+		err := strops.StrOps{}.Ptr().ExtractNumericDigits(
 		targetStr,
 		startIndex,
 		keepLeadingChars,
 		keepInteriorChars,
-		keepTrailingChars)
+		keepTrailingChars,
+		ePrefix)
 
 	endTime = time.Now()
 
@@ -724,6 +739,9 @@ func (mt MainTest) ExampleExtractNumStr01() {
 }
 
 func (mt MainTest) ExampleExtractNumStr02() {
+
+	ePrefix := "ExampleExtractNumStr02() "
+
 	// Etc/GMT-4
 	// "Etc/GMT+11"
 	// "November 12, 2016 1:6:3pm -(+0000) UTC"
@@ -751,12 +769,13 @@ func (mt MainTest) ExampleExtractNumStr02() {
 	startTime = time.Now()
 
 	nStrDto,
-		err := strops.StrOps{}.ExtractNumericDigits(
+		err := strops.StrOps{}.Ptr().ExtractNumericDigits(
 		targetStr,
 		startIndex,
 		keepLeadingChars,
 		keepInteriorChars,
-		keepTrailingChars)
+		keepTrailingChars,
+		ePrefix)
 
 	endTime = time.Now()
 
@@ -866,7 +885,9 @@ func (mt MainTest) ExampleStripLeadingChars01() {
 	expectedStrLen := len(expectedStr)
 	testString := "..........      ./../.\\.\\..\\////   " + expectedStr
 
-	actualString, actualStrLen := strops.StrOps{}.StripLeadingChars(testString, badChars)
+	actualString, actualStrLen :=
+		strops.StrOps{}.Ptr().
+			StripLeadingChars(testString, badChars)
 
 	if expectedStr != actualString {
 		fmt.Printf("ERROR: Expected result string='%v'\n"+
@@ -1063,9 +1084,10 @@ func (mt MainTest) FindExpressionExample01(targetStr string, regex string) (stri
 
 func (mt MainTest) TrimMultipleStringsExample01(tStr string, trimChar rune) {
 
+	ePrefix := "TrimMultipleStringsExample01() "
 	su := strops.StrOps{}
 
-	r, err := su.TrimMultipleChars(tStr, trimChar)
+	r, err := su.TrimMultipleChars(tStr, trimChar, ePrefix)
 
 	if err != nil {
 		fmt.Println("Error Return from TrimMultipleChars: ", err.Error())
