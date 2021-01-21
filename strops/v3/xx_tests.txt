@@ -422,6 +422,16 @@
 --- PASS: TestStrOps_ReplaceNewLines_07 (0.00s)
 === RUN   TestStrOps_ReplaceNewLines_08
 --- PASS: TestStrOps_ReplaceNewLines_08 (0.00s)
+=== RUN   TestStrOps_ReplaceStringChar_01
+--- PASS: TestStrOps_ReplaceStringChar_01 (0.00s)
+=== RUN   TestStrOps_ReplaceStringChar_02
+--- PASS: TestStrOps_ReplaceStringChar_02 (0.00s)
+=== RUN   TestStrOps_ReplaceStringChar_03
+--- PASS: TestStrOps_ReplaceStringChar_03 (0.00s)
+=== RUN   TestStrOps_ReplaceStringChar_04
+--- PASS: TestStrOps_ReplaceStringChar_04 (0.00s)
+=== RUN   TestStrOps_ReplaceStringChar_05
+--- PASS: TestStrOps_ReplaceStringChar_05 (0.00s)
 === RUN   TestStrOps_ReplaceStringChars_01
 --- PASS: TestStrOps_ReplaceStringChars_01 (0.00s)
 === RUN   TestStrOps_ReplaceStringChars_02
@@ -633,4 +643,5 @@
 === RUN   TestDataFieldTrailingDelimiterType_Value_01
 --- PASS: TestDataFieldTrailingDelimiterType_Value_01 (0.00s)
 PASS
-ok  	github.com/MikeAustin71/stringopsgo/strops/v3	0.692s
+coverage: 92.4% of statements
+ok  	github.com/MikeAustin71/stringopsgo/strops/v3	0.562s

@@ -1656,9 +1656,8 @@ func (sOpsQuark *strOpsQuark) replaceRunes(
 	return output, nil
 }
 
-// replaceStringChar - Replaces a specific character
-// found anywhere in a string with another specified
-// substitute character.
+// replaceStringChar - Replaces a specific character found anywhere
+// in a string with another specified substitute character.
 //
 // The replacement operation proceeds from left to right within the
 // 'targetStr' beginning with index zero (0).

@@ -4,6 +4,169 @@ import (
 	"testing"
 )
 
+func TestStrOps_ReplaceStringChar_01(t *testing.T) {
+
+	ePrefix := "TestStrOps_ReplaceStringChar_01() "
+
+	testStr := "HowXnowXbrownXcow!"
+	expectedStr := "How now brown cow!"
+	charToReplace := 'X'
+	replacementChar := ' '
+	maxNumOfReplacements := -1
+	sops := StrOps{}
+
+	actualStr,
+		numOfReplacements,
+		err := sops.ReplaceStringChar(
+		testStr,
+		charToReplace,
+		replacementChar,
+		maxNumOfReplacements,
+		ePrefix)
+
+	if err != nil {
+		t.Errorf("%v\n",
+			err.Error())
+		return
+	}
+
+	if actualStr != expectedStr {
+		t.Errorf("Error: Expected actualStr='%v'\n"+
+			"Instead, actualStr='%v'\n",
+			expectedStr, actualStr)
+		return
+	}
+
+	if numOfReplacements != 3 {
+		t.Errorf("Error: Expected Number of Replacements='3'.\n"+
+			"Instead Number of Replacements= '%v'\n",
+			numOfReplacements)
+	}
+
+}
+
+func TestStrOps_ReplaceStringChar_02(t *testing.T) {
+
+	ePrefix := "TestStrOps_ReplaceStringChar_02() "
+
+	testStr := "HowXnowXbrownXcow!X"
+	expectedStr := "How now brown cow!X"
+	charToReplace := 'X'
+	replacementChar := ' '
+	maxNumOfReplacements := 3
+	sops := StrOps{}
+
+	actualStr,
+		numOfReplacements,
+		err := sops.ReplaceStringChar(
+		testStr,
+		charToReplace,
+		replacementChar,
+		maxNumOfReplacements,
+		ePrefix)
+
+	if err != nil {
+		t.Errorf("%v\n",
+			err.Error())
+		return
+	}
+
+	if actualStr != expectedStr {
+		t.Errorf("Error: Expected actualStr='%v'\n"+
+			"Instead, actualStr='%v'\n",
+			expectedStr, actualStr)
+		return
+	}
+
+	if numOfReplacements != 3 {
+		t.Errorf("Error: Expected Number of Replacements='3'.\n"+
+			"Instead Number of Replacements= '%v'\n",
+			numOfReplacements)
+	}
+
+}
+
+func TestStrOps_ReplaceStringChar_03(t *testing.T) {
+
+	ePrefix := "TestStrOps_ReplaceStringChar_03() "
+
+	testStr := "HowXnowXbrownXcow!X"
+	charToReplace := 'X'
+	replacementChar := rune(0)
+	maxNumOfReplacements := 3
+	sops := StrOps{}
+
+	_,
+		_,
+		err := sops.ReplaceStringChar(
+		testStr,
+		charToReplace,
+		replacementChar,
+		maxNumOfReplacements,
+		ePrefix)
+
+	if err == nil {
+		t.Error("Expected an error return from sops.ReplaceStringChar()\n" +
+			"because replacementChar == rune(0).\n" +
+			"However, NO ERROR WAS RETURNED!\n")
+	}
+
+}
+
+func TestStrOps_ReplaceStringChar_04(t *testing.T) {
+
+	ePrefix := "TestStrOps_ReplaceStringChar_04() "
+
+	testStr := "HowXnowXbrownXcow!X"
+	charToReplace := rune(0)
+	replacementChar := ' '
+	maxNumOfReplacements := 3
+	sops := StrOps{}
+
+	_,
+		_,
+		err := sops.ReplaceStringChar(
+		testStr,
+		charToReplace,
+		replacementChar,
+		maxNumOfReplacements,
+		ePrefix)
+
+	if err == nil {
+		t.Error("Expected an error return from sops.ReplaceStringChar()\n" +
+			"because charToReplace == rune(0).\n" +
+			"However, NO ERROR WAS RETURNED!\n")
+	}
+
+}
+
+func TestStrOps_ReplaceStringChar_05(t *testing.T) {
+
+	ePrefix := "TestStrOps_ReplaceStringChar_05() "
+
+	testStr := ""
+	charToReplace := 'X'
+	replacementChar := ' '
+	maxNumOfReplacements := 3
+	sops := StrOps{}
+
+	_,
+		_,
+		err := sops.ReplaceStringChar(
+		testStr,
+		charToReplace,
+		replacementChar,
+		maxNumOfReplacements,
+		ePrefix)
+
+	if err == nil {
+		t.Error("Expected an error return from sops.ReplaceStringChar()\n" +
+			"because testStr is an empty string.\n" +
+			"However, NO ERROR WAS RETURNED!\n")
+	}
+
+}
+
 func TestStrOps_ReplaceStringChars_01(t *testing.T) {
 
 	ePrefix := "TestStrOps_ReplaceStringChars_01() "

@@ -2409,6 +2409,108 @@ func (sops *StrOps) ReplaceRunes(
 		ePrefix)
 }
 
+// ReplaceStringChar - Replaces a specific character found anywhere
+// in a string with another specified substitute character.
+//
+// The replacement operation proceeds from left to right within the
+// 'targetStr' beginning with index zero (0).
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameters
+//
+//  targetStr                  string
+//     - The string containing the character to be replaced.
+//       If this is an empty string, an error will be returned.
+//
+//
+//  charToReplace              rune
+//     - The character within input parameter string 'targetStr'
+//       which will be replaced. If this parameter is set to zero
+//       signaling an empty character, this method will return an
+//       error.
+//
+//
+//  replacementChar            rune
+//     - The character which will replace 'charToReplace' in
+//       'targetStr'. If this parameter is set to zero signaling an
+//       empty character, this method will return an error.
+//
+//
+//  maxNumOfReplacements       int
+//     - The maximum number of replacements allowed for this
+//       operation. If this parameter is set to minus one (-1), all
+//       instances of 'charToReplace' in 'targetStr' will be
+//       replaced with 'replacementChar'.
+//
+//       If this parameter is set to zero ('0'), an error will be
+//       returned.
+//
+//       The replacement operation proceeds from left to right
+//       within the 'targetStr' beginning with index zero (0).
+//
+//
+//  ePrefix             string
+//     - This is an error prefix which is included in all returned
+//       error messages. Usually, it contains the names of the calling
+//       method or methods. Note: Be sure to leave a space at the end
+//       of 'ePrefix'.
+//
+//
+// ------------------------------------------------------------------------
+//
+// Return Values
+//
+//  string
+//     - If this method completes successfully, a new string will be
+//       returned with the designated replacement characters.
+//
+//
+//  int
+//     - The integer value records the number of characters
+//       replaced in 'targetStr'.
+//
+//
+//  error
+//     - If the method completes successfully and no errors are
+//       encountered this return value is set to 'nil'. Otherwise,
+//       if errors are encountered this return value will contain
+//       an appropriate error message.
+//
+//       If an error message is returned, the input parameter
+//       'ePrefix' (error prefix) will be inserted or prefixed at
+//       the beginning of the error message.
+//
+func (sops *StrOps) ReplaceStringChar(
+	targetStr string,
+	charToReplace rune,
+	replacementChar rune,
+	maxNumOfReplacements int,
+	ePrefix string) (
+	string,
+	int,
+	error) {
+
+	if sops.stringDataMutex == nil {
+		sops.stringDataMutex = new(sync.Mutex)
+	}
+
+	sops.stringDataMutex.Lock()
+
+	defer sops.stringDataMutex.Unlock()
+
+	ePrefix += "StrOps.ReplaceStringChar() "
+
+	sOpsQuark := strOpsQuark{}
+
+	return sOpsQuark.replaceStringChar(
+		targetStr,
+		charToReplace,
+		replacementChar,
+		maxNumOfReplacements,
+		ePrefix)
+}
+
 // ReplaceStringChars - Replaces string characters in a target
 // string ('targetStr') with those specified in a two dimensional
 // slice of runes, 'replacementRunes[][]'.

@@ -1,33 +1,37 @@
-# Running Tests
+# Running Tests StrOps
 
-Open a command prompt in this directory (*stringopsgo/strops/v2*) and run the
+Open a command prompt in this directory (*stringopsgo/strops/v3*) and run the
 following commands.
 
-##### Windows Command
-    'go test -v > xx_tests.txt`
+## Test Execution WITHOUT Code Coverage
+Run this in *strops/v3* directory:
 
-##### Linux Command
-    'go test -v | tee xx_tests.txt`
+### Windows Command Without Coverage
+  `go test -v > xx_tests.txt`
 
-This will generate test results in the *stringopsgo/strops/v2* 
+### Linux Command Without Coverage
+`go test -v | tee xx_tests.txt`
+
+This will generate test results in the *stringopsgo/strops/v3* 
 directory which are stored in the text file, `xx_tests.txt`. 
 
 ## Running Tests with code coverage
 
 First pull down and install the `cover` package.
  
-  `go get golang.org/x/tools/cmd/cover`
+`go get golang.org/x/tools/cmd/cover`
   
 Next, follow the test execution protocol.  
   
-## Test Execution with Code Coverage
+## Test Execution With Code Coverage
 Run this in *strops/v3* directory:
 
-##### Windows Command
- `go test -cover -v > xx_tests.txt`  
+### Windows Command With Coverage
+`go test -cover -v > xx_tests.txt`
 
-##### Linux Command
-  `go test -cover -v | tee xx_tests.txt`     
+### Linux Command With Coverage
+`go test -cover -v | tee xx_tests.txt`
+
 
 ## Cover Profile
 
