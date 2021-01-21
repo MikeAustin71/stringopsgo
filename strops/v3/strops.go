@@ -1903,6 +1903,100 @@ func (sops *StrOps) ReadStringFromBytes(
 		startIdx)
 }
 
+// RemoveStringChar - Removes or deletes a specified character
+// from a string and returns a new string.
+//
+//
+// ----------------------------------------------------------------
+//
+// Input Parameters
+//
+//  targetStr                  string
+//     - The target string containing the character to be removed.
+//       If this is a zero length or empty string, an error will
+//       be returned.
+//
+//
+//  charToRemove               rune
+//     - The character which will be removed from 'targetStr'. If
+//       this is an empty character or zero value rune, an error
+//       will be returned.
+//
+//
+//  maxNumOfCharDeletions      int
+//     - If this parameter is set to minus one (-1), all instances
+//       of 'charToRemove' in 'targetStr' will be deleted in the
+//       returned string. If this parameter is greater than zero,
+//       it will limit the maximum number of character deletions
+//       in this operation. Remember that the search for
+//       'charToRemove' proceeds from left to right starting at
+//       index zero (0).
+//
+//       If this parameter is set to zero, an error will be
+//       returned.
+//
+//
+//  ePrefix             string
+//     - This is an error prefix which is included in all returned
+//       error messages. Usually, it contains the names of the calling
+//       method or methods. Be sure to leave a space at the end of
+//       'ePrefix'.
+//
+//
+// -----------------------------------------------------------------
+//
+// Return Values
+//
+//  newStr                     string
+//     - If this method completes successfully, a new string
+//       will be returned containing all the characters in
+//       input parameter 'targetStr' except those removed by
+//       the deletion operation.
+//
+//
+//  numOfDeletions             int
+//     - This parameter will record the number of character
+//       deletions performed by this operation.
+//
+//
+//  err                        error
+//     - If the method completes successfully and no errors are
+//       encountered this return value is set to 'nil'. Otherwise,
+//       if errors are encountered this return value will contain
+//       an appropriate error message.
+//
+//       If an error message is returned, the input parameter
+//       'ePrefix' (error prefix) will be inserted or prefixed at
+//       the beginning of the error message.
+//
+func (sops *StrOps) RemoveStringChar(
+	targetStr string,
+	charToRemove rune,
+	maxNumOfCharDeletions int,
+	ePrefix string) (
+	newStr string,
+	numOfDeletions int,
+	err error) {
+
+	if sops.stringDataMutex == nil {
+		sops.stringDataMutex = new(sync.Mutex)
+	}
+
+	sops.stringDataMutex.Lock()
+
+	defer sops.stringDataMutex.Unlock()
+
+	ePrefix += "StrOps.RemoveStringChar() "
+
+	sOpsQuark := strOpsQuark{}
+
+	return sOpsQuark.removeStringChar(
+		targetStr,
+		charToRemove,
+		maxNumOfCharDeletions,
+		ePrefix)
+}
+
 // ReplaceBytes - Replaces characters in a target array of bytes ([]bytes) with those specified in
 // a two dimensional slice of bytes.
 //

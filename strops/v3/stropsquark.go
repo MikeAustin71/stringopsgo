@@ -1349,7 +1349,8 @@ func (sOpsQuark *strOpsQuark) removeStringChar(
 
 		if maxNumOfCharDeletions > -1 &&
 			numOfDeletions >= maxNumOfCharDeletions {
-			break
+			runeArray = append(runeArray, r)
+			continue
 		}
 
 		if r == charToRemove {

@@ -611,6 +611,159 @@ func TestStrOps_ReadStringFromBytes_14(t *testing.T) {
 
 }
 
+func TestStrOps_RemoveStringChar_01(t *testing.T) {
+
+	ePrefix := "TestStrOps_RemoveStringChar_01() "
+	helloWorld := "XHelloX World!XX HowXX the hellXX are you?X"
+	expectedDeletions := 9
+	expectedStr := "Hello World! How the hell are you?"
+
+	sops := StrOps{}
+
+	actualStr,
+		actualNoDeletions,
+		err := sops.RemoveStringChar(
+		helloWorld,
+		'X',
+		-1,
+		ePrefix+"\n"+
+			"Removing 'X'\n")
+
+	if err != nil {
+		t.Errorf("%v\n", err.Error())
+		return
+	}
+
+	if actualStr != expectedStr {
+		t.Errorf("Error:\n"+
+			"Expected string='%v'\n"+
+			"  Actual string='%v'\n",
+			expectedStr, actualStr)
+	}
+
+	if actualNoDeletions != expectedDeletions {
+		t.Errorf("Error: Expected %v-deletions.\n"+
+			"Instead, there were %v-deletions.\n",
+			expectedDeletions,
+			actualNoDeletions)
+	}
+
+}
+
+func TestStrOps_RemoveStringChar_02(t *testing.T) {
+
+	ePrefix := "TestStrOps_RemoveStringChar_02() "
+	helloWorld := "XHelloX World!XX HowXX the hellXX are you?X"
+	expectedDeletions := 8
+	expectedStr := "Hello World! How the hell are you?X"
+
+	sops := StrOps{}
+
+	actualStr,
+		actualNoDeletions,
+		err := sops.RemoveStringChar(
+		helloWorld,
+		'X',
+		8,
+		ePrefix+"\n"+
+			"Removing 'X' 8-times\n")
+
+	if err != nil {
+		t.Errorf("%v\n", err.Error())
+		return
+	}
+
+	if actualStr != expectedStr {
+		t.Errorf("Error:\n"+
+			"Expected string='%v'\n"+
+			"  Actual string='%v'\n",
+			expectedStr, actualStr)
+	}
+
+	if actualNoDeletions != expectedDeletions {
+		t.Errorf("Error: Expected %v-deletions.\n"+
+			"Instead, there were %v-deletions.\n",
+			expectedDeletions,
+			actualNoDeletions)
+	}
+
+}
+
+func TestStrOps_RemoveStringChar_03(t *testing.T) {
+
+	ePrefix := "TestStrOps_RemoveStringChar_03() "
+	helloWorld := "XHelloX World!XX HowXX the hellXX are you?X"
+
+	sops := StrOps{}
+
+	_,
+		_,
+		err := sops.RemoveStringChar(
+		helloWorld,
+		'X',
+		0,
+		ePrefix+"\n"+
+			"Error Test: 'maxNumOfCharDeletions' == 0\n")
+
+	if err == nil {
+		t.Error("Expected an error return from sops.RemoveStringChar()\n" +
+			"because the 'maxNumOfCharDeletions' is set to zero.\n" +
+			"However, NO ERROR WAS RETURNED!\n")
+		return
+	}
+
+}
+
+func TestStrOps_RemoveStringChar_04(t *testing.T) {
+
+	ePrefix := "TestStrOps_RemoveStringChar_04() "
+	helloWorld := "XHelloX World!XX HowXX the hellXX are you?X"
+
+	sops := StrOps{}
+
+	_,
+		_,
+		err := sops.RemoveStringChar(
+		helloWorld,
+		0,
+		0,
+		ePrefix+"\n"+
+			"Error Test: 'charToRemove' == 0\n")
+
+	if err == nil {
+		t.Error("Expected an error return from sops.RemoveStringChar()\n" +
+			"because the 'charToRemove' is set to zero.\n" +
+			"However, NO ERROR WAS RETURNED!\n")
+		return
+	}
+
+}
+
+func TestStrOps_RemoveStringChar_05(t *testing.T) {
+
+	ePrefix := "TestStrOps_RemoveStringChar_05() "
+	helloWorld := ""
+
+	sops := StrOps{}
+
+	_,
+		_,
+		err := sops.RemoveStringChar(
+		helloWorld,
+		'X',
+		-1,
+		ePrefix+"\n"+
+			"Error Test: 'targetStr' is empty string!\n")
+
+	if err == nil {
+		t.Error("Expected an error return from sops.RemoveStringChar()\n" +
+			"because the 'charToRemove' is set to zero.\n" +
+			"However, NO ERROR WAS RETURNED!\n")
+		return
+	}
+
+}
+
 func TestStrOps_ReplaceBytes_01(t *testing.T) {
 
 	ePrefix := "TestStrOps_ReplaceBytes_01() "
@@ -1244,7 +1397,9 @@ func TestStrOps_ReplaceNewLines_01(t *testing.T) {
 	replaceStr := " "
 	expectedStr := "Hello World"
 
-	actualStr := StrOps{}.Ptr().ReplaceNewLines(testStr, replaceStr)
+	actualStr := StrOps{}.Ptr().ReplaceNewLines(
+		testStr,
+		replaceStr)
 
 	if expectedStr != actualStr {
 		t.Errorf("Error: Expected result='%v'. Instead, result='%v'",
