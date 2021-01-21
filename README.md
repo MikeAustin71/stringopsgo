@@ -1,4 +1,4 @@
-# *strops* Version 2.0.4
+# *strops* Version 2.0.5
 
 [![GoDoc](https://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v2?status.svg)](https://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v2)
 
@@ -41,7 +41,7 @@ tests are now completing successfully on *Linux Mint 19.2* and *Ubantu 18.04.3*.
 ## Getting Started
 
 ### Installation
-Use this command to down load and install the *pathfileops* package
+Use this command to download and install the *pathfileops* package
 locally. Note: Version 2+ supports *Go* modules.
 
     go get github.com/MikeAustin71/stringopsgo/strops/v2
@@ -86,7 +86,7 @@ Test coverage and outcomes are documented in:
 [How To Run Tests Documentation](./strops/v2/wt_HowToRunTests.md)
    
 ## Version
-The latest version is Version 2.0.4. Version 2+ releases support
+The latest version is Version 2.0.5. Version 2+ releases support
 *Go* modules. 
 
 [Release Notes](./strops/v2/releasenotes.md)
