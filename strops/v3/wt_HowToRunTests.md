@@ -39,6 +39,6 @@ in the *stringopsgo/strops/v3* directory:
 
 The following provides for code coverage display in your
 browser. Run this on the terminal command line and run it
-in the *stringopsgo/strops/v2* directory:
+in the *stringopsgo/strops/v3* directory:
 
 `go tool cover -html=xx_coverage.out`
