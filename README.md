@@ -1,6 +1,6 @@
 # *strops* Version 3.0.0
 
-[![GoDoc](https://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v2?status.svg)](https://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v2)
+[![GoDoc](https://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v3?status.svg)](https://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v3)
 
 *strops* is a software library or in *Go* parlance, a software *package*.
 
@@ -76,7 +76,7 @@ import statement:
 
 ## Source Code Documentation
 
-[Source Documentation](http://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v2)    
+[Source Documentation](http://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v3)    
 
 
 ## Production File Location
@@ -85,7 +85,7 @@ All the active production files are located in directory path:
     github.com/MikeAustin71/stringopsgo/strops/v3
 
 ## Tests
-Currently, the *strops/v2* package has 317 unit tests with a code coverage
+Currently, the *strops/v3* package has 317 unit tests with a code coverage
 of 93%. 
 
 Test coverage and outcomes are documented in:
