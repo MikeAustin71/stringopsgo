@@ -633,5 +633,4 @@
 === RUN   TestDataFieldTrailingDelimiterType_Value_01
 --- PASS: TestDataFieldTrailingDelimiterType_Value_01 (0.00s)
 PASS
-coverage: 91.0% of statements
-ok  	github.com/MikeAustin71/stringopsgo/strops/v3	0.517s
+ok  	github.com/MikeAustin71/stringopsgo/strops/v3	0.692s
