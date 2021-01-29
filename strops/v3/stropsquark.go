@@ -74,7 +74,8 @@ func (sOpsQuark *strOpsQuark) convertNonPrintableChars(
 	nonPrintableChars []rune,
 	convertSpace bool,
 	ePrefix string) (
-	printableChars string) {
+	printableChars string,
+	err error) {
 
 	if sOpsQuark.lock == nil {
 		sOpsQuark.lock = new(sync.Mutex)
@@ -93,7 +94,12 @@ func (sOpsQuark *strOpsQuark) convertNonPrintableChars(
 	lenNonPrintableChars := len(nonPrintableChars)
 
 	if lenNonPrintableChars == 0 {
-		return "[EMPTY]"
+		err = fmt.Errorf("%v\n"+
+			"Error: Input parameter 'nonPrintableChars' is invalid!\n"+
+			"'nonPrintableChars' is a zero length array of runes.",
+			ePrefix)
+
+		return "[EMPTY]", err
 	}
 
 	var b strings.Builder
@@ -152,7 +158,7 @@ func (sOpsQuark *strOpsQuark) convertNonPrintableChars(
 
 	}
 
-	return b.String()
+	return b.String(), err
 
 }
 

@@ -188,10 +188,13 @@ func (sops *StrOps) ConvertNonPrintableChars(
 
 	sOpsQuark := strOpsQuark{}
 
-	return sOpsQuark.convertNonPrintableChars(
+	printableChars,
+		_ = sOpsQuark.convertNonPrintableChars(
 		nonPrintableChars,
 		convertSpace,
 		ePrefix)
+
+	return printableChars
 }
 
 // CopyIn - Copies string information from another StrOps
