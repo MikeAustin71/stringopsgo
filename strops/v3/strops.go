@@ -1,4 +1,4 @@
-// String operations provides string management utilities designed to
+// Package strops String operations provides string management utilities designed to
 // perform a variety of string operations including string centering,
 // justification, multiple replacements numeric and date field extraction
 // as well as implementing the io.Reader and io.Writer interfaces.
