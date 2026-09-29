@@ -15,12 +15,12 @@ like string centering, justification trimming and character manipulation.
 Version 3.0.0 introduces several new important features which come at the price
 of breaking changes. 
 
-- Developed with Go Version 1.15.6.
-- Thread Safety protocols added for support of parallel processing.
-- Enhanced error management capabilities added. 
-  - This version now supports documentation of function chains in error messages.
+— Developed with Go Version 1.15.6.
+— Thread Safety protocols added for support of parallel processing.
+— Enhanced error management capabilities added.
+— This version now supports documentation of function chains in error messages.
 
-- This version continues support for Go modules
+— This version continues support for Go modules
 
   [Click To View Source Documentation](http://godoc.org/github.com/MikeAustin71/stringopsgo/strops/v3)    
 
@@ -42,7 +42,7 @@ of breaking changes.
 
 This package was developed and tested on Windows, although the package
 was designed to operate on multiple operating systems including 
-Mac-OS, Linux and Windows.
+macOS, Linux and Windows.
 
 While development testing has focused primarily on *Windows*, the unit
 tests are now completing successfully on *Linux Mint 19.2* and *Ubuntu 18.04.3*.
