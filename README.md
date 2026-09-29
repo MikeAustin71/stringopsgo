@@ -36,7 +36,10 @@ of breaking changes.
 + [License](#license)
 + [Comments](#comments-and-questions) 
 
+
+
 ## Supported Platforms
+
 This package was developed and tested on Windows, although the package
 was designed to operate on multiple operating systems including 
 Mac-OS, Linux and Windows.
